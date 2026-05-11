@@ -457,7 +457,14 @@ const COLOR_PALETTE = [
   '#9333ea', '#6366f1', '#475569', '#666666'
 ];
 
-const STORAGE_KEY = 'allergy_app_v6';
+const STORAGE_KEY = 'allergy_app_v7';
+
+// 料理データを正規化: 文字列 → {name, subItems: []}
+function normalizeItem(item) {
+  if (typeof item === 'string') return { name: item, subItems: [] };
+  if (!item) return { name: '', subItems: [] };
+  return { name: item.name || '', subItems: (item.subItems || []).map(s => typeof s === 'string' ? s : (s.name || s)) };
+}
 
 function loadData() {
   try {
@@ -468,28 +475,33 @@ function loadData() {
       if (!data.customAllergens) data.customAllergens = [];
       if (!data.tours) data.tours = [];
       if (!data.courses) {
-        // 旧データから移行
         const oldDefault = data.defaultCourse || DEFAULT_COURSE_ITEMS;
         data.courses = [{
           id: uid(),
           name: '市場小路美食コース',
-          items: [...oldDefault]
+          items: oldDefault.map(normalizeItem)
         }];
         delete data.defaultCourse;
       }
+      // 全コースのitemsを正規化
+      data.courses.forEach(c => {
+        c.items = (c.items || []).map(normalizeItem);
+      });
+
       data.tours.forEach(t => {
-        // 旧コースから新コースへ移行
         if (t.courseItems && !t.courseId) {
-          // 既存のコースから合致するものを探す
+          const normalizedItems = t.courseItems.map(normalizeItem);
           const matching = data.courses.find(c =>
-            JSON.stringify(c.items) === JSON.stringify(t.courseItems));
+            JSON.stringify(c.items.map(i => i.name)) === JSON.stringify(normalizedItems.map(i => i.name)));
           if (matching) {
             t.courseId = matching.id;
           } else {
-            // 専用コースとして残す（このツアーのみ）
-            t.customCourseItems = t.courseItems;
+            t.customCourseItems = normalizedItems;
           }
           delete t.courseItems;
+        }
+        if (t.customCourseItems) {
+          t.customCourseItems = t.customCourseItems.map(normalizeItem);
         }
         if (!t.courseId && !t.customCourseItems) {
           t.courseId = data.courses[0]?.id;
@@ -498,6 +510,8 @@ function loadData() {
         if (!t.groups) t.groups = [];
         t.groups.forEach(g => {
           if (!g.changeNotes) g.changeNotes = [];
+          if (!g.subChangeNotes) g.subChangeNotes = {};
+          if (!g.subDishStatus) g.subDishStatus = {};
         });
       });
       return data;
@@ -507,7 +521,7 @@ function loadData() {
     tours: [],
     customAllergens: [],
     courses: [
-      { id: uid(), name: '市場小路美食コース', items: [...DEFAULT_COURSE_ITEMS] }
+      { id: uid(), name: '市場小路美食コース', items: DEFAULT_COURSE_ITEMS.map(normalizeItem) }
     ],
     companies: [...DEFAULT_COMPANIES]
   };
@@ -557,6 +571,16 @@ function getTourCourseItems(tour) {
   const c = getCourse(tour.courseId);
   if (c) return c.items;
   return [];
+}
+
+function getItemName(item) {
+  if (typeof item === 'string') return item;
+  return item ? item.name : '';
+}
+
+function getItemSubs(item) {
+  if (typeof item === 'string') return [];
+  return (item && item.subItems) || [];
 }
 
 function getTourCourseName(tour) {
@@ -884,13 +908,33 @@ function renderSettings(main) {
           <button type="button" class="course-edit-remove" data-remove-course="${c.id}" title="削除">×</button>
         </div>
         <div id="courseItems-${c.id}">
-          ${c.items.map((item, i) => `
-            <div class="course-edit-row">
-              <div class="course-edit-num">${String(i+1).padStart(2,'0')}</div>
-              <input class="course-edit-input" data-course-id="${c.id}" data-item-idx="${i}" value="${escHtml(item)}">
-              <button type="button" class="course-edit-remove" data-remove-item data-course-id="${c.id}" data-item-idx="${i}">×</button>
-            </div>
-          `).join('')}
+          ${c.items.map((item, i) => {
+            const itemName = getItemName(item);
+            const subs = getItemSubs(item);
+            return `
+              <div style="padding:8px 0;border-bottom:1px solid var(--line);">
+                <div class="course-edit-row" style="border:none;padding:0;">
+                  <div class="course-edit-num">${String(i+1).padStart(2,'0')}</div>
+                  <input class="course-edit-input" data-course-id="${c.id}" data-item-idx="${i}" value="${escHtml(itemName)}" placeholder="料理名">
+                  <button type="button" class="course-edit-remove" data-remove-item data-course-id="${c.id}" data-item-idx="${i}">×</button>
+                </div>
+                ${subs.length > 0 ? `
+                  <div style="padding-left:38px;margin-top:6px;">
+                    ${subs.map((sub, si) => `
+                      <div style="display:flex;align-items:center;gap:6px;padding:3px 0;">
+                        <span style="font-size:11px;color:var(--ink-mute);width:18px;">└</span>
+                        <input class="course-edit-input" data-course-id="${c.id}" data-item-idx="${i}" data-sub-idx="${si}" value="${escHtml(sub)}" placeholder="中身" style="font-size:13px;padding:4px 8px;">
+                        <button type="button" class="course-edit-remove" data-remove-sub data-course-id="${c.id}" data-item-idx="${i}" data-sub-idx="${si}" style="width:24px;height:24px;font-size:11px;">×</button>
+                      </div>
+                    `).join('')}
+                  </div>
+                ` : ''}
+                <div style="padding-left:38px;margin-top:4px;">
+                  <button type="button" class="btn btn-outline btn-sm" data-add-sub data-course-id="${c.id}" data-item-idx="${i}" style="font-size:11px;padding:3px 8px;color:var(--ink-mute);">＋ 中身を追加</button>
+                </div>
+              </div>
+            `;
+          }).join('')}
         </div>
         <button type="button" class="btn btn-outline btn-sm" data-add-item="${c.id}" style="margin-top:8px;">＋ 料理を追加</button>
       </div>
@@ -938,7 +982,7 @@ function renderSettings(main) {
       </div>
     </div>
 
-    <div style="font-size:11px;color:var(--ink-mute);text-align:center;margin-top:24px;">市場小路 アレルギー管理 v6.0</div>
+    <div style="font-size:11px;color:var(--ink-mute);text-align:center;margin-top:24px;">市場小路 アレルギー管理 v7.0</div>
   `;
 
   main.innerHTML = html;
@@ -991,13 +1035,79 @@ function bindSettingsEvents() {
       if (c) { c.name = e.target.value.trim() || c.name; saveData(); }
     });
   });
-  document.querySelectorAll('[data-course-id][data-item-idx]').forEach(input => {
+  // 料理名の編集（サブインデックスなし）
+  document.querySelectorAll('[data-course-id][data-item-idx]:not([data-sub-idx])').forEach(input => {
     if (input.tagName !== 'INPUT') return;
     input.addEventListener('change', e => {
       const cid = e.target.dataset.courseId;
       const idx = parseInt(e.target.dataset.itemIdx);
       const c = getCourse(cid);
-      if (c) { c.items[idx] = e.target.value; saveData(); }
+      if (c && c.items[idx]) {
+        c.items[idx] = normalizeItem(c.items[idx]);
+        c.items[idx].name = e.target.value;
+        saveData();
+      }
+    });
+  });
+  // 中身の編集
+  document.querySelectorAll('[data-sub-idx]').forEach(input => {
+    if (input.tagName !== 'INPUT') return;
+    input.addEventListener('change', e => {
+      const cid = e.target.dataset.courseId;
+      const idx = parseInt(e.target.dataset.itemIdx);
+      const sidx = parseInt(e.target.dataset.subIdx);
+      const c = getCourse(cid);
+      if (c && c.items[idx]) {
+        c.items[idx] = normalizeItem(c.items[idx]);
+        c.items[idx].subItems[sidx] = e.target.value;
+        saveData();
+      }
+    });
+  });
+  // 中身の削除
+  document.querySelectorAll('[data-remove-sub]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cid = btn.dataset.courseId;
+      const idx = parseInt(btn.dataset.itemIdx);
+      const sidx = parseInt(btn.dataset.subIdx);
+      const c = getCourse(cid);
+      if (!c || !c.items[idx]) return;
+      const item = normalizeItem(c.items[idx]);
+      c.items[idx] = item;
+      const subName = item.subItems[sidx];
+      showConfirm('削除確認', `「${subName}」を削除しますか？`, ok => {
+        if (ok) {
+          item.subItems.splice(sidx, 1);
+          // ツアーの subChangeNotes / subDishStatus も整理
+          state.tours.forEach(t => {
+            if (t.courseId === cid) {
+              t.groups.forEach(g => {
+                const key = `${idx}_${sidx}`;
+                if (g.subChangeNotes) delete g.subChangeNotes[key];
+                if (g.subDishStatus) delete g.subDishStatus[key];
+              });
+            }
+          });
+          saveData(); render();
+        }
+      });
+    });
+  });
+  // 中身の追加
+  document.querySelectorAll('[data-add-sub]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cid = btn.dataset.courseId;
+      const idx = parseInt(btn.dataset.itemIdx);
+      const c = getCourse(cid);
+      if (!c || !c.items[idx]) return;
+      const item = normalizeItem(c.items[idx]);
+      c.items[idx] = item;
+      showPrompt('中身を追加', `「${item.name}」の中身を追加`, '例：切り干し大根', val => {
+        if (val && val.trim()) {
+          item.subItems.push(val.trim());
+          saveData(); render();
+        }
+      });
     });
   });
   document.querySelectorAll('[data-remove-item]').forEach(btn => {
@@ -1007,16 +1117,36 @@ function bindSettingsEvents() {
       const c = getCourse(cid);
       if (!c) return;
       if (c.items.length <= 1) { showAlert('料理は1つ以上必要です'); return; }
-      showConfirm('削除確認', `「${c.items[idx]}」を削除しますか？`, ok => {
+      const item = c.items[idx];
+      const itemName = getItemName(item);
+      showConfirm('削除確認', `「${itemName}」を削除しますか？`, ok => {
         if (ok) {
           c.items.splice(idx, 1);
-          // このコースを使用中のツアーで提供状態も調整
           state.tours.forEach(t => {
             if (t.courseId === cid) {
               (t.groups || []).forEach(g => {
                 if (g.served) g.served.splice(idx, 1);
                 if (g.dishStatus) g.dishStatus.splice(idx, 1);
                 if (g.changeNotes) g.changeNotes.splice(idx, 1);
+                // subDishStatus/subChangeNotes のキーをずらす
+                if (g.subDishStatus) {
+                  const newSub = {};
+                  Object.keys(g.subDishStatus).forEach(k => {
+                    const [i, s] = k.split('_').map(Number);
+                    if (i < idx) newSub[k] = g.subDishStatus[k];
+                    else if (i > idx) newSub[`${i-1}_${s}`] = g.subDishStatus[k];
+                  });
+                  g.subDishStatus = newSub;
+                }
+                if (g.subChangeNotes) {
+                  const newSub = {};
+                  Object.keys(g.subChangeNotes).forEach(k => {
+                    const [i, s] = k.split('_').map(Number);
+                    if (i < idx) newSub[k] = g.subChangeNotes[k];
+                    else if (i > idx) newSub[`${i-1}_${s}`] = g.subChangeNotes[k];
+                  });
+                  g.subChangeNotes = newSub;
+                }
               });
             }
           });
@@ -1032,7 +1162,7 @@ function bindSettingsEvents() {
       if (!c) return;
       showPrompt('料理を追加', `「${c.name}」に料理を追加`, '例：八寸', val => {
         if (val && val.trim()) {
-          c.items.push(val.trim());
+          c.items.push(normalizeItem(val.trim()));
           state.tours.forEach(t => {
             if (t.courseId === cid) {
               (t.groups || []).forEach(g => {
@@ -1069,7 +1199,7 @@ function bindSettingsEvents() {
   document.getElementById('addCourseBtn').addEventListener('click', () => {
     showPrompt('新しいコース', 'コース名を入力してください', '例：懐石コース', val => {
       if (val && val.trim()) {
-        state.courses.push({ id: uid(), name: val.trim(), items: ['先付'] });
+        state.courses.push({ id: uid(), name: val.trim(), items: [normalizeItem('先付')] });
         saveData(); render();
       }
     });
@@ -1360,11 +1490,15 @@ contamOk: undefined,
 note: ‘’,
 served: course.map(() => false),
 dishStatus: course.map(() => ‘normal’),
-changeNotes: course.map(() => ‘’)
+changeNotes: course.map(() => ‘’),
+subDishStatus: {},
+subChangeNotes: {}
 } : { …tour.groups[groupIdx], allergies: […(tour.groups[groupIdx].allergies || [])] };
 
 if (!group.changeNotes) group.changeNotes = course.map(() => ‘’);
 while (group.changeNotes.length < course.length) group.changeNotes.push(’’);
+if (!group.subDishStatus) group.subDishStatus = {};
+if (!group.subChangeNotes) group.subChangeNotes = {};
 
 let tempAllergens = group.allergies.filter(a =>
 !DEFAULT_ALLERGENS.required.includes(a) &&
@@ -1434,10 +1568,12 @@ document.getElementById(‘modalBody’).innerHTML = `
   <div class="field">
     <label class="field-label">各料理の変更指示</label>
     <div style="font-size:11px;color:var(--ink-mute);margin-bottom:8px;">
-      状態を選択し、具体的な変更内容があれば記入してください
+      状態を選択し、具体的な変更内容があれば記入。中身がある料理は、料理レベル・中身レベルどちらでも指示可能。
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;">
-      ${course.map((dish, i) => {
+      ${course.map((item, i) => {
+        const dishName = getItemName(item);
+        const subs = getItemSubs(item);
         const status = group.dishStatus[i] || 'normal';
         const bgColor = status === 'change' ? '#fffbeb' :
                       status === 'warn' ? 'var(--danger-bg)' : 'white';
@@ -1447,7 +1583,7 @@ document.getElementById(‘modalBody’).innerHTML = `
           <div style="padding:10px;background:${bgColor};border:1px solid ${borderColor};border-radius:4px;">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
               <div style="font-size:11px;font-weight:600;color:var(--ink-mute);min-width:30px;">${String(i+1).padStart(2,'0')}</div>
-              <div style="flex:1;font-size:14px;font-weight:500;">${escHtml(dish)}</div>
+              <div style="flex:1;font-size:14px;font-weight:500;">${escHtml(dishName)}</div>
               <select data-dish-status="${i}" style="padding:4px 8px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:12px;">
                 <option value="normal" ${status==='normal'?'selected':''}>変更なし</option>
                 <option value="change" ${status==='change'?'selected':''}>変更あり</option>
@@ -1456,8 +1592,40 @@ document.getElementById(‘modalBody’).innerHTML = `
             </div>
             ${status !== 'normal' ? `
               <textarea data-dish-note="${i}"
-                        placeholder="${status === 'change' ? '例：鯛の塩焼き → 鮭の塩焼きに変更' : '例：提供せず、代わりに季節野菜の小鉢を提供'}"
-                        style="width:100%;padding:6px 8px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:13px;min-height:48px;resize:vertical;">${escHtml(group.changeNotes[i] || '')}</textarea>
+                        placeholder="${status === 'change' ? '料理全体への変更指示（例：卵を抜いて調理）' : '提供しない理由など（例：豚肉メインのため提供なし）'}"
+                        style="width:100%;padding:6px 8px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:13px;min-height:42px;resize:vertical;">${escHtml(group.changeNotes[i] || '')}</textarea>
+            ` : ''}
+            ${subs.length > 0 ? `
+              <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--line-strong);">
+                <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">中身ごとの指示</div>
+                ${subs.map((sub, si) => {
+                  const subKey = `${i}_${si}`;
+                  const subStatus = (group.subDishStatus && group.subDishStatus[subKey]) || 'normal';
+                  const subNote = (group.subChangeNotes && group.subChangeNotes[subKey]) || '';
+                  const subBg = subStatus === 'change' ? '#fffbeb' :
+                              subStatus === 'warn' ? 'var(--danger-bg)' : 'white';
+                  const subBorder = subStatus === 'change' ? '#fde68a' :
+                                  subStatus === 'warn' ? '#fecaca' : 'var(--line)';
+                  return `
+                    <div style="padding:6px 8px;background:${subBg};border:1px solid ${subBorder};border-radius:3px;margin-bottom:4px;">
+                      <div style="display:flex;align-items:center;gap:6px;">
+                        <span style="font-size:11px;color:var(--ink-mute);">└</span>
+                        <div style="flex:1;font-size:13px;">${escHtml(sub)}</div>
+                        <select data-sub-status="${subKey}" style="padding:3px 6px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:11px;">
+                          <option value="normal" ${subStatus==='normal'?'selected':''}>変更なし</option>
+                          <option value="change" ${subStatus==='change'?'selected':''}>変更あり</option>
+                          <option value="warn" ${subStatus==='warn'?'selected':''}>要注意/なし</option>
+                        </select>
+                      </div>
+                      ${subStatus !== 'normal' ? `
+                        <textarea data-sub-note="${subKey}"
+                                  placeholder="この中身への指示"
+                                  style="width:100%;padding:4px 6px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:12px;min-height:36px;resize:vertical;margin-top:4px;">${escHtml(subNote)}</textarea>
+                      ` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
             ` : ''}
           </div>
         `;
@@ -1487,10 +1655,15 @@ const n = document.getElementById(‘g-note’);
 if (c) group.count = parseInt(c.value) || 1;
 if (l) group.label = l.value;
 if (n) group.note = n.value;
-// 各料理のメモも取得
+// 各料理のメモ
 course.forEach((_, i) => {
 const t = document.querySelector(`[data-dish-note="${i}"]`);
 if (t) group.changeNotes[i] = t.value;
+});
+// 副品のメモ
+if (!group.subChangeNotes) group.subChangeNotes = {};
+document.querySelectorAll(’[data-sub-note]’).forEach(t => {
+group.subChangeNotes[t.dataset.subNote] = t.value;
 });
 }
 
@@ -1553,6 +1726,28 @@ document.querySelectorAll('[data-dish-note]').forEach(t => {
   t.addEventListener('input', e => {
     const idx = parseInt(e.target.dataset.dishNote);
     group.changeNotes[idx] = e.target.value;
+  });
+});
+
+// 副品のステータス変更
+document.querySelectorAll('[data-sub-status]').forEach(sel => {
+  sel.addEventListener('change', e => {
+    const key = e.target.dataset.subStatus;
+    captureForm();
+    if (!group.subDishStatus) group.subDishStatus = {};
+    group.subDishStatus[key] = e.target.value;
+    if (e.target.value === 'normal' && group.subChangeNotes) {
+      delete group.subChangeNotes[key];
+    }
+    paint();
+  });
+});
+
+document.querySelectorAll('[data-sub-note]').forEach(t => {
+  t.addEventListener('input', e => {
+    const key = e.target.dataset.subNote;
+    if (!group.subChangeNotes) group.subChangeNotes = {};
+    group.subChangeNotes[key] = e.target.value;
   });
 });
 
@@ -1622,7 +1817,9 @@ document.getElementById(‘modalBody’).innerHTML = `<div class="card" style="m
 <div style="font-size:12px;color:var(--ink-mute);margin-bottom:8px;">タップで提供完了。変更指示は読み取り専用で表示されます</div>
 
 <div class="dish-grid">
-  ${course.map((dish, i) => {
+  ${course.map((item, i) => {
+    const dishName = getItemName(item);
+    const subs = getItemSubs(item);
     const served = group.served[i];
     const status = group.dishStatus[i] || 'normal';
     const changeNote = group.changeNotes[i];
@@ -1631,15 +1828,40 @@ document.getElementById(‘modalBody’).innerHTML = `<div class="card" style="m
                       status === 'warn' ? 'status-warn' : '';
     const statusLabel = status === 'change' ? '変更あり' :
                       status === 'warn' ? '要注意/なし' : '変更なし';
-    return `
-      <div class="dish-row ${statusClass}" data-dish-idx="${i}">
-        <div class="dish-num">${String(i+1).padStart(2,'0')}</div>
-        <div class="dish-info">
-          <div class="dish-name">${escHtml(dish)}</div>
-          <div class="dish-note">${statusLabel}</div>
-          ${changeNote ? `<div class="dish-change-note">${escHtml(changeNote)}</div>` : ''}
+
+    const subHtml = subs.map((sub, si) => {
+      const subKey = `${i}_${si}`;
+      const subStatus = (group.subDishStatus && group.subDishStatus[subKey]) || 'normal';
+      const subNote = (group.subChangeNotes && group.subChangeNotes[subKey]) || '';
+      if (subStatus === 'normal' && !subNote) return '';
+      const subLabel = subStatus === 'change' ? '変更あり' :
+                     subStatus === 'warn' ? '要注意/なし' : '';
+      const subBg = subStatus === 'change' ? '#fffbeb' :
+                   subStatus === 'warn' ? 'var(--danger-bg)' : 'white';
+      return `
+        <div style="padding:6px 8px;background:${subBg};border-radius:3px;margin-top:4px;font-size:12px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="color:var(--ink-mute);font-size:11px;">└</span>
+            <span style="flex:1;font-weight:500;">${escHtml(sub)}</span>
+            ${subLabel ? `<span style="font-size:11px;color:${subStatus === 'warn' ? 'var(--danger)' : 'var(--warn)'};font-weight:600;">${subLabel}</span>` : ''}
+          </div>
+          ${subNote ? `<div style="margin-top:3px;padding:3px 6px;background:white;border-left:2px solid var(--accent);color:var(--accent);font-size:11px;">${escHtml(subNote)}</div>` : ''}
         </div>
-        <div class="dish-check">${served ? '✓' : ''}</div>
+      `;
+    }).join('');
+
+    return `
+      <div class="dish-row ${statusClass}" data-dish-idx="${i}" style="flex-direction:column;align-items:stretch;">
+        <div style="display:flex;align-items:center;gap:12px;width:100%;">
+          <div class="dish-num">${String(i+1).padStart(2,'0')}</div>
+          <div class="dish-info">
+            <div class="dish-name">${escHtml(dishName)}</div>
+            <div class="dish-note">${statusLabel}</div>
+            ${changeNote ? `<div class="dish-change-note">${escHtml(changeNote)}</div>` : ''}
+          </div>
+          <div class="dish-check">${served ? '✓' : ''}</div>
+        </div>
+        ${subHtml ? `<div style="padding-left:44px;padding-top:6px;">${subHtml}</div>` : ''}
       </div>
     `;
   }).join('')}
@@ -1725,10 +1947,10 @@ ${g.contamOk === true ? ‘可’ : g.contamOk === false ? ‘不可’ : ‘未
 
 let changeTable = ‘’;
 if (groups.length > 0 && course.length > 0) {
-changeTable = `<div class="table-title">② 変更対応表（調理指示書）</div> <table> <thead> <tr> <th style="width:30px;">No.</th> <th style="width:70px;">品目</th> ${groups.map((g, i) =>`<th>${escHtml(g.label) || `G${i+1}`}<br><span style="font-weight:400;font-size:9px;">${g.count}名・${escHtml((g.allergies||[]).join(’/’))}</span></th>`).join('')} </tr> </thead> <tbody> ${course.map((dish, di) => `
+changeTable = `<div class="table-title">② 変更対応表（調理指示書）</div> <table> <thead> <tr> <th style="width:30px;">No.</th> <th style="width:90px;">品目</th> ${groups.map((g, i) =>`<th>${escHtml(g.label) || `G${i+1}`}<br><span style="font-weight:400;font-size:9px;">${g.count}名・${escHtml((g.allergies||[]).join(’/’))}</span></th>`).join('')} </tr> </thead> <tbody> ${course.map((item, di) => { const dishName = getItemName(item); const subs = getItemSubs(item); const mainRow = `
 <tr>
 <td style="text-align:center;font-size:9px;color:#666;">${String(di+1).padStart(2,‘0’)}</td>
-<td style="font-weight:500;">${escHtml(dish)}</td>
+<td style="font-weight:500;">${escHtml(dishName)}</td>
 ${groups.map(g => {
 const status = (g.dishStatus && g.dishStatus[di]) || ‘normal’;
 const cellClass = status === ‘change’ ? ‘cell-change’ :
@@ -1739,7 +1961,22 @@ const note = (g.changeNotes && g.changeNotes[di]) || ‘’;
 return `<td class="${cellClass}" style="text-align:${note ? 'left' : 'center'};"> <div style="font-weight:600;${note ? '' : 'text-align:center;'}">${label}</div> ${note ? `<div class="change-note">${escHtml(note)}</div>` : ''} </td>`;
 }).join(’’)}
 </tr>
-`).join('')} </tbody> </table> <div style="font-size:9.5px;color:#555;margin-top:3px;"> 凡例：○ = 変更なし、<span style="background:#fffacd;padding:0 6px;">変更</span> = 変更あり、<span style="background:#ffd6d6;padding:0 6px;">×</span> = 要注意 / 提供なし </div> `;
+`; const subRows = subs.map((sub, si) => { const subKey = `${di}_${si}`; // 全グループでこの副品に指示があるかチェック const hasAnyInstruction = groups.some(g => (g.subDishStatus && g.subDishStatus[subKey] && g.subDishStatus[subKey] !== 'normal') || (g.subChangeNotes && g.subChangeNotes[subKey]) ); // 指示なくても中身は一覧として表示 return `
+<tr>
+<td></td>
+<td style="padding-left:14px;font-size:10px;color:#555;">└ ${escHtml(sub)}</td>
+${groups.map(g => {
+const subStatus = (g.subDishStatus && g.subDishStatus[subKey]) || ‘normal’;
+const subNote = (g.subChangeNotes && g.subChangeNotes[subKey]) || ‘’;
+const cellClass = subStatus === ‘change’ ? ‘cell-change’ :
+subStatus === ‘warn’ ? ‘cell-warn’ : ‘cell-normal’;
+const label = subStatus === ‘change’ ? ‘変更’ :
+subStatus === ‘warn’ ? ‘×’ :
+subNote ? ‘○’ : ‘’;
+return `<td class="${cellClass}" style="text-align:${subNote ? 'left' : 'center'};font-size:10px;"> ${label ? `<div style="font-weight:500;${subNote ? '' : 'text-align:center;'}">${label}</div>`: ''} ${subNote ?`<div class="change-note">${escHtml(subNote)}</div>` : ''} </td>`;
+}).join(’’)}
+</tr>
+`; }).join(''); return mainRow + subRows; }).join('')} </tbody> </table> <div style="font-size:9.5px;color:#555;margin-top:3px;"> 凡例：○ = 変更なし、<span style="background:#fffacd;padding:0 6px;">変更</span> = 変更あり、<span style="background:#ffd6d6;padding:0 6px;">×</span> = 要注意 / 提供なし </div> `;
 }
 
 const notesItems = [];
@@ -2141,6 +2378,14 @@ render();
 
 // サンプル
 if (state.tours.length === 0 && !localStorage.getItem(STORAGE_KEY + ‘_demo’)) {
+// デモ用に煮物に中身を追加
+const course = state.courses[0];
+const nimonoItem = course.items.find(i => getItemName(i) === ‘煮物’);
+if (nimonoItem && nimonoItem.subItems.length === 0) {
+nimonoItem.subItems = [‘切り干し大根’, ‘ひじき煮’, ‘高野豆腐’, ‘出し巻き卵’];
+}
+saveData();
+
 const courseId = state.courses[0].id;
 const items = state.courses[0].items;
 const sampleTour = {
@@ -2162,7 +2407,10 @@ contamOk: false,
 note: ‘重度。コンタミ厳禁。’,
 served: items.map(() => false),
 dishStatus: [‘change’,‘warn’,‘change’,‘normal’,‘change’,‘normal’,‘normal’,‘change’],
-changeNotes: [‘卵を抜いた胡麻豆腐’, ‘提供せず季節野菜’, ‘卵不使用の白身魚椀’, ‘’, ‘塩焼き（タレなし）’, ‘’, ‘’, ‘乳製品なしの和菓子’]
+changeNotes: [‘卵を抜いた胡麻豆腐’, ‘提供せず季節野菜’, ‘卵不使用の白身魚椀’, ‘’, ‘塩焼き（タレなし）’, ‘’, ‘’, ‘乳製品なしの和菓子’],
+// 煮物（idx=5）の中で出し巻き卵（si=3）は提供なし
+subDishStatus: { ‘5_3’: ‘warn’ },
+subChangeNotes: { ‘5_3’: ‘卵アレルギーのため提供せず、代わりに筍煮を追加’ }
 },
 {
 id: uid(),
@@ -2172,8 +2420,10 @@ allergies: [‘卵’, ‘豚肉’],
 contamOk: true,
 note: ‘’,
 served: items.map(() => false),
-dishStatus: [‘change’,‘change’,‘normal’,‘normal’,‘change’,‘warn’,‘warn’,‘change’],
-changeNotes: [‘卵不使用’, ‘卵を抜いた前菜’, ‘’, ‘’, ‘鶏肉に変更’, ‘豚肉メインのため提供なし’, ‘豚肉メインのため提供なし’, ‘卵不使用’]
+dishStatus: [‘change’,‘change’,‘normal’,‘normal’,‘change’,‘change’,‘warn’,‘change’],
+changeNotes: [‘卵不使用’, ‘卵を抜いた前菜’, ‘’, ‘’, ‘鶏肉に変更’, ‘’, ‘豚肉メインのため提供なし’, ‘卵不使用’],
+subDishStatus: { ‘5_3’: ‘warn’ },
+subChangeNotes: { ‘5_3’: ‘卵不使用のため代替品で対応’ }
 }
 ]
 };
