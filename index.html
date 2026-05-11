@@ -1,14 +1,2013 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>allergy-check</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1a1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="アレルギー管理">
+<title>アレルギー対応チェック</title>
+<style>
+  :root {
+    --bg: #f5f1ea; --bg-card: #ffffff; --bg-soft: #faf6ee;
+    --ink: #1a1a1a; --ink-soft: #555; --ink-mute: #8a8478;
+    --line: #e8e1d3; --line-strong: #c9bfa9;
+    --accent: #8b2820;
+    --warn: #d97706; --warn-bg: #fef3c7;
+    --danger: #b91c1c; --danger-bg: #fee2e2;
+    --ok: #15803d; --ok-bg: #dcfce7;
+    --info: #1e40af; --info-bg: #dbeafe;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--ink);
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
+    font-size: 16px; line-height: 1.6;
+    overscroll-behavior-y: contain;
+  }
+
+  body { padding-bottom: env(safe-area-inset-bottom); min-height: 100vh; }
+  .app { max-width: 720px; margin: 0 auto; padding: 0 16px 100px; }
+
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--bg);
+    padding: 16px 16px 0;
+    border-bottom: 1px solid var(--line);
+    margin: 0 -16px 16px;
+  }
+
+  .brand { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  .brand-mark {
+    font-size: 11px; letter-spacing: 0.3em; color: var(--accent);
+    border: 1px solid var(--accent); padding: 3px 8px; border-radius: 2px;
+  }
+  .brand-title { font-size: 18px; font-weight: 600; letter-spacing: 0.05em; }
+  .date-line { font-size: 13px; color: var(--ink-mute); letter-spacing: 0.08em; padding-bottom: 8px; }
+
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+  .tab {
+    flex: 1; padding: 10px 4px; text-align: center;
+    font-size: 14px; font-weight: 500; color: var(--ink-mute);
+    background: none; border: none; border-bottom: 2px solid transparent;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .filter-bar {
+    display: flex; gap: 6px; overflow-x: auto;
+    padding: 10px 0; -webkit-overflow-scrolling: touch;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+
+  .filter-pill {
+    padding: 6px 14px; background: white;
+    border: 1px solid var(--line-strong);
+    border-radius: 100px; font-size: 12px; font-family: inherit;
+    color: var(--ink-soft); cursor: pointer; white-space: nowrap;
+    flex-shrink: 0; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .filter-pill .pill-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+  .filter-pill.active { background: var(--ink); color: white; border-color: var(--ink); }
+  .filter-pill.active .pill-dot { background: white !important; }
+
+  .section-title {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.15em;
+    color: var(--ink-soft); margin: 24px 0 12px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .section-title .count { font-size: 12px; color: var(--ink-mute); font-weight: 400; letter-spacing: 0.05em; }
+
+  .group-header {
+    display: flex; align-items: center; gap: 10px;
+    margin: 18px 0 8px; font-size: 13px; font-weight: 600;
+    letter-spacing: 0.1em; color: var(--ink-soft);
+  }
+  .group-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+
+  .card {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 4px; padding: 14px 16px; margin-bottom: 10px;
+    transition: all 0.15s;
+  }
+  .card-clickable { cursor: pointer; }
+  .card-clickable:active { transform: scale(0.99); background: var(--bg-soft); }
+
+  .tour-card { border-left: 4px solid var(--line-strong); }
+  .tour-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .tour-company { font-size: 11px; font-weight: 600; letter-spacing: 0.15em; color: var(--ink-soft); margin-bottom: 4px; }
+  .tour-name { font-size: 16px; font-weight: 600; line-height: 1.4; }
+  .tour-meta { font-size: 13px; color: var(--ink-mute); margin-top: 6px; }
+
+  .tour-progress { margin-top: 10px; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .tour-progress-bar { height: 100%; background: var(--ok); transition: width 0.3s ease; }
+  .tour-progress-text { font-size: 12px; color: var(--ink-mute); margin-top: 4px; display: flex; justify-content: space-between; }
+
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 2px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; white-space: nowrap;
+  }
+  .badge-warn { background: var(--warn-bg); color: var(--warn); }
+  .badge-danger { background: var(--danger-bg); color: var(--danger); }
+  .badge-ok { background: var(--ok-bg); color: var(--ok); }
+  .badge-info { background: var(--info-bg); color: var(--info); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 18px; border: 1px solid var(--ink); background: var(--ink); color: var(--bg);
+    font-family: inherit; font-size: 14px; font-weight: 500; letter-spacing: 0.05em;
+    border-radius: 2px; cursor: pointer; transition: all 0.15s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-outline { background: transparent; color: var(--ink); }
+  .btn-accent { background: var(--accent); border-color: var(--accent); color: white; }
+  .btn-block { width: 100%; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+  .btn-fab {
+    position: fixed; bottom: 20px; right: 20px;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--accent); color: white; border: none;
+    box-shadow: 0 6px 20px rgba(139, 40, 32, 0.35);
+    font-size: 28px; cursor: pointer; z-index: 40;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .dish-grid { display: grid; gap: 8px; margin-top: 12px; }
+  .dish-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px; background: var(--bg-card);
+    border: 1px solid var(--line); border-radius: 4px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .dish-row.status-change { background: #fffbeb; border-color: #fde68a; }
+  .dish-row.status-warn { background: var(--danger-bg); border-color: #fecaca; }
+  .dish-row.status-served { background: var(--ok-bg); border-color: #86efac; opacity: 0.85; }
+
+  .dish-num { font-size: 11px; font-weight: 600; color: var(--ink-mute); letter-spacing: 0.1em; width: 32px; flex-shrink: 0; }
+  .dish-info { flex: 1; min-width: 0; }
+  .dish-name { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+  .dish-note { font-size: 12px; color: var(--ink-soft); }
+  .dish-check {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid var(--line-strong); background: white;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s;
+  }
+  .dish-row.status-served .dish-check { background: var(--ok); border-color: var(--ok); color: white; }
+
+  .course-edit-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .course-edit-row:last-child { border-bottom: none; }
+  .course-edit-num { font-size: 11px; color: var(--ink-mute); width: 30px; letter-spacing: 0.1em; flex-shrink: 0; }
+  .course-edit-input {
+    flex: 1; padding: 6px 10px; border: 1px solid var(--line-strong);
+    border-radius: 3px; font-family: inherit; font-size: 14px; background: white;
+  }
+  .course-edit-remove {
+    width: 28px; height: 28px; border: 1px solid var(--line-strong);
+    background: white; color: var(--ink-mute); border-radius: 3px;
+    cursor: pointer; font-family: inherit; flex-shrink: 0;
+  }
+
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 100; display: none; align-items: flex-end; justify-content: center;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: var(--bg); width: 100%; max-width: 720px;
+    max-height: 92vh; border-radius: 12px 12px 0 0;
+    overflow-y: auto; animation: slideUp 0.25s ease;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+  .modal-header {
+    position: sticky; top: 0; background: var(--bg);
+    padding: 16px 16px 12px; border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center; z-index: 10;
+  }
+  .modal-title { font-size: 17px; font-weight: 600; }
+  .modal-close {
+    background: none; border: none; font-size: 24px;
+    color: var(--ink-soft); cursor: pointer; padding: 4px 8px; font-family: inherit;
+  }
+  .modal-body { padding: 16px; }
+
+  /* 第二モーダル（プロンプト用） */
+  .modal-backdrop-2 {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    z-index: 200; display: none; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop-2.show { display: flex; }
+  .modal-2 {
+    background: var(--bg); width: 100%; max-width: 420px;
+    border-radius: 8px; overflow: hidden;
+    animation: fadeIn 0.2s ease;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+  .field { margin-bottom: 14px; }
+  .field-label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--ink-soft); margin-bottom: 6px; }
+  .field-input, .field-select, .field-textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line-strong);
+    border-radius: 3px; font-family: inherit; font-size: 15px; background: white; color: var(--ink);
+  }
+  .field-textarea { min-height: 70px; resize: vertical; }
+  .field-input:focus, .field-select:focus, .field-textarea:focus {
+    outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent);
+  }
+
+  .field-row { display: flex; gap: 8px; }
+  .field-row > .field { flex: 1; }
+
+  .chip-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    padding: 7px 12px; border: 1px solid var(--line-strong);
+    background: white; border-radius: 100px; font-size: 13px;
+    cursor: pointer; transition: all 0.15s; font-family: inherit;
+  }
+  .chip.selected { background: var(--accent); color: white; border-color: var(--accent); }
+  .chip.special-7 { border-style: dashed; }
+  .chip.special-7.selected { background: var(--danger); border-color: var(--danger); }
+  .chip-add { border-style: dashed; color: var(--ink-mute); }
+
+  .segment {
+    display: flex; border: 1px solid var(--line-strong);
+    border-radius: 3px; overflow: hidden;
+  }
+  .segment button {
+    flex: 1; padding: 9px 4px; background: white; border: none;
+    border-right: 1px solid var(--line-strong); font-family: inherit;
+    font-size: 13px; cursor: pointer; color: var(--ink-soft);
+  }
+  .segment button:last-child { border-right: none; }
+  .segment button.active { background: var(--ink); color: white; }
+
+  .empty { padding: 60px 20px; text-align: center; color: var(--ink-mute); }
+  .empty-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
+  .empty-text { font-size: 14px; line-height: 1.7; }
+
+  .dialog-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .dialog-actions .btn { flex: 1; }
+
+  .company-edit-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 0; border-bottom: 1px solid var(--line);
+  }
+  .company-edit-row:last-child { border-bottom: none; }
+  .company-color-swatch {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 2px solid white; box-shadow: 0 0 0 1px var(--line-strong);
+    cursor: pointer; flex-shrink: 0; padding: 0;
+  }
+
+  .color-palette { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .color-option {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid white; box-shadow: 0 0 0 1px var(--line-strong);
+    cursor: pointer; transition: transform 0.15s; padding: 0;
+  }
+  .color-option.selected {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 2px var(--ink);
+  }
+
+  .group-summary {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin: 8px 0 4px;
+  }
+  .group-summary-pill {
+    padding: 3px 10px; background: var(--bg-soft);
+    border: 1px solid var(--line-strong); border-radius: 100px;
+    font-size: 11px; color: var(--ink-soft);
+  }
+  .group-summary-pill.allergy { background: #fff5f0; border-color: #ffd6c2; color: var(--accent); }
+
+  /* 時間選択 */
+  .time-picker { display: flex; gap: 6px; align-items: center; }
+  .time-picker select { flex: 1; }
+  .time-picker .time-sep { color: var(--ink-mute); font-weight: 600; }
+
+  /* 印刷スタイル */
+  .print-area { display: none; }
+  @media print {
+    body * { visibility: hidden; }
+    .print-area, .print-area * { visibility: visible; }
+    .print-area {
+      display: block !important;
+      position: absolute; top: 0; left: 0; right: 0;
+      width: 100%; background: white; color: black;
+      padding: 12mm;
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      font-size: 10.5pt;
+    }
+    .btn-fab, header { display: none !important; }
+    @page { size: A4; margin: 0; }
+  }
+
+  .print-area.preview {
+    display: block; background: white; color: black;
+    padding: 14px; margin: 0 -16px;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    font-size: 11px; box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+  .print-area .doc-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 2px solid black; padding-bottom: 8px; margin-bottom: 14px;
+  }
+  .print-area .doc-title { font-size: 18px; font-weight: 700; letter-spacing: 0.1em; }
+  .print-area .doc-meta { font-size: 10px; text-align: right; line-height: 1.6; }
+  .print-area .info-row { display: flex; gap: 12px; margin-bottom: 8px; font-size: 11px; flex-wrap: wrap; }
+  .print-area .info-row > div { flex: 1; min-width: 140px; }
+  .print-area .info-row .label { font-weight: 600; margin-right: 6px; color: #333; }
+  .print-area table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 10.5px; }
+  .print-area th, .print-area td {
+    border: 1px solid #333; padding: 4px 6px;
+    text-align: left; vertical-align: middle;
+  }
+  .print-area th { background: #f0e8d8; font-weight: 600; text-align: center; font-size: 10px; }
+  .print-area .table-title {
+    font-size: 12px; font-weight: 700; margin: 12px 0 5px;
+    padding-left: 4px; border-left: 4px solid black;
+  }
+  .print-area .cell-change { background: #fffacd; }
+  .print-area .cell-warn { background: #ffd6d6; font-weight: 600; }
+  .print-area .cell-normal { background: white; }
+  .print-area .notes {
+    font-size: 10px; margin-top: 8px; padding: 6px 8px; border: 1px solid #999;
+  }
+  .print-area .notes ul { margin: 3px 0; padding-left: 16px; }
+  .print-area .doc-footer {
+    margin-top: 14px; padding-top: 6px; border-top: 1px solid #999;
+    display: flex; justify-content: space-between; font-size: 9px; color: #555;
+  }
+  .print-controls {
+    position: sticky; top: 0; background: var(--bg);
+    padding: 10px 0; margin: -16px -16px 12px;
+    padding-left: 16px; padding-right: 16px;
+    border-bottom: 1px solid var(--line);
+    display: flex; gap: 8px; z-index: 5;
+  }
+</style>
 </head>
 <body>
-  <main>
-    <h1>allergy-check</h1>
-    <p>GitHub Pagesで公開中です。</p>
-  </main>
+
+<div class="app">
+  <header>
+    <div class="brand">
+      <span class="brand-mark">市場小路</span>
+      <span class="brand-title">アレルギー管理</span>
+    </div>
+    <div class="date-line" id="dateLine"></div>
+    <div class="tabs">
+      <button class="tab active" data-tab="today">本日</button>
+      <button class="tab" data-tab="upcoming">予定</button>
+      <button class="tab" data-tab="settings">設定</button>
+    </div>
+  </header>
+  <main id="main"></main>
+</div>
+
+<button class="btn-fab" id="fabBtn" title="新規ツアー追加">＋</button>
+
+<!-- メインモーダル -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">タイトル</div>
+      <button class="modal-close" id="modalClose">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- 第二モーダル（入力ダイアログ用） -->
+<div class="modal-backdrop-2" id="modal2Backdrop">
+  <div class="modal-2" id="modal2">
+    <div style="padding:16px 18px 4px;">
+      <div style="font-size:15px;font-weight:600;" id="modal2Title">入力</div>
+      <div style="font-size:12px;color:var(--ink-soft);margin-top:4px;" id="modal2Message"></div>
+    </div>
+    <div style="padding:8px 18px 16px;">
+      <input class="field-input" id="modal2Input" placeholder="" style="margin-top:8px;">
+      <div class="dialog-actions">
+        <button class="btn btn-outline" id="modal2Cancel">キャンセル</button>
+        <button class="btn btn-accent" id="modal2Ok">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 確認モーダル -->
+<div class="modal-backdrop-2" id="confirmBackdrop">
+  <div class="modal-2">
+    <div style="padding:18px;">
+      <div style="font-size:15px;font-weight:600;margin-bottom:8px;" id="confirmTitle">確認</div>
+      <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;" id="confirmMessage"></div>
+      <div class="dialog-actions">
+        <button class="btn btn-outline" id="confirmCancel">キャンセル</button>
+        <button class="btn btn-accent" id="confirmOk">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="print-area" id="printArea"></div>
+
+<script>
+const DEFAULT_ALLERGENS = {
+  required: ['えび', 'かに', 'くるみ', '小麦', 'そば', '卵', '乳', '落花生'],
+  recommended: [
+    'アーモンド', 'あわび', 'いか', 'いくら', 'オレンジ', 'カシューナッツ',
+    'キウイフルーツ', '牛肉', 'ごま', 'さけ', 'さば', '大豆',
+    '鶏肉', 'バナナ', '豚肉', 'まつたけ', 'もも', 'やまいも',
+    'りんご', 'ゼラチン'
+  ]
+};
+
+const DEFAULT_COURSE = ['先付', '前菜', 'お椀', 'お造り', '焼物', '煮物', '食事', '水菓子'];
+
+const DEFAULT_COMPANIES = [
+  { id: 'hankyu', name: '阪急交通社', color: '#1e40af' },
+  { id: 'jtb', name: 'JTB', color: '#ea580c' },
+  { id: 'japantours', name: 'JAPANTOURS', color: '#15803d' },
+  { id: 'other', name: 'その他', color: '#666666' }
+];
+
+const COLOR_PALETTE = [
+  '#1e40af', '#0891b2', '#15803d', '#65a30d',
+  '#ca8a04', '#ea580c', '#dc2626', '#be185d',
+  '#9333ea', '#6366f1', '#475569', '#666666'
+];
+
+const STORAGE_KEY = 'allergy_app_v4';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (!data.companies) data.companies = [...DEFAULT_COMPANIES];
+      if (!data.defaultCourse) data.defaultCourse = [...DEFAULT_COURSE];
+      if (!data.customAllergens) data.customAllergens = [];
+      if (!data.tours) data.tours = [];
+      data.tours.forEach(t => {
+        if (!t.courseItems) t.courseItems = [...data.defaultCourse];
+        if (typeof t.totalGuests !== 'number') t.totalGuests = (t.guests || []).length;
+        if (!t.groups) t.groups = [];
+      });
+      return data;
+    }
+  } catch (e) { console.error(e); }
+  return {
+    tours: [],
+    customAllergens: [],
+    defaultCourse: [...DEFAULT_COURSE],
+    companies: [...DEFAULT_COMPANIES]
+  };
+}
+
+function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+let state = loadData();
+let currentTab = 'today';
+let currentCompanyFilter = 'all';
+let currentTourId = null;
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function formatDate(s) {
+  if (!s) return '';
+  const [y, m, d] = s.split('-');
+  return `${y}年${parseInt(m)}月${parseInt(d)}日`;
+}
+
+function dayOfWeek(s) {
+  if (!s) return '';
+  const days = ['日', '月', '火', '水', '木', '金', '土'];
+  return days[new Date(s).getDay()];
+}
+
+function escHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function getCompany(id) {
+  return state.companies.find(c => c.id === id) || { id: 'unknown', name: '未設定', color: '#999' };
+}
+
+function getCourseItems(tour) { return tour.courseItems || state.defaultCourse; }
+
+function totalGroupCount(tour) {
+  return (tour.groups || []).reduce((sum, g) => sum + (g.count || 0), 0);
+}
+
+function generalGuestCount(tour) {
+  const allergyTotal = totalGroupCount(tour);
+  return Math.max(0, (tour.totalGuests || 0) - allergyTotal);
+}
+
+function tourProgress(tour) {
+  const course = getCourseItems(tour);
+  const groups = tour.groups || [];
+  if (groups.length === 0) return { done: 0, total: 0, pct: 0 };
+  let done = 0, total = 0;
+  groups.forEach(g => {
+    course.forEach((_, i) => {
+      total++;
+      if (g.served && g.served[i]) done++;
+    });
+  });
+  return { done, total, pct: total ? Math.round(done/total*100) : 0 };
+}
+
+// ============ ダイアログ実装（promptとconfirmの代替） ============
+function showPrompt(title, message, placeholder, callback) {
+  const backdrop = document.getElementById('modal2Backdrop');
+  const titleEl = document.getElementById('modal2Title');
+  const messageEl = document.getElementById('modal2Message');
+  const inputEl = document.getElementById('modal2Input');
+  const okBtn = document.getElementById('modal2Ok');
+  const cancelBtn = document.getElementById('modal2Cancel');
+
+  titleEl.textContent = title || '入力';
+  messageEl.textContent = message || '';
+  messageEl.style.display = message ? 'block' : 'none';
+  inputEl.value = '';
+  inputEl.placeholder = placeholder || '';
+
+  backdrop.classList.add('show');
+  setTimeout(() => inputEl.focus(), 100);
+
+  function cleanup() {
+    backdrop.classList.remove('show');
+    okBtn.removeEventListener('click', onOk);
+    cancelBtn.removeEventListener('click', onCancel);
+    inputEl.removeEventListener('keydown', onKey);
+  }
+
+  function onOk() {
+    const v = inputEl.value;
+    cleanup();
+    callback(v);
+  }
+
+  function onCancel() {
+    cleanup();
+    callback(null);
+  }
+
+  function onKey(e) {
+    if (e.key === 'Enter') onOk();
+    else if (e.key === 'Escape') onCancel();
+  }
+
+  okBtn.addEventListener('click', onOk);
+  cancelBtn.addEventListener('click', onCancel);
+  inputEl.addEventListener('keydown', onKey);
+}
+
+function showConfirm(title, message, callback) {
+  const backdrop = document.getElementById('confirmBackdrop');
+  const titleEl = document.getElementById('confirmTitle');
+  const messageEl = document.getElementById('confirmMessage');
+  const okBtn = document.getElementById('confirmOk');
+  const cancelBtn = document.getElementById('confirmCancel');
+
+  titleEl.textContent = title || '確認';
+  messageEl.innerHTML = (message || '').replace(/\n/g, '<br>');
+
+  backdrop.classList.add('show');
+
+  function cleanup() {
+    backdrop.classList.remove('show');
+    okBtn.removeEventListener('click', onOk);
+    cancelBtn.removeEventListener('click', onCancel);
+  }
+
+  function onOk() { cleanup(); callback(true); }
+  function onCancel() { cleanup(); callback(false); }
+
+  okBtn.addEventListener('click', onOk);
+  cancelBtn.addEventListener('click', onCancel);
+}
+
+function showAlert(message, callback) {
+  const backdrop = document.getElementById('confirmBackdrop');
+  const titleEl = document.getElementById('confirmTitle');
+  const messageEl = document.getElementById('confirmMessage');
+  const okBtn = document.getElementById('confirmOk');
+  const cancelBtn = document.getElementById('confirmCancel');
+
+  titleEl.textContent = 'お知らせ';
+  messageEl.innerHTML = (message || '').replace(/\n/g, '<br>');
+  cancelBtn.style.display = 'none';
+  okBtn.textContent = 'OK';
+
+  backdrop.classList.add('show');
+
+  function cleanup() {
+    backdrop.classList.remove('show');
+    okBtn.removeEventListener('click', onOk);
+    cancelBtn.style.display = '';
+    okBtn.textContent = 'OK';
+  }
+
+  function onOk() { cleanup(); if (callback) callback(); }
+  okBtn.addEventListener('click', onOk);
+}
+
+// 時間選択用のヘルパー
+function buildTimeOptions(currentTime) {
+  // currentTime: "12:00" or ""
+  let curHour = '', curMin = '';
+  if (currentTime && currentTime.includes(':')) {
+    const parts = currentTime.split(':');
+    curHour = parts[0].padStart(2, '0');
+    curMin = parts[1].padStart(2, '0');
+  }
+
+  let hourOptions = '<option value="">--</option>';
+  for (let h = 0; h < 24; h++) {
+    const v = String(h).padStart(2, '0');
+    hourOptions += `<option value="${v}" ${v === curHour ? 'selected' : ''}>${v}</option>`;
+  }
+
+  let minOptions = '<option value="">--</option>';
+  for (let m = 0; m < 60; m += 5) {
+    const v = String(m).padStart(2, '0');
+    minOptions += `<option value="${v}" ${v === curMin ? 'selected' : ''}>${v}</option>`;
+  }
+
+  return { hourOptions, minOptions };
+}
+
+function readTimeFromPicker(hourId, minId) {
+  const h = document.getElementById(hourId).value;
+  const m = document.getElementById(minId).value;
+  if (!h && !m) return '';
+  return `${h || '00'}:${m || '00'}`;
+}
+
+function renderDateLine() {
+  const d = new Date();
+  const wd = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()];
+  document.getElementById('dateLine').textContent = `${d.getFullYear()}年 ${d.getMonth()+1}月 ${d.getDate()}日（${wd}）`;
+}
+
+function render() {
+  const main = document.getElementById('main');
+  if (currentTab === 'today') renderToday(main);
+  else if (currentTab === 'upcoming') renderUpcoming(main);
+  else if (currentTab === 'settings') renderSettings(main);
+
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === currentTab);
+  });
+}
+
+function renderFilterBar() {
+  const counts = { all: 0 };
+  state.tours.forEach(t => {
+    counts.all++;
+    counts[t.companyId] = (counts[t.companyId] || 0) + 1;
+  });
+
+  const items = [{ id: 'all', name: 'すべて', color: null }, ...state.companies];
+
+  return `<div class="filter-bar">
+    ${items.map(item => `
+      <button class="filter-pill ${currentCompanyFilter === item.id ? 'active' : ''}"
+              data-filter="${item.id}"
+              ${item.color ? `style="${currentCompanyFilter === item.id ? `background:${item.color};border-color:${item.color};` : ''}"` : ''}>
+        ${item.color ? `<span class="pill-dot" style="background:${item.color};"></span>` : ''}
+        ${escHtml(item.name)} ${counts[item.id] || 0}
+      </button>
+    `).join('')}
+  </div>`;
+}
+
+function applyCompanyFilter(tours) {
+  if (currentCompanyFilter === 'all') return tours;
+  return tours.filter(t => t.companyId === currentCompanyFilter);
+}
+
+function renderToday(main) {
+  const today = todayStr();
+  let todays = state.tours.filter(t => t.date === today);
+  todays = applyCompanyFilter(todays);
+
+  let html = renderFilterBar();
+  html += `<div class="section-title">本日のツアー <span class="count">${todays.length}件</span></div>`;
+
+  if (todays.length === 0) {
+    html += `<div class="empty">
+      <div class="empty-icon">◇</div>
+      <div class="empty-text">${currentCompanyFilter === 'all' ? '本日のツアーは登録されていません<br>右下の「＋」ボタンから追加できます' : '該当するツアーはありません'}</div>
+    </div>`;
+  } else {
+    if (currentCompanyFilter === 'all') {
+      const grouped = {};
+      todays.forEach(t => {
+        if (!grouped[t.companyId]) grouped[t.companyId] = [];
+        grouped[t.companyId].push(t);
+      });
+      state.companies.forEach(company => {
+        if (grouped[company.id]) {
+          html += `<div class="group-header">
+            <span class="group-dot" style="background:${company.color};"></span>
+            ${escHtml(company.name)}（${grouped[company.id].length}件）
+          </div>`;
+          grouped[company.id].forEach(t => html += renderTourCard(t));
+        }
+      });
+      Object.keys(grouped).forEach(cid => {
+        if (!state.companies.find(c => c.id === cid)) {
+          html += `<div class="group-header">
+            <span class="group-dot"></span>未設定の会社（${grouped[cid].length}件）
+          </div>`;
+          grouped[cid].forEach(t => html += renderTourCard(t));
+        }
+      });
+    } else {
+      todays.forEach(t => html += renderTourCard(t));
+    }
+  }
+
+  main.innerHTML = html;
+  attachFilterEvents();
+  attachTourCardEvents();
+}
+
+function renderUpcoming(main) {
+  const today = todayStr();
+  let upcoming = state.tours.filter(t => t.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+  upcoming = applyCompanyFilter(upcoming);
+
+  let html = renderFilterBar();
+  html += `<div class="section-title">予定一覧 <span class="count">${upcoming.length}件</span></div>`;
+
+  if (upcoming.length === 0) {
+    html += `<div class="empty"><div class="empty-icon">◇</div><div class="empty-text">予定はありません</div></div>`;
+  } else {
+    let lastDate = '';
+    upcoming.forEach(t => {
+      if (t.date !== lastDate) {
+        html += `<div style="font-size:13px;color:var(--ink-mute);margin:18px 0 8px;letter-spacing:0.1em;">
+          ${formatDate(t.date)}（${dayOfWeek(t.date)}）
+        </div>`;
+        lastDate = t.date;
+      }
+      html += renderTourCard(t);
+    });
+  }
+  main.innerHTML = html;
+  attachFilterEvents();
+  attachTourCardEvents();
+}
+
+function attachFilterEvents() {
+  document.querySelectorAll('[data-filter]').forEach(el => {
+    el.addEventListener('click', () => {
+      currentCompanyFilter = el.dataset.filter;
+      render();
+    });
+  });
+}
+
+function renderTourCard(t) {
+  const company = getCompany(t.companyId);
+  const prog = tourProgress(t);
+  const allergyCount = totalGroupCount(t);
+  const generalCount = generalGuestCount(t);
+
+  return `<div class="card card-clickable tour-card" data-tour-id="${t.id}" style="border-left-color:${company.color};">
+    <div class="tour-card-header">
+      <div style="flex:1;min-width:0;">
+        <div class="tour-company">${escHtml(company.name)}</div>
+        <div class="tour-name">${escHtml(t.name) || '（無題のツアー）'}</div>
+        <div class="tour-meta">
+          ${escHtml(t.time) || '時間未定'} ・ 全${t.totalGuests || 0}名
+        </div>
+        <div class="group-summary">
+          ${allergyCount > 0 ? `<span class="group-summary-pill allergy">アレルギー対応 ${allergyCount}名（${(t.groups || []).length}グループ）</span>` : ''}
+          ${generalCount > 0 ? `<span class="group-summary-pill">一般 ${generalCount}名</span>` : ''}
+        </div>
+      </div>
+      ${prog.pct === 100 ? '<span class="badge badge-ok">完了</span>' :
+        prog.done > 0 ? '<span class="badge badge-info">対応中</span>' :
+        allergyCount > 0 ? '<span class="badge badge-warn">未対応</span>' : ''}
+    </div>
+    ${(allergyCount > 0) ? `
+      <div class="tour-progress">
+        <div class="tour-progress-bar" style="width:${prog.pct}%"></div>
+      </div>
+      <div class="tour-progress-text">
+        <span>提供進捗</span>
+        <span>${prog.done} / ${prog.total}</span>
+      </div>` : ''}
+  </div>`;
+}
+
+function renderSettings(main) {
+  const customs = state.customAllergens;
+
+  let html = `
+    <div class="section-title">ツアー会社</div>
+    <div class="card">
+      <div style="font-size:12px;color:var(--ink-mute);margin-bottom:10px;">
+        旅行会社の追加・編集・削除ができます。色サンプルをタップで色変更。
+      </div>
+      <div id="companyList">
+        ${state.companies.map((c) => `
+          <div class="company-edit-row">
+            <button class="company-color-swatch" style="background:${c.color};" data-edit-color="${c.id}" title="色を変更"></button>
+            <input class="course-edit-input" data-company-name="${c.id}" value="${escHtml(c.name)}">
+            <button class="course-edit-remove" data-remove-company="${c.id}" title="削除">×</button>
+          </div>
+        `).join('')}
+      </div>
+      <button type="button" class="btn btn-outline btn-sm" id="addCompanyBtn" style="margin-top:8px;">＋ 会社を追加</button>
+    </div>
+
+    <div class="section-title">標準コース内容</div>
+    <div class="card">
+      <div style="font-size:12px;color:var(--ink-mute);margin-bottom:10px;">
+        新しいツアー作成時の初期値です。各ツアーで個別変更可能。
+      </div>
+      <div>
+        ${state.defaultCourse.map((item, i) => `
+          <div class="course-edit-row">
+            <div class="course-edit-num">${String(i+1).padStart(2,'0')}</div>
+            <input class="course-edit-input" data-default-course-idx="${i}" value="${escHtml(item)}">
+            <button class="course-edit-remove" data-remove-default-course="${i}">×</button>
+          </div>
+        `).join('')}
+      </div>
+      <button type="button" class="btn btn-outline btn-sm" id="addDefaultCourseBtn" style="margin-top:8px;">＋ 品目を追加</button>
+    </div>
+
+    <div class="section-title">アレルギー項目（28品目＋追加）</div>
+    <div class="card">
+      <div style="font-size:12px;color:var(--ink-mute);margin-bottom:8px;">特定原材料 8品目（表示義務）</div>
+      <div class="chip-grid" style="margin-bottom:14px;">
+        ${DEFAULT_ALLERGENS.required.map(a => `<span class="chip special-7 selected" style="cursor:default;">${a}</span>`).join('')}
+      </div>
+      <div style="font-size:12px;color:var(--ink-mute);margin-bottom:8px;">特定原材料に準ずるもの 20品目</div>
+      <div class="chip-grid" style="margin-bottom:14px;">
+        ${DEFAULT_ALLERGENS.recommended.map(a => `<span class="chip" style="cursor:default;background:var(--bg-soft);">${a}</span>`).join('')}
+      </div>
+      ${customs.length > 0 ? `
+        <div style="font-size:12px;color:var(--ink-mute);margin-bottom:8px;">追加項目 ${customs.length}件</div>
+        <div class="chip-grid" style="margin-bottom:14px;">
+          ${customs.map((a, i) => `
+            <span class="chip" style="cursor:default;background:var(--bg-soft);">
+              ${escHtml(a)}
+              <button data-remove-custom="${i}" style="background:none;border:none;color:var(--accent);margin-left:6px;cursor:pointer;font-size:14px;font-family:inherit;">×</button>
+            </span>
+          `).join('')}
+        </div>` : ''}
+      <button type="button" class="btn btn-outline btn-sm" id="addCustomBtn">＋ 項目を追加</button>
+    </div>
+
+    <div class="section-title">データ管理</div>
+    <div class="card">
+      <div id="backupStatus" style="padding:10px 12px;background:${getBackupStatusBg()};border:1px solid ${getBackupStatusBorder()};border-radius:4px;margin-bottom:10px;">
+        <div style="font-size:11px;color:var(--ink-mute);letter-spacing:0.1em;margin-bottom:2px;">最終バックアップ</div>
+        <div style="font-size:14px;font-weight:600;color:${getBackupStatusColor()};">
+          ${formatBackupStatus()}
+        </div>
+      </div>
+      <button type="button" class="btn btn-outline btn-block" id="exportBtn" style="margin-bottom:8px;">データを書き出し（JSON）</button>
+      <button type="button" class="btn btn-outline btn-block" id="importBtn" style="margin-bottom:8px;">データを取り込み（JSON）</button>
+      <button type="button" class="btn btn-outline btn-block" id="clearOldBtn" style="margin-bottom:8px;color:var(--ink-soft);">過去のツアーを削除（30日以上前）</button>
+      <button type="button" class="btn btn-outline btn-block" id="resetBtn" style="color:var(--danger);border-color:var(--danger);">すべてのデータを削除</button>
+      <div style="font-size:11px;color:var(--ink-mute);margin-top:10px;line-height:1.6;">
+        ※データはこの端末内にのみ保存されます。<br>
+        ※端末の変更前は必ず書き出しを行ってください。
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:var(--ink-mute);text-align:center;margin-top:24px;">市場小路 アレルギー管理 v5.0</div>
+  `;
+
+  main.innerHTML = html;
+
+  // 会社編集
+  main.querySelectorAll('[data-company-name]').forEach(input => {
+    input.addEventListener('change', e => {
+      const id = e.target.dataset.companyName;
+      const c = state.companies.find(x => x.id === id);
+      if (c) { c.name = e.target.value.trim() || c.name; saveData(); }
+    });
+  });
+
+  main.querySelectorAll('[data-edit-color]').forEach(btn => {
+    btn.addEventListener('click', () => openColorPicker(btn.dataset.editColor));
+  });
+
+  main.querySelectorAll('[data-remove-company]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.removeCompany;
+      const c = state.companies.find(x => x.id === id);
+      const inUse = state.tours.some(t => t.companyId === id);
+      if (inUse) {
+        showAlert(`「${c.name}」は使用中のツアーがあるため削除できません。\n先にツアーの会社を変更してください。`);
+        return;
+      }
+      if (state.companies.length <= 1) {
+        showAlert('会社は1つ以上必要です');
+        return;
+      }
+      showConfirm('削除確認', `「${c.name}」を削除しますか？`, ok => {
+        if (ok) {
+          state.companies = state.companies.filter(x => x.id !== id);
+          saveData();
+          render();
+        }
+      });
+    });
+  });
+
+  document.getElementById('addCompanyBtn').addEventListener('click', () => {
+    showPrompt('会社を追加', '追加する旅行会社名を入力してください', '例：日本旅行', val => {
+      if (val && val.trim()) {
+        const usedColors = state.companies.map(c => c.color);
+        const newColor = COLOR_PALETTE.find(c => !usedColors.includes(c)) || COLOR_PALETTE[0];
+        state.companies.push({ id: uid(), name: val.trim(), color: newColor });
+        saveData();
+        render();
+      }
+    });
+  });
+
+  // 標準コース
+  main.querySelectorAll('[data-default-course-idx]').forEach(input => {
+    input.addEventListener('change', e => {
+      const idx = parseInt(e.target.dataset.defaultCourseIdx);
+      state.defaultCourse[idx] = e.target.value;
+      saveData();
+    });
+  });
+
+  main.querySelectorAll('[data-remove-default-course]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.removeDefaultCourse);
+      if (state.defaultCourse.length <= 1) { showAlert('品目は1つ以上必要です'); return; }
+      showConfirm('削除確認', `「${state.defaultCourse[idx]}」を削除しますか？`, ok => {
+        if (ok) {
+          state.defaultCourse.splice(idx, 1);
+          saveData();
+          render();
+        }
+      });
+    });
+  });
+
+  document.getElementById('addDefaultCourseBtn').addEventListener('click', () => {
+    showPrompt('品目を追加', '追加する品目を入力してください', '例：八寸', val => {
+      if (val && val.trim()) {
+        state.defaultCourse.push(val.trim());
+        saveData();
+        render();
+      }
+    });
+  });
+
+  // アレルギー項目
+  main.querySelectorAll('[data-remove-custom]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.removeCustom);
+      showConfirm('削除確認', `「${state.customAllergens[idx]}」を削除しますか？`, ok => {
+        if (ok) {
+          state.customAllergens.splice(idx, 1);
+          saveData();
+          render();
+        }
+      });
+    });
+  });
+
+  document.getElementById('addCustomBtn').addEventListener('click', () => {
+    showPrompt('アレルギー項目を追加', '28品目以外で対応が必要な項目を入力', '例：マンゴー', val => {
+      if (val && val.trim()) {
+        state.customAllergens.push(val.trim());
+        saveData();
+        render();
+      }
+    });
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', exportData);
+  document.getElementById('importBtn').addEventListener('click', importData);
+  document.getElementById('clearOldBtn').addEventListener('click', clearOld);
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    showConfirm('データ削除', 'すべてのデータを削除しますか？\nこの操作は取り消せません。', ok => {
+      if (ok) {
+        showConfirm('最終確認', '本当によろしいですか？', ok2 => {
+          if (ok2) {
+            localStorage.removeItem(STORAGE_KEY);
+            state = loadData();
+            render();
+          }
+        });
+      }
+    });
+  });
+}
+
+function openColorPicker(companyId) {
+  const c = state.companies.find(x => x.id === companyId);
+  if (!c) return;
+
+  document.getElementById('modalTitle').textContent = `${c.name} の色を選択`;
+
+  document.getElementById('modalBody').innerHTML = `
+    <div style="font-size:13px;color:var(--ink-soft);margin-bottom:18px;">この会社のカラーを選択してください。</div>
+    <div class="color-palette" style="margin-bottom:20px;">
+      ${COLOR_PALETTE.map(color => `
+        <button type="button" class="color-option ${c.color === color ? 'selected' : ''}"
+                style="background:${color};"
+                data-pick-color="${color}"></button>
+      `).join('')}
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-outline" id="btn-cancel-color">キャンセル</button>
+    </div>
+  `;
+
+  document.querySelectorAll('[data-pick-color]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      c.color = btn.dataset.pickColor;
+      saveData();
+      closeModal();
+      render();
+    });
+  });
+
+  document.getElementById('btn-cancel-color').addEventListener('click', closeModal);
+  showModal();
+}
+
+function attachTourCardEvents() {
+  document.querySelectorAll('[data-tour-id]').forEach(el => {
+    el.addEventListener('click', () => {
+      currentTourId = el.dataset.tourId;
+      openTourDetail();
+    });
+  });
+}
+
+function openTourEdit(tourId) {
+  const isNew = !tourId;
+  const tour = isNew ? {
+    id: uid(),
+    companyId: state.companies[0]?.id || 'other',
+    name: '', date: todayStr(),
+    time: '', note: '',
+    totalGuests: 0,
+    courseItems: [...state.defaultCourse],
+    groups: []
+  } : state.tours.find(t => t.id === tourId);
+
+  if (!tour) return;
+
+  document.getElementById('modalTitle').textContent = isNew ? 'ツアーを追加' : 'ツアー情報を編集';
+
+  const { hourOptions, minOptions } = buildTimeOptions(tour.time);
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="field">
+      <label class="field-label">旅行会社</label>
+      <select class="field-select" id="f-company">
+        ${state.companies.map(c => `<option value="${c.id}" ${c.id === tour.companyId ? 'selected' : ''}>${escHtml(c.name)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label">ツアー名</label>
+      <input class="field-input" id="f-name" value="${escHtml(tour.name)}" placeholder="例：京都春の名所めぐり">
+    </div>
+    <div class="field">
+      <label class="field-label">来店日</label>
+      <input class="field-input" type="date" id="f-date" value="${tour.date}">
+    </div>
+    <div class="field">
+      <label class="field-label">来店時間</label>
+      <div class="time-picker">
+        <select class="field-select" id="f-hour">${hourOptions}</select>
+        <span class="time-sep">:</span>
+        <select class="field-select" id="f-min">${minOptions}</select>
+      </div>
+      <div style="font-size:11px;color:var(--ink-mute);margin-top:4px;">5分単位で選択できます</div>
+    </div>
+    <div class="field">
+      <label class="field-label">ツアー全体の人数</label>
+      <input class="field-input" type="number" min="0" id="f-total" value="${tour.totalGuests || 0}" placeholder="29">
+      <div style="font-size:11px;color:var(--ink-mute);margin-top:4px;">アレルギー対応の人数を含めた合計人数</div>
+    </div>
+    <div class="field">
+      <label class="field-label">備考</label>
+      <textarea class="field-textarea" id="f-note" placeholder="連絡事項など">${escHtml(tour.note)}</textarea>
+    </div>
+
+    <div class="dialog-actions">
+      ${!isNew ? `<button type="button" class="btn btn-outline" id="btn-delete-tour" style="color:var(--danger);border-color:var(--danger);">削除</button>` : ''}
+      <button type="button" class="btn btn-accent" id="btn-save-tour">${isNew ? '追加' : '保存'}</button>
+    </div>
+  `;
+
+  document.getElementById('btn-save-tour').addEventListener('click', () => {
+    tour.companyId = document.getElementById('f-company').value;
+    tour.name = document.getElementById('f-name').value.trim();
+    tour.date = document.getElementById('f-date').value;
+    tour.time = readTimeFromPicker('f-hour', 'f-min');
+    tour.totalGuests = parseInt(document.getElementById('f-total').value) || 0;
+    tour.note = document.getElementById('f-note').value.trim();
+
+    if (isNew) state.tours.push(tour);
+    saveData();
+    closeModal();
+    render();
+    if (isNew) {
+      currentTourId = tour.id;
+      openTourDetail();
+    }
+  });
+
+  if (!isNew) {
+    document.getElementById('btn-delete-tour').addEventListener('click', () => {
+      showConfirm('削除確認', `「${tour.name || '無題のツアー'}」を削除しますか？`, ok => {
+        if (ok) {
+          state.tours = state.tours.filter(t => t.id !== tour.id);
+          saveData();
+          closeModal();
+          render();
+        }
+      });
+    });
+  }
+
+  showModal();
+}
+
+function openCourseEdit() {
+  const tour = state.tours.find(t => t.id === currentTourId);
+  if (!tour) return;
+
+  document.getElementById('modalTitle').textContent = '食事内容の編集';
+
+  function paint() {
+    document.getElementById('modalBody').innerHTML = `
+      <div style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;line-height:1.6;">
+        このツアーの食事内容です。
+      </div>
+      <div class="card" style="padding:10px 14px;">
+        <div>
+          ${tour.courseItems.map((item, i) => `
+            <div class="course-edit-row">
+              <div class="course-edit-num">${String(i+1).padStart(2,'0')}</div>
+              <input class="course-edit-input" data-tour-course-idx="${i}" value="${escHtml(item)}" placeholder="例：先付">
+              <button type="button" class="course-edit-remove" data-remove-tour-course="${i}" title="削除">×</button>
+            </div>
+          `).join('')}
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-outline btn-sm" id="btn-add-course-item">＋ 品目を追加</button>
+          <button type="button" class="btn btn-outline btn-sm" id="btn-load-default">標準コースを読込</button>
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-accent" id="btn-save-course">保存</button>
+      </div>
+    `;
+    bind();
+  }
+
+  function bind() {
+    document.querySelectorAll('[data-tour-course-idx]').forEach(input => {
+      input.addEventListener('change', e => {
+        const idx = parseInt(e.target.dataset.tourCourseIdx);
+        tour.courseItems[idx] = e.target.value;
+      });
+    });
+
+    document.querySelectorAll('[data-remove-tour-course]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.removeTourCourse);
+        if (tour.courseItems.length <= 1) { showAlert('品目は1つ以上必要です'); return; }
+        showConfirm('削除確認', `「${tour.courseItems[idx]}」を削除しますか？`, ok => {
+          if (ok) {
+            tour.courseItems.splice(idx, 1);
+            (tour.groups || []).forEach(g => {
+              if (g.served) g.served.splice(idx, 1);
+              if (g.dishStatus) g.dishStatus.splice(idx, 1);
+            });
+            paint();
+          }
+        });
+      });
+    });
+
+    document.getElementById('btn-add-course-item').addEventListener('click', () => {
+      showPrompt('品目を追加', '追加する品目を入力してください', '例：八寸', val => {
+        if (val && val.trim()) {
+          tour.courseItems.push(val.trim());
+          (tour.groups || []).forEach(g => {
+            if (!g.served) g.served = [];
+            if (!g.dishStatus) g.dishStatus = [];
+            g.served.push(false);
+            g.dishStatus.push('normal');
+          });
+          paint();
+        }
+      });
+    });
+
+    document.getElementById('btn-load-default').addEventListener('click', () => {
+      showConfirm('読み込み確認', '標準コース内容を読み込みます。\n現在の編集内容は失われます。よろしいですか？', ok => {
+        if (ok) {
+          tour.courseItems = [...state.defaultCourse];
+          (tour.groups || []).forEach(g => {
+            g.served = tour.courseItems.map(() => false);
+            g.dishStatus = tour.courseItems.map(() => 'normal');
+          });
+          paint();
+        }
+      });
+    });
+
+    document.getElementById('btn-save-course').addEventListener('click', () => {
+      tour.courseItems = tour.courseItems.filter(x => x && x.trim());
+      if (tour.courseItems.length === 0) { showAlert('最低1つの品目が必要です'); return; }
+      (tour.groups || []).forEach(g => {
+        if (!g.served) g.served = [];
+        if (!g.dishStatus) g.dishStatus = [];
+        while (g.served.length < tour.courseItems.length) g.served.push(false);
+        while (g.dishStatus.length < tour.courseItems.length) g.dishStatus.push('normal');
+        g.served = g.served.slice(0, tour.courseItems.length);
+        g.dishStatus = g.dishStatus.slice(0, tour.courseItems.length);
+      });
+      saveData();
+      closeModal();
+      openTourDetail();
+    });
+  }
+
+  paint();
+  showModal();
+}
+
+function openTourDetail() {
+  const tour = state.tours.find(t => t.id === currentTourId);
+  if (!tour) return;
+
+  const company = getCompany(tour.companyId);
+  const course = getCourseItems(tour);
+  const allergyTotal = totalGroupCount(tour);
+  const generalTotal = generalGuestCount(tour);
+
+  document.getElementById('modalTitle').textContent = tour.name || '（無題のツアー）';
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="card tour-card" style="margin-bottom:16px;border-left-color:${company.color};">
+      <div class="tour-company">${escHtml(company.name)}</div>
+      <div class="tour-meta" style="margin-top:6px;">
+        ${formatDate(tour.date)}（${dayOfWeek(tour.date)}） ${escHtml(tour.time) || ''}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+        <span class="group-summary-pill">全体 ${tour.totalGuests || 0}名</span>
+        ${allergyTotal > 0 ? `<span class="group-summary-pill allergy">アレルギー対応 ${allergyTotal}名</span>` : ''}
+        ${generalTotal > 0 ? `<span class="group-summary-pill">一般 ${generalTotal}名</span>` : ''}
+      </div>
+      ${tour.note ? `<div style="font-size:13px;color:var(--ink-soft);margin-top:8px;padding:8px;background:var(--bg-soft);border-radius:3px;">${escHtml(tour.note)}</div>` : ''}
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
+        <button type="button" class="btn btn-outline btn-sm" id="btn-edit-tour">情報編集</button>
+        <button type="button" class="btn btn-outline btn-sm" id="btn-edit-course">食事内容（${course.length}品）</button>
+        <button type="button" class="btn btn-outline btn-sm" id="btn-print-tour">印刷</button>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:0;">
+      アレルギー対応グループ
+      <span class="count">${(tour.groups || []).length}グループ / ${allergyTotal}名</span>
+    </div>
+
+    <div id="group-list">
+      ${(tour.groups || []).length === 0 ? `
+        <div class="empty" style="padding:30px 20px;">
+          <div class="empty-text">アレルギー対応のグループを追加してください</div>
+        </div>
+      ` : (tour.groups || []).map((g, i) => renderGroupRow(g, i, course)).join('')}
+    </div>
+
+    <button type="button" class="btn btn-outline btn-block" id="btn-add-group" style="margin-top:12px;">＋ アレルギーグループを追加</button>
+  `;
+
+  document.getElementById('btn-edit-tour').addEventListener('click', () => openTourEdit(tour.id));
+  document.getElementById('btn-edit-course').addEventListener('click', openCourseEdit);
+  document.getElementById('btn-print-tour').addEventListener('click', openPrintPreview);
+  document.getElementById('btn-add-group').addEventListener('click', () => openGroupEdit(null));
+
+  document.querySelectorAll('[data-group-idx]').forEach(el => {
+    el.addEventListener('click', e => {
+      if (e.target.closest('[data-action]')) return;
+      const idx = parseInt(el.dataset.groupIdx);
+      openGroupServe(idx);
+    });
+  });
+
+  document.querySelectorAll('[data-action="edit-group"]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.groupIndex);
+      openGroupEdit(idx);
+    });
+  });
+
+  showModal();
+}
+
+function renderGroupRow(g, i, course) {
+  const allergyText = (g.allergies && g.allergies.length) ? g.allergies.join('・') : '記入なし';
+  const served = g.served ? g.served.filter(Boolean).length : 0;
+  const total = course.length;
+  const isComplete = served === total && total > 0;
+
+  return `<div class="card card-clickable" data-group-idx="${i}" style="${isComplete ? 'background:var(--ok-bg);border-color:#86efac;' : ''}">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;background:${isComplete ? 'var(--ok)' : 'var(--bg-soft)'};color:${isComplete ? 'white' : 'var(--ink)'};border:1px solid ${isComplete ? 'var(--ok)' : 'var(--line-strong)'};">
+        ${isComplete ? '✓' : (g.count || 1) + '名'}
+      </div>
+      <div style="flex:1;min-width:0;">
+        ${g.label ? `<div style="font-size:12px;color:var(--ink-mute);margin-bottom:1px;">${escHtml(g.label)}</div>` : ''}
+        <div style="font-size:14px;font-weight:600;margin-bottom:2px;">
+          ${escHtml(allergyText)}
+        </div>
+        <div style="font-size:11px;color:var(--ink-mute);">
+          ${g.contamOk === true ? 'コンタミ可' : g.contamOk === false ? 'コンタミ不可' : 'コンタミ未確認'}
+          ・ 提供 ${served}/${total}
+        </div>
+      </div>
+      <button type="button" class="btn btn-outline btn-sm" data-action="edit-group" data-group-index="${i}">編集</button>
+    </div>
+  </div>`;
+}
+
+function openGroupEdit(groupIdx) {
+  const tour = state.tours.find(t => t.id === currentTourId);
+  if (!tour) return;
+  const course = getCourseItems(tour);
+
+  const isNew = groupIdx === null;
+  const group = isNew ? {
+    id: uid(),
+    label: '',
+    count: 1,
+    allergies: [],
+    contamOk: undefined,
+    note: '',
+    served: course.map(() => false),
+    dishStatus: course.map(() => 'normal')
+  } : { ...tour.groups[groupIdx], allergies: [...(tour.groups[groupIdx].allergies || [])] };
+
+  let tempAllergens = group.allergies.filter(a =>
+    !DEFAULT_ALLERGENS.required.includes(a) &&
+    !DEFAULT_ALLERGENS.recommended.includes(a) &&
+    !state.customAllergens.includes(a)
+  );
+
+  document.getElementById('modalTitle').textContent = isNew ? 'アレルギーグループを追加' : 'グループを編集';
+
+  function paint() {
+    document.getElementById('modalBody').innerHTML = `
+      <div class="field-row">
+        <div class="field" style="flex:0 0 100px;">
+          <label class="field-label">人数</label>
+          <input class="field-input" type="number" min="1" id="g-count" value="${group.count || 1}">
+        </div>
+        <div class="field">
+          <label class="field-label">識別名（任意）</label>
+          <input class="field-input" id="g-label" value="${escHtml(group.label)}" placeholder="例：田中様グループ">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">アレルギー項目（複数選択可）</label>
+        <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">特定原材料 8品目（点線枠 = 表示義務）</div>
+        <div class="chip-grid" style="margin-bottom:10px;">
+          ${DEFAULT_ALLERGENS.required.map(a => `
+            <button type="button" class="chip special-7 ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}">${a}</button>
+          `).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">特定原材料に準ずるもの 20品目</div>
+        <div class="chip-grid" style="margin-bottom:10px;">
+          ${DEFAULT_ALLERGENS.recommended.map(a => `
+            <button type="button" class="chip ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}">${a}</button>
+          `).join('')}
+        </div>
+        ${state.customAllergens.length > 0 ? `
+          <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">設定に登録済みの追加項目</div>
+          <div class="chip-grid" style="margin-bottom:10px;">
+            ${state.customAllergens.map(a => `
+              <button type="button" class="chip ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}">${escHtml(a)}</button>
+            `).join('')}
+          </div>` : ''}
+        ${tempAllergens.length > 0 ? `
+          <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">このグループ用の追加項目（一時）</div>
+          <div class="chip-grid" style="margin-bottom:10px;">
+            ${tempAllergens.map(a => `
+              <button type="button" class="chip ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}" style="border-color:var(--accent);">${escHtml(a)}</button>
+            `).join('')}
+          </div>` : ''}
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="chip chip-add" id="g-add-temp">＋ このグループだけに追加</button>
+          <button type="button" class="chip chip-add" id="g-add-permanent">＋ 設定にも保存</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">コンタミネーション</label>
+        <div class="segment">
+          <button type="button" data-contam="true" class="${group.contamOk === true ? 'active' : ''}">可</button>
+          <button type="button" data-contam="false" class="${group.contamOk === false ? 'active' : ''}">不可</button>
+          <button type="button" data-contam="undef" class="${group.contamOk === undefined ? 'active' : ''}">未確認</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">備考</label>
+        <textarea class="field-textarea" id="g-note" placeholder="特記事項">${escHtml(group.note)}</textarea>
+      </div>
+
+      <div class="dialog-actions">
+        ${!isNew ? `<button type="button" class="btn btn-outline" id="btn-delete-group" style="color:var(--danger);border-color:var(--danger);">削除</button>` : ''}
+        <button type="button" class="btn btn-accent" id="btn-save-group">${isNew ? '追加' : '保存'}</button>
+      </div>
+    `;
+    bind();
+  }
+
+  function captureForm() {
+    const c = document.getElementById('g-count');
+    const l = document.getElementById('g-label');
+    const n = document.getElementById('g-note');
+    if (c) group.count = parseInt(c.value) || 1;
+    if (l) group.label = l.value;
+    if (n) group.note = n.value;
+  }
+
+  function bind() {
+    document.querySelectorAll('[data-allergen]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const a = btn.dataset.allergen;
+        const idx = group.allergies.indexOf(a);
+        if (idx >= 0) group.allergies.splice(idx, 1);
+        else group.allergies.push(a);
+        btn.classList.toggle('selected');
+      });
+    });
+
+    document.getElementById('g-add-temp').addEventListener('click', () => {
+      captureForm();
+      showPrompt(
+        'このグループだけに追加',
+        '設定には保存されず、このツアー内だけで使えます',
+        '例：マンゴー',
+        val => {
+          if (val && val.trim()) {
+            const trimmed = val.trim();
+            if (!tempAllergens.includes(trimmed)) tempAllergens.push(trimmed);
+            if (!group.allergies.includes(trimmed)) group.allergies.push(trimmed);
+            paint();
+          }
+        }
+      );
+    });
+
+    document.getElementById('g-add-permanent').addEventListener('click', () => {
+      captureForm();
+      showPrompt(
+        '設定に保存して追加',
+        '次回以降も使えるアレルギー項目として登録します',
+        '例：マンゴー',
+        val => {
+          if (val && val.trim()) {
+            const trimmed = val.trim();
+            if (!state.customAllergens.includes(trimmed)) state.customAllergens.push(trimmed);
+            if (!group.allergies.includes(trimmed)) group.allergies.push(trimmed);
+            saveData();
+            paint();
+          }
+        }
+      );
+    });
+
+    document.querySelectorAll('[data-contam]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const v = btn.dataset.contam;
+        group.contamOk = v === 'true' ? true : v === 'false' ? false : undefined;
+        document.querySelectorAll('[data-contam]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    document.getElementById('btn-save-group').addEventListener('click', () => {
+      captureForm();
+      if (group.count < 1) { showAlert('人数は1名以上必要です'); return; }
+
+      while (group.served.length < course.length) group.served.push(false);
+      while (group.dishStatus.length < course.length) group.dishStatus.push('normal');
+
+      if (!tour.groups) tour.groups = [];
+      if (isNew) tour.groups.push(group);
+      else tour.groups[groupIdx] = group;
+
+      const newAllergyTotal = totalGroupCount(tour);
+      if (newAllergyTotal > tour.totalGuests) {
+        showConfirm(
+          '人数の確認',
+          `アレルギー対応の合計（${newAllergyTotal}名）が全体人数（${tour.totalGuests}名）を超えています。\n全体人数を ${newAllergyTotal} 名に更新しますか？`,
+          ok => {
+            if (ok) tour.totalGuests = newAllergyTotal;
+            saveData();
+            closeModal();
+            openTourDetail();
+          }
+        );
+      } else {
+        saveData();
+        closeModal();
+        openTourDetail();
+      }
+    });
+
+    if (!isNew) {
+      document.getElementById('btn-delete-group').addEventListener('click', () => {
+        showConfirm('削除確認', 'このグループを削除しますか？', ok => {
+          if (ok) {
+            tour.groups.splice(groupIdx, 1);
+            saveData();
+            closeModal();
+            openTourDetail();
+          }
+        });
+      });
+    }
+  }
+
+  paint();
+  showModal();
+}
+
+function openGroupServe(groupIdx) {
+  const tour = state.tours.find(t => t.id === currentTourId);
+  if (!tour) return;
+  const group = tour.groups[groupIdx];
+  if (!group) return;
+  const course = getCourseItems(tour);
+
+  while (group.served.length < course.length) group.served.push(false);
+  if (!group.dishStatus) group.dishStatus = course.map(() => 'normal');
+  while (group.dishStatus.length < course.length) group.dishStatus.push('normal');
+
+  document.getElementById('modalTitle').textContent = group.label || `${(group.allergies||[]).join('・') || 'グループ'} ${group.count}名`;
+
+  const allergyText = group.allergies && group.allergies.length ? group.allergies.join('・') : 'なし';
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="card" style="margin-bottom:14px;background:var(--bg-soft);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+        <div style="font-size:11px;color:var(--ink-mute);letter-spacing:0.1em;">アレルギー</div>
+        <div style="font-size:11px;color:var(--accent);font-weight:600;">${group.count}名</div>
+      </div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:8px;">${escHtml(allergyText)}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        ${group.contamOk === true ? '<span class="badge badge-info">コンタミ可</span>' : ''}
+        ${group.contamOk === false ? '<span class="badge badge-danger">コンタミ不可</span>' : ''}
+        ${group.contamOk === undefined ? '<span class="badge badge-warn">コンタミ未確認</span>' : ''}
+      </div>
+      ${group.note ? `<div style="font-size:13px;margin-top:8px;padding:8px;background:white;border-radius:3px;">${escHtml(group.note)}</div>` : ''}
+    </div>
+
+    <div style="font-size:12px;color:var(--ink-mute);margin-bottom:8px;">各品の対応状況（タップで提供完了）</div>
+
+    <div class="dish-grid">
+      ${course.map((dish, i) => {
+        const served = group.served[i];
+        const status = group.dishStatus[i] || 'normal';
+        const statusClass = served ? 'status-served' :
+                          status === 'change' ? 'status-change' :
+                          status === 'warn' ? 'status-warn' : '';
+        return `
+          <div class="dish-row ${statusClass}" data-dish-idx="${i}">
+            <div class="dish-num">${String(i+1).padStart(2,'0')}</div>
+            <div class="dish-info">
+              <div class="dish-name">${escHtml(dish)}</div>
+              <div class="dish-note">
+                <select data-status-idx="${i}" style="border:none;background:transparent;font-family:inherit;font-size:12px;color:inherit;padding:0;outline:none;">
+                  <option value="normal" ${status==='normal'?'selected':''}>変更なし</option>
+                  <option value="change" ${status==='change'?'selected':''}>変更あり</option>
+                  <option value="warn" ${status==='warn'?'selected':''}>要注意/提供なし</option>
+                </select>
+              </div>
+            </div>
+            <div class="dish-check">${served ? '✓' : ''}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+
+    <div style="margin-top:14px;display:flex;gap:6px;">
+      <button type="button" class="btn btn-outline btn-block btn-sm" id="btn-mark-all">全て提供済みにする</button>
+      <button type="button" class="btn btn-outline btn-block btn-sm" id="btn-reset-served">提供チェックをリセット</button>
+    </div>
+  `;
+
+  document.querySelectorAll('[data-dish-idx]').forEach(el => {
+    el.addEventListener('click', e => {
+      if (e.target.tagName === 'SELECT') return;
+      const idx = parseInt(el.dataset.dishIdx);
+      group.served[idx] = !group.served[idx];
+      saveData();
+      openGroupServe(groupIdx);
+    });
+  });
+
+  document.querySelectorAll('[data-status-idx]').forEach(sel => {
+    sel.addEventListener('change', e => {
+      const idx = parseInt(sel.dataset.statusIdx);
+      group.dishStatus[idx] = sel.value;
+      saveData();
+      openGroupServe(groupIdx);
+    });
+    sel.addEventListener('click', e => e.stopPropagation());
+  });
+
+  document.getElementById('btn-mark-all').addEventListener('click', () => {
+    group.served = course.map(() => true);
+    saveData();
+    openGroupServe(groupIdx);
+  });
+
+  document.getElementById('btn-reset-served').addEventListener('click', () => {
+    showConfirm('リセット確認', '提供チェックをすべてリセットしますか？', ok => {
+      if (ok) {
+        group.served = course.map(() => false);
+        saveData();
+        openGroupServe(groupIdx);
+      }
+    });
+  });
+
+  showModal();
+}
+
+function openPrintPreview() {
+  const tour = state.tours.find(t => t.id === currentTourId);
+  if (!tour) return;
+
+  const company = getCompany(tour.companyId);
+  const course = getCourseItems(tour);
+
+  document.getElementById('modalTitle').textContent = '印刷プレビュー';
+
+  const printHtml = generatePrintHtml(tour, company, course);
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="print-controls">
+      <button type="button" class="btn btn-accent" id="btn-do-print" style="flex:1;">印刷する</button>
+      <button type="button" class="btn btn-outline" id="btn-close-print">閉じる</button>
+    </div>
+    <div style="font-size:11px;color:var(--ink-mute);margin-bottom:8px;line-height:1.5;">
+      A4縦推奨。PDFとして保存することもできます。
+    </div>
+    ${printHtml}
+  `;
+
+  document.getElementById('printArea').innerHTML = printHtml;
+
+  document.getElementById('btn-do-print').addEventListener('click', () => window.print());
+  document.getElementById('btn-close-print').addEventListener('click', closeModal);
+
+  showModal();
+}
+
+function generatePrintHtml(tour, company, course) {
+  const groups = tour.groups || [];
+  const today = new Date();
+  const printedAt = `${today.getFullYear()}/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`;
+  const allergyTotal = totalGroupCount(tour);
+  const generalTotal = generalGuestCount(tour);
+
+  const customerTable = `
+    <div class="table-title">① お客様情報</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:60px;">区分</th>
+          <th style="width:50px;">人数</th>
+          <th>制限内容（アレルギー）</th>
+          <th style="width:80px;">コンタミ</th>
+          <th style="width:30%;">備考</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${groups.length === 0 ? `
+          <tr><td colspan="5" style="text-align:center;color:#999;">アレルギー対応必要なお客様なし</td></tr>
+        ` : groups.map((g, i) => `
+          <tr>
+            <td style="text-align:center;">${escHtml(g.label) || `G${i+1}`}</td>
+            <td style="text-align:center;">${g.count}名</td>
+            <td>${escHtml((g.allergies || []).join('・')) || '—'}</td>
+            <td style="text-align:center;">
+              ${g.contamOk === true ? '可' : g.contamOk === false ? '不可' : '未確認'}
+            </td>
+            <td>${escHtml(g.note) || ''}</td>
+          </tr>
+        `).join('')}
+        ${generalTotal > 0 ? `
+          <tr>
+            <td style="text-align:center;">一般</td>
+            <td style="text-align:center;">${generalTotal}名</td>
+            <td colspan="3" style="color:#666;">アレルギー対応なし</td>
+          </tr>
+        ` : ''}
+        <tr style="background:#f8f8f8;">
+          <td colspan="2" style="text-align:right;font-weight:600;">全体合計</td>
+          <td colspan="3">${tour.totalGuests || 0}名（うちアレルギー対応 ${allergyTotal}名）</td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+
+  let changeTable = '';
+  if (groups.length > 0 && course.length > 0) {
+    changeTable = `
+      <div class="table-title">② 変更対応表</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30px;">No.</th>
+            <th style="width:75px;">品目</th>
+            ${groups.map((g, i) => `<th>${escHtml(g.label) || `G${i+1}`}<br><span style="font-weight:400;font-size:9px;">${g.count}名</span></th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${course.map((dish, di) => `
+            <tr>
+              <td style="text-align:center;font-size:9px;color:#666;">${String(di+1).padStart(2,'0')}</td>
+              <td>${escHtml(dish)}</td>
+              ${groups.map(g => {
+                const status = (g.dishStatus && g.dishStatus[di]) || 'normal';
+                const cellClass = status === 'change' ? 'cell-change' :
+                                status === 'warn' ? 'cell-warn' : 'cell-normal';
+                const label = status === 'change' ? '変更' :
+                            status === 'warn' ? '×' : '○';
+                return `<td class="${cellClass}" style="text-align:center;">${label}</td>`;
+              }).join('')}
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <div style="font-size:9.5px;color:#555;margin-top:3px;">
+        凡例：○ = 変更なし、<span style="background:#fffacd;padding:0 6px;">変更</span> = 変更あり、<span style="background:#ffd6d6;padding:0 6px;">×</span> = 要注意 / 提供なし
+      </div>
+    `;
+  }
+
+  const notesItems = [];
+  if (tour.note) notesItems.push(escHtml(tour.note));
+  groups.forEach((g, i) => {
+    if (g.note && g.note.trim()) {
+      notesItems.push(`<strong>${escHtml(g.label) || `G${i+1}`}</strong>：${escHtml(g.note)}`);
+    }
+  });
+
+  const notesSection = notesItems.length > 0 ? `
+    <div class="notes">
+      <div style="font-weight:600;margin-bottom:3px;">特記事項</div>
+      <ul>${notesItems.map(n => `<li>${n}</li>`).join('')}</ul>
+    </div>
+  ` : '';
+
+  return `
+    <div class="print-area preview">
+      <div class="doc-header">
+        <div class="doc-title">アレルギー対応表</div>
+        <div class="doc-meta">
+          市場小路ジェイアール京都伊勢丹店<br>
+          作成日：${printedAt}
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div><span class="label">旅行会社：</span>${escHtml(company.name)}</div>
+        <div><span class="label">来店日：</span>${formatDate(tour.date)}（${dayOfWeek(tour.date)}）</div>
+        <div><span class="label">時間：</span>${escHtml(tour.time) || '—'}</div>
+      </div>
+      <div class="info-row">
+        <div style="flex:2;"><span class="label">ツアー名：</span>${escHtml(tour.name) || '—'}</div>
+        <div><span class="label">人数：</span>全${tour.totalGuests || 0}名</div>
+      </div>
+
+      ${customerTable}
+      ${changeTable}
+      ${notesSection}
+
+      <div class="doc-footer">
+        <div>市場小路 アレルギー管理システム</div>
+        <div>Page 1</div>
+      </div>
+    </div>
+  `;
+}
+
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `allergy_data_${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  // バックアップ日時を記録
+  state.lastBackupAt = new Date().toISOString();
+  saveData();
+  // 設定タブを表示中なら再描画
+  if (currentTab === 'settings') render();
+}
+
+// バックアップ日時関連のヘルパー
+function getDaysSinceBackup() {
+  if (!state.lastBackupAt) return null;
+  const last = new Date(state.lastBackupAt);
+  const now = new Date();
+  return Math.floor((now - last) / (1000 * 60 * 60 * 24));
+}
+
+function formatBackupStatus() {
+  if (!state.lastBackupAt) return 'まだバックアップしていません';
+  const last = new Date(state.lastBackupAt);
+  const days = getDaysSinceBackup();
+  const dateStr = `${last.getFullYear()}年${last.getMonth()+1}月${last.getDate()}日`;
+  const timeStr = `${String(last.getHours()).padStart(2,'0')}:${String(last.getMinutes()).padStart(2,'0')}`;
+  let suffix = '';
+  if (days === 0) suffix = '（今日）';
+  else if (days === 1) suffix = '（昨日）';
+  else if (days < 7) suffix = `（${days}日前）`;
+  else if (days < 30) suffix = `（${days}日前）`;
+  else suffix = `（${days}日前 ※要バックアップ）`;
+  return `${dateStr} ${timeStr} ${suffix}`;
+}
+
+function getBackupStatusBg() {
+  const days = getDaysSinceBackup();
+  if (days === null) return 'var(--warn-bg)';
+  if (days >= 14) return 'var(--warn-bg)';
+  if (days >= 30) return 'var(--danger-bg)';
+  return 'var(--ok-bg)';
+}
+
+function getBackupStatusBorder() {
+  const days = getDaysSinceBackup();
+  if (days === null) return '#fde68a';
+  if (days >= 14) return '#fde68a';
+  if (days >= 30) return '#fecaca';
+  return '#86efac';
+}
+
+function getBackupStatusColor() {
+  const days = getDaysSinceBackup();
+  if (days === null) return 'var(--warn)';
+  if (days >= 14) return 'var(--warn)';
+  if (days >= 30) return 'var(--danger)';
+  return 'var(--ok)';
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const imported = JSON.parse(reader.result);
+        showConfirm('取り込み確認', '現在のデータを上書きします。よろしいですか？', ok => {
+          if (ok) {
+            state = {
+              tours: imported.tours || [],
+              customAllergens: imported.customAllergens || [],
+              defaultCourse: imported.defaultCourse || [...DEFAULT_COURSE],
+              companies: imported.companies || [...DEFAULT_COMPANIES]
+            };
+            state.tours.forEach(t => {
+              if (!t.courseItems) t.courseItems = [...state.defaultCourse];
+              if (!t.groups) t.groups = [];
+              if (typeof t.totalGuests !== 'number') t.totalGuests = 0;
+            });
+            saveData();
+            render();
+            showAlert('読み込みました');
+          }
+        });
+      } catch (err) { showAlert('ファイルの読み込みに失敗しました'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function clearOld() {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 30);
+  const cutoffStr = cutoff.getFullYear() + '-' + String(cutoff.getMonth()+1).padStart(2,'0') + '-' + String(cutoff.getDate()).padStart(2,'0');
+  const before = state.tours.length;
+  state.tours = state.tours.filter(t => t.date >= cutoffStr);
+  const removed = before - state.tours.length;
+  saveData();
+  render();
+  showAlert(`${removed}件のツアーを削除しました`);
+}
+
+function showModal() { document.getElementById('modalBackdrop').classList.add('show'); }
+function closeModal() {
+  document.getElementById('modalBackdrop').classList.remove('show');
+  document.getElementById('printArea').innerHTML = '';
+}
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => { currentTab = t.dataset.tab; render(); });
+});
+
+document.getElementById('fabBtn').addEventListener('click', () => openTourEdit(null));
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalBackdrop').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalBackdrop')) closeModal();
+});
+
+renderDateLine();
+render();
+
+// サンプルデータ
+if (state.tours.length === 0 && !localStorage.getItem(STORAGE_KEY + '_demo')) {
+  const sampleTour = {
+    id: uid(),
+    companyId: 'hankyu',
+    name: '京都春の名所めぐり',
+    date: todayStr(),
+    time: '12:00',
+    note: '阪急交通社様 / 添乗員 山田様',
+    totalGuests: 29,
+    courseItems: [...state.defaultCourse],
+    groups: [
+      {
+        id: uid(),
+        label: '田中様',
+        count: 1,
+        allergies: ['卵', '乳'],
+        contamOk: false,
+        note: '重度。コンタミ厳禁。',
+        served: state.defaultCourse.map(() => false),
+        dishStatus: ['change','warn','change','normal','change','normal','normal','change']
+      },
+      {
+        id: uid(),
+        label: '佐藤・鈴木様',
+        count: 2,
+        allergies: ['卵', '豚肉'],
+        contamOk: true,
+        note: '',
+        served: state.defaultCourse.map(() => false),
+        dishStatus: ['change','change','normal','normal','change','warn','warn','change']
+      }
+    ]
+  };
+  state.tours.push(sampleTour);
+  saveData();
+  localStorage.setItem(STORAGE_KEY + '_demo', '1');
+  render();
+}
+</script>
+
 </body>
 </html>
