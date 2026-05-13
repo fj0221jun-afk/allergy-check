@@ -469,18 +469,16 @@ function normalizeItem(item) {
 function ensureBaseData(data) {
   if (!data || typeof data !== 'object') data = {};
 
-  if (!Array.isArray(data.companies) || data.companies.length === 0) {
-    data.companies = [...DEFAULT_COMPANIES];
-  } else {
-    data.companies = data.companies
+  const normalizedCompanies = Array.isArray(data.companies)
+    ? data.companies
       .filter(c => c && typeof c === 'object')
       .map(c => ({
         id: c.id || uid(),
         name: c.name || '未設定',
         color: c.color || '#666666'
-      }));
-    if (data.companies.length === 0) data.companies = [...DEFAULT_COMPANIES];
-  }
+      }))
+    : [];
+  data.companies = normalizedCompanies.length > 0 ? normalizedCompanies : [...DEFAULT_COMPANIES];
 
   if (!Array.isArray(data.customAllergens)) data.customAllergens = [];
   data.customAllergens = data.customAllergens
@@ -490,21 +488,19 @@ function ensureBaseData(data) {
   if (!Array.isArray(data.tours)) data.tours = [];
   data.tours = data.tours.filter(t => t && typeof t === 'object');
 
-  if (!Array.isArray(data.courses) || data.courses.length === 0) {
-    const oldDefault = Array.isArray(data.defaultCourse) ? data.defaultCourse : DEFAULT_COURSE_ITEMS;
-    data.courses = [{ id: uid(), name: '市場小路美食コース', items: oldDefault.map(normalizeItem) }];
-  } else {
-    data.courses = data.courses
+  const oldDefault = Array.isArray(data.defaultCourse) ? data.defaultCourse : DEFAULT_COURSE_ITEMS;
+  const normalizedCourses = Array.isArray(data.courses)
+    ? data.courses
       .filter(c => c && typeof c === 'object')
       .map(c => ({
         id: c.id || uid(),
         name: c.name || '名称未設定',
         items: (c.items || []).map(normalizeItem)
-      }));
-    if (data.courses.length === 0) {
-      data.courses = [{ id: uid(), name: '市場小路美食コース', items: DEFAULT_COURSE_ITEMS.map(normalizeItem) }];
-    }
-  }
+      }))
+    : [];
+  data.courses = normalizedCourses.length > 0
+    ? normalizedCourses
+    : [{ id: uid(), name: '市場小路美食コース', items: oldDefault.map(normalizeItem) }];
   delete data.defaultCourse;
   return data;
 }
