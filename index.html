@@ -466,27 +466,54 @@ function normalizeItem(item) {
   return { name: item.name || '', subItems: (item.subItems || []).map(s => typeof s === 'string' ? s : (s.name || s)) };
 }
 
+function ensureBaseData(data) {
+  if (!data || typeof data !== 'object') data = {};
+
+  if (!Array.isArray(data.companies) || data.companies.length === 0) {
+    data.companies = [...DEFAULT_COMPANIES];
+  } else {
+    data.companies = data.companies
+      .filter(c => c && typeof c === 'object')
+      .map(c => ({
+        id: c.id || uid(),
+        name: c.name || '未設定',
+        color: c.color || '#666666'
+      }));
+    if (data.companies.length === 0) data.companies = [...DEFAULT_COMPANIES];
+  }
+
+  if (!Array.isArray(data.customAllergens)) data.customAllergens = [];
+  data.customAllergens = data.customAllergens
+    .filter(a => typeof a === 'string' && a.trim())
+    .map(a => a.trim());
+
+  if (!Array.isArray(data.tours)) data.tours = [];
+  data.tours = data.tours.filter(t => t && typeof t === 'object');
+
+  if (!Array.isArray(data.courses) || data.courses.length === 0) {
+    const oldDefault = Array.isArray(data.defaultCourse) ? data.defaultCourse : DEFAULT_COURSE_ITEMS;
+    data.courses = [{ id: uid(), name: '市場小路美食コース', items: oldDefault.map(normalizeItem) }];
+  } else {
+    data.courses = data.courses
+      .filter(c => c && typeof c === 'object')
+      .map(c => ({
+        id: c.id || uid(),
+        name: c.name || '名称未設定',
+        items: (c.items || []).map(normalizeItem)
+      }));
+    if (data.courses.length === 0) {
+      data.courses = [{ id: uid(), name: '市場小路美食コース', items: DEFAULT_COURSE_ITEMS.map(normalizeItem) }];
+    }
+  }
+  delete data.defaultCourse;
+  return data;
+}
+
 function loadData() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const data = JSON.parse(raw);
-      if (!data.companies) data.companies = [...DEFAULT_COMPANIES];
-      if (!data.customAllergens) data.customAllergens = [];
-      if (!data.tours) data.tours = [];
-      if (!data.courses) {
-        const oldDefault = data.defaultCourse || DEFAULT_COURSE_ITEMS;
-        data.courses = [{
-          id: uid(),
-          name: '市場小路美食コース',
-          items: oldDefault.map(normalizeItem)
-        }];
-        delete data.defaultCourse;
-      }
-      // 全コースのitemsを正規化
-      data.courses.forEach(c => {
-        c.items = (c.items || []).map(normalizeItem);
-      });
+      const data = ensureBaseData(JSON.parse(raw));
 
       data.tours.forEach(t => {
         if (t.courseItems && !t.courseId) {
@@ -507,7 +534,8 @@ function loadData() {
           t.courseId = data.courses[0]?.id;
         }
         if (typeof t.totalGuests !== 'number') t.totalGuests = 0;
-        if (!t.groups) t.groups = [];
+        if (!Array.isArray(t.groups)) t.groups = [];
+        t.groups = t.groups.filter(g => g && typeof g === 'object');
         t.groups.forEach(g => {
           if (!g.changeNotes) g.changeNotes = [];
           if (!g.subChangeNotes) g.subChangeNotes = {};
@@ -2504,16 +2532,7 @@ try {
 const imported = JSON.parse(reader.result);
 showConfirm('取り込み確認', '現在のデータを上書きします。よろしいですか？', ok => {
 if (ok) {
-state = imported;
-// 旧形式の補完
-if (!state.companies) state.companies = [...DEFAULT_COMPANIES];
-if (!state.customAllergens) state.customAllergens = [];
-if (!state.tours) state.tours = [];
-if (!state.courses) {
-const oldDefault = state.defaultCourse || DEFAULT_COURSE_ITEMS;
-state.courses = [{ id: uid(), name: '市場小路美食コース', items: [...oldDefault] }];
-delete state.defaultCourse;
-}
+state = ensureBaseData(imported);
 state.tours.forEach(t => {
 if (t.courseItems && !t.courseId) {
 const matching = state.courses.find(c =>
@@ -2523,9 +2542,14 @@ else t.customCourseItems = t.courseItems;
 delete t.courseItems;
 }
 if (!t.courseId && !t.customCourseItems) t.courseId = state.courses[0]?.id;
-if (!t.groups) t.groups = [];
+if (!Array.isArray(t.groups)) t.groups = [];
+t.groups = t.groups.filter(g => g && typeof g === 'object');
 if (typeof t.totalGuests !== 'number') t.totalGuests = 0;
-t.groups.forEach(g => { if (!g.changeNotes) g.changeNotes = []; });
+t.groups.forEach(g => {
+if (!g.changeNotes) g.changeNotes = [];
+if (!g.subChangeNotes) g.subChangeNotes = {};
+if (!g.subDishStatus) g.subDishStatus = {};
+});
 });
 saveData(); render();
 showAlert('読み込みました');
@@ -2572,24 +2596,25 @@ render();
 if (state.tours.length === 0 && !localStorage.getItem(STORAGE_KEY + '_demo')) {
 // デモ用に煮物に中身を追加
 const course = state.courses[0];
-const nimonoItem = course.items.find(i => getItemName(i) === '煮物');
-if (nimonoItem && nimonoItem.subItems.length === 0) {
-nimonoItem.subItems = ['切り干し大根', 'ひじき煮', '高野豆腐', '出し巻き卵'];
-}
-saveData();
+if (course) {
+  const nimonoItem = course.items.find(i => getItemName(i) === '煮物');
+  if (nimonoItem && nimonoItem.subItems.length === 0) {
+    nimonoItem.subItems = ['切り干し大根', 'ひじき煮', '高野豆腐', '出し巻き卵'];
+  }
+  saveData();
 
-const courseId = state.courses[0].id;
-const items = state.courses[0].items;
-const sampleTour = {
-id: uid(),
-companyId: 'hankyu',
-name: '京都春の名所めぐり',
-date: todayStr(),
-time: '12:00',
-note: '阪急交通社様 / 添乗員 山田様',
-totalGuests: 29,
-courseId: courseId,
-groups: [
+  const courseId = course.id;
+  const items = course.items;
+  const sampleTour = {
+  id: uid(),
+  companyId: 'hankyu',
+  name: '京都春の名所めぐり',
+  date: todayStr(),
+  time: '12:00',
+  note: '阪急交通社様 / 添乗員 山田様',
+  totalGuests: 29,
+  courseId: courseId,
+  groups: [
 {
 id: uid(),
 label: '田中様',
@@ -2617,12 +2642,13 @@ changeNotes: ['卵不使用', '卵を抜いた前菜', '', '', '鶏肉に変更'
 subDishStatus: { '5_3': 'warn' },
 subChangeNotes: { '5_3': '卵不使用のため代替品で対応' }
 }
-]
-};
-state.tours.push(sampleTour);
-saveData();
-localStorage.setItem(STORAGE_KEY + '_demo', '1');
-render();
+  ]
+  };
+  state.tours.push(sampleTour);
+  saveData();
+  localStorage.setItem(STORAGE_KEY + '_demo', '1');
+  render();
+}
 }
 </script>
 
