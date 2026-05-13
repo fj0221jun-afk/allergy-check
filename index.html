@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -30,343 +31,344 @@
   body { padding-bottom: env(safe-area-inset-bottom); min-height: 100vh; }
   .app { max-width: 720px; margin: 0 auto; padding: 0 16px 100px; }
 
-  header {
-    position: sticky; top: 0; z-index: 50;
-    background: var(--bg); padding: 16px 16px 0;
-    border-bottom: 1px solid var(--line); margin: 0 -16px 16px;
-  }
-  .brand { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
-  .brand-mark {
-    font-size: 11px; letter-spacing: 0.3em; color: var(--accent);
-    border: 1px solid var(--accent); padding: 3px 8px; border-radius: 2px;
-  }
-  .brand-title { font-size: 18px; font-weight: 600; letter-spacing: 0.05em; }
-  .date-line { font-size: 13px; color: var(--ink-mute); letter-spacing: 0.08em; padding-bottom: 8px; }
+header {
+position: sticky; top: 0; z-index: 50;
+background: var(–bg); padding: 16px 16px 0;
+border-bottom: 1px solid var(–line); margin: 0 -16px 16px;
+}
+.brand { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+.brand-mark {
+font-size: 11px; letter-spacing: 0.3em; color: var(–accent);
+border: 1px solid var(–accent); padding: 3px 8px; border-radius: 2px;
+}
+.brand-title { font-size: 18px; font-weight: 600; letter-spacing: 0.05em; }
+.date-line { font-size: 13px; color: var(–ink-mute); letter-spacing: 0.08em; padding-bottom: 8px; }
 
-  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
-  .tab {
-    flex: 1; padding: 10px 4px; text-align: center;
-    font-size: 14px; font-weight: 500; color: var(--ink-mute);
-    background: none; border: none; border-bottom: 2px solid transparent;
-    cursor: pointer; transition: all 0.2s; font-family: inherit;
-  }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(–line); }
+.tab {
+flex: 1; padding: 10px 4px; text-align: center;
+font-size: 14px; font-weight: 500; color: var(–ink-mute);
+background: none; border: none; border-bottom: 2px solid transparent;
+cursor: pointer; transition: all 0.2s; font-family: inherit;
+}
+.tab.active { color: var(–accent); border-bottom-color: var(–accent); }
 
-  .filter-bar {
-    display: flex; gap: 6px; overflow-x: auto;
-    padding: 10px 0; -webkit-overflow-scrolling: touch;
-  }
-  .filter-bar::-webkit-scrollbar { display: none; }
-  .filter-pill {
-    padding: 6px 14px; background: white;
-    border: 1px solid var(--line-strong);
-    border-radius: 100px; font-size: 12px; font-family: inherit;
-    color: var(--ink-soft); cursor: pointer; white-space: nowrap;
-    flex-shrink: 0; transition: all 0.15s;
-    display: inline-flex; align-items: center; gap: 6px;
-  }
-  .filter-pill .pill-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
-  .filter-pill.active { background: var(--ink); color: white; border-color: var(--ink); }
-  .filter-pill.active .pill-dot { background: white !important; }
+.filter-bar {
+display: flex; gap: 6px; overflow-x: auto;
+padding: 10px 0; -webkit-overflow-scrolling: touch;
+}
+.filter-bar::-webkit-scrollbar { display: none; }
+.filter-pill {
+padding: 6px 14px; background: white;
+border: 1px solid var(–line-strong);
+border-radius: 100px; font-size: 12px; font-family: inherit;
+color: var(–ink-soft); cursor: pointer; white-space: nowrap;
+flex-shrink: 0; transition: all 0.15s;
+display: inline-flex; align-items: center; gap: 6px;
+}
+.filter-pill .pill-dot { width: 8px; height: 8px; border-radius: 50%; background: var(–line-strong); }
+.filter-pill.active { background: var(–ink); color: white; border-color: var(–ink); }
+.filter-pill.active .pill-dot { background: white !important; }
 
-  .section-title {
-    font-size: 13px; font-weight: 600; letter-spacing: 0.15em;
-    color: var(--ink-soft); margin: 24px 0 12px;
-    padding-bottom: 6px; border-bottom: 1px solid var(--line);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .section-title .count { font-size: 12px; color: var(--ink-mute); font-weight: 400; letter-spacing: 0.05em; }
+.section-title {
+font-size: 13px; font-weight: 600; letter-spacing: 0.15em;
+color: var(–ink-soft); margin: 24px 0 12px;
+padding-bottom: 6px; border-bottom: 1px solid var(–line);
+display: flex; align-items: center; justify-content: space-between;
+}
+.section-title .count { font-size: 12px; color: var(–ink-mute); font-weight: 400; letter-spacing: 0.05em; }
 
-  .group-header {
-    display: flex; align-items: center; gap: 10px;
-    margin: 18px 0 8px; font-size: 13px; font-weight: 600;
-    letter-spacing: 0.1em; color: var(--ink-soft);
-  }
-  .group-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+.group-header {
+display: flex; align-items: center; gap: 10px;
+margin: 18px 0 8px; font-size: 13px; font-weight: 600;
+letter-spacing: 0.1em; color: var(–ink-soft);
+}
+.group-dot { width: 8px; height: 8px; border-radius: 50%; background: var(–line-strong); }
 
-  .card {
-    background: var(--bg-card); border: 1px solid var(--line);
-    border-radius: 4px; padding: 14px 16px; margin-bottom: 10px;
-    transition: all 0.15s;
-  }
-  .card-clickable { cursor: pointer; }
-  .card-clickable:active { transform: scale(0.99); background: var(--bg-soft); }
+.card {
+background: var(–bg-card); border: 1px solid var(–line);
+border-radius: 4px; padding: 14px 16px; margin-bottom: 10px;
+transition: all 0.15s;
+}
+.card-clickable { cursor: pointer; }
+.card-clickable:active { transform: scale(0.99); background: var(–bg-soft); }
 
-  .tour-card { border-left: 4px solid var(--line-strong); }
-  .tour-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-  .tour-company { font-size: 11px; font-weight: 600; letter-spacing: 0.15em; color: var(--ink-soft); margin-bottom: 4px; }
-  .tour-name { font-size: 16px; font-weight: 600; line-height: 1.4; }
-  .tour-meta { font-size: 13px; color: var(--ink-mute); margin-top: 6px; }
+.tour-card { border-left: 4px solid var(–line-strong); }
+.tour-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.tour-company { font-size: 11px; font-weight: 600; letter-spacing: 0.15em; color: var(–ink-soft); margin-bottom: 4px; }
+.tour-name { font-size: 16px; font-weight: 600; line-height: 1.4; }
+.tour-meta { font-size: 13px; color: var(–ink-mute); margin-top: 6px; }
 
-  .tour-progress { margin-top: 10px; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
-  .tour-progress-bar { height: 100%; background: var(--ok); transition: width 0.3s ease; }
-  .tour-progress-text { font-size: 12px; color: var(--ink-mute); margin-top: 4px; display: flex; justify-content: space-between; }
+.tour-progress { margin-top: 10px; height: 6px; background: var(–line); border-radius: 3px; overflow: hidden; }
+.tour-progress-bar { height: 100%; background: var(–ok); transition: width 0.3s ease; }
+.tour-progress-text { font-size: 12px; color: var(–ink-mute); margin-top: 4px; display: flex; justify-content: space-between; }
 
-  .badge {
-    display: inline-block; padding: 2px 8px; border-radius: 2px;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; white-space: nowrap;
-  }
-  .badge-warn { background: var(--warn-bg); color: var(--warn); }
-  .badge-danger { background: var(--danger-bg); color: var(--danger); }
-  .badge-ok { background: var(--ok-bg); color: var(--ok); }
-  .badge-info { background: var(--info-bg); color: var(--info); }
+.badge {
+display: inline-block; padding: 2px 8px; border-radius: 2px;
+font-size: 11px; font-weight: 600; letter-spacing: 0.1em; white-space: nowrap;
+}
+.badge-warn { background: var(–warn-bg); color: var(–warn); }
+.badge-danger { background: var(–danger-bg); color: var(–danger); }
+.badge-ok { background: var(–ok-bg); color: var(–ok); }
+.badge-info { background: var(–info-bg); color: var(–info); }
 
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 10px 18px; border: 1px solid var(--ink); background: var(--ink); color: var(--bg);
-    font-family: inherit; font-size: 14px; font-weight: 500; letter-spacing: 0.05em;
-    border-radius: 2px; cursor: pointer; transition: all 0.15s;
-  }
-  .btn:active { transform: scale(0.97); }
-  .btn-outline { background: transparent; color: var(--ink); }
-  .btn-accent { background: var(--accent); border-color: var(--accent); color: white; }
-  .btn-block { width: 100%; }
-  .btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn {
+display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+padding: 10px 18px; border: 1px solid var(–ink); background: var(–ink); color: var(–bg);
+font-family: inherit; font-size: 14px; font-weight: 500; letter-spacing: 0.05em;
+border-radius: 2px; cursor: pointer; transition: all 0.15s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-outline { background: transparent; color: var(–ink); }
+.btn-accent { background: var(–accent); border-color: var(–accent); color: white; }
+.btn-block { width: 100%; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
 
-  .btn-fab {
-    position: fixed; bottom: 20px; right: 20px;
-    width: 56px; height: 56px; border-radius: 50%;
-    background: var(--accent); color: white; border: none;
-    box-shadow: 0 6px 20px rgba(139, 40, 32, 0.35);
-    font-size: 28px; cursor: pointer; z-index: 40;
-    display: flex; align-items: center; justify-content: center;
-  }
+.btn-fab {
+position: fixed; bottom: 20px; right: 20px;
+width: 56px; height: 56px; border-radius: 50%;
+background: var(–accent); color: white; border: none;
+box-shadow: 0 6px 20px rgba(139, 40, 32, 0.35);
+font-size: 28px; cursor: pointer; z-index: 40;
+display: flex; align-items: center; justify-content: center;
+}
 
-  .dish-grid { display: grid; gap: 8px; margin-top: 12px; }
-  .dish-row {
-    display: flex; align-items: center; gap: 12px;
-    padding: 14px; background: var(--bg-card);
-    border: 1px solid var(--line); border-radius: 4px;
-    cursor: pointer; transition: all 0.15s;
-  }
-  .dish-row.status-change { background: #fffbeb; border-color: #fde68a; }
-  .dish-row.status-warn { background: var(--danger-bg); border-color: #fecaca; }
-  .dish-row.status-served { background: var(--ok-bg); border-color: #86efac; opacity: 0.85; }
+.dish-grid { display: grid; gap: 8px; margin-top: 12px; }
+.dish-row {
+display: flex; align-items: center; gap: 12px;
+padding: 14px; background: var(–bg-card);
+border: 1px solid var(–line); border-radius: 4px;
+cursor: pointer; transition: all 0.15s;
+}
+.dish-row.status-change { background: #fffbeb; border-color: #fde68a; }
+.dish-row.status-warn { background: var(–danger-bg); border-color: #fecaca; }
+.dish-row.status-served { background: var(–ok-bg); border-color: #86efac; opacity: 0.85; }
 
-  .dish-num { font-size: 11px; font-weight: 600; color: var(--ink-mute); letter-spacing: 0.1em; width: 32px; flex-shrink: 0; }
-  .dish-info { flex: 1; min-width: 0; }
-  .dish-name { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
-  .dish-note { font-size: 12px; color: var(--ink-soft); }
-  .dish-change-note {
-    font-size: 12px; color: var(--accent); font-weight: 500;
-    margin-top: 4px; padding: 4px 8px; background: white;
-    border-radius: 3px; border-left: 3px solid var(--accent);
-    white-space: pre-wrap; word-break: break-all;
-  }
-  .dish-check {
-    width: 32px; height: 32px; border-radius: 50%;
-    border: 2px solid var(--line-strong); background: white;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; transition: all 0.2s;
-  }
-  .dish-row.status-served .dish-check { background: var(--ok); border-color: var(--ok); color: white; }
+.dish-num { font-size: 11px; font-weight: 600; color: var(–ink-mute); letter-spacing: 0.1em; width: 32px; flex-shrink: 0; }
+.dish-info { flex: 1; min-width: 0; }
+.dish-name { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+.dish-note { font-size: 12px; color: var(–ink-soft); }
+.dish-change-note {
+font-size: 12px; color: var(–accent); font-weight: 500;
+margin-top: 4px; padding: 4px 8px; background: white;
+border-radius: 3px; border-left: 3px solid var(–accent);
+white-space: pre-wrap; word-break: break-all;
+}
+.dish-check {
+width: 32px; height: 32px; border-radius: 50%;
+border: 2px solid var(–line-strong); background: white;
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0; transition: all 0.2s;
+}
+.dish-row.status-served .dish-check { background: var(–ok); border-color: var(–ok); color: white; }
 
-  .course-edit-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
-  .course-edit-row:last-child { border-bottom: none; }
-  .course-edit-num { font-size: 11px; color: var(--ink-mute); width: 30px; letter-spacing: 0.1em; flex-shrink: 0; }
-  .course-edit-input {
-    flex: 1; padding: 6px 10px; border: 1px solid var(--line-strong);
-    border-radius: 3px; font-family: inherit; font-size: 14px; background: white;
-  }
-  .course-edit-remove {
-    width: 28px; height: 28px; border: 1px solid var(--line-strong);
-    background: white; color: var(--ink-mute); border-radius: 3px;
-    cursor: pointer; font-family: inherit; flex-shrink: 0;
-  }
+.course-edit-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(–line); }
+.course-edit-row:last-child { border-bottom: none; }
+.course-edit-num { font-size: 11px; color: var(–ink-mute); width: 30px; letter-spacing: 0.1em; flex-shrink: 0; }
+.course-edit-input {
+flex: 1; padding: 6px 10px; border: 1px solid var(–line-strong);
+border-radius: 3px; font-family: inherit; font-size: 14px; background: white;
+}
+.course-edit-remove {
+width: 28px; height: 28px; border: 1px solid var(–line-strong);
+background: white; color: var(–ink-mute); border-radius: 3px;
+cursor: pointer; font-family: inherit; flex-shrink: 0;
+}
 
-  .modal-backdrop {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-    z-index: 100; display: none; align-items: flex-end; justify-content: center;
-  }
-  .modal-backdrop.show { display: flex; }
-  .modal {
-    background: var(--bg); width: 100%; max-width: 720px;
-    max-height: 92vh; border-radius: 12px 12px 0 0;
-    overflow-y: auto; animation: slideUp 0.25s ease;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  .modal-header {
-    position: sticky; top: 0; background: var(--bg);
-    padding: 16px 16px 12px; border-bottom: 1px solid var(--line);
-    display: flex; justify-content: space-between; align-items: center; z-index: 10;
-  }
-  .modal-title { font-size: 17px; font-weight: 600; }
-  .modal-close {
-    background: none; border: none; font-size: 24px;
-    color: var(--ink-soft); cursor: pointer; padding: 4px 8px; font-family: inherit;
-  }
-  .modal-body { padding: 16px; }
+.modal-backdrop {
+position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+z-index: 100; display: none; align-items: flex-end; justify-content: center;
+}
+.modal-backdrop.show { display: flex; }
+.modal {
+background: var(–bg); width: 100%; max-width: 720px;
+max-height: 92vh; border-radius: 12px 12px 0 0;
+overflow-y: auto; animation: slideUp 0.25s ease;
+padding-bottom: env(safe-area-inset-bottom);
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-header {
+position: sticky; top: 0; background: var(–bg);
+padding: 16px 16px 12px; border-bottom: 1px solid var(–line);
+display: flex; justify-content: space-between; align-items: center; z-index: 10;
+}
+.modal-title { font-size: 17px; font-weight: 600; }
+.modal-close {
+background: none; border: none; font-size: 24px;
+color: var(–ink-soft); cursor: pointer; padding: 4px 8px; font-family: inherit;
+}
+.modal-body { padding: 16px; }
 
-  .modal-backdrop-2 {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
-    z-index: 200; display: none; align-items: center; justify-content: center;
-    padding: 20px;
-  }
-  .modal-backdrop-2.show { display: flex; }
-  .modal-2 {
-    background: var(--bg); width: 100%; max-width: 420px;
-    border-radius: 8px; overflow: hidden;
-    animation: fadeIn 0.2s ease;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+.modal-backdrop-2 {
+position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+z-index: 200; display: none; align-items: center; justify-content: center;
+padding: 20px;
+}
+.modal-backdrop-2.show { display: flex; }
+.modal-2 {
+background: var(–bg); width: 100%; max-width: 420px;
+border-radius: 8px; overflow: hidden;
+animation: fadeIn 0.2s ease;
+box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-  .field { margin-bottom: 14px; }
-  .field-label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--ink-soft); margin-bottom: 6px; }
-  .field-input, .field-select, .field-textarea {
-    width: 100%; padding: 10px 12px; border: 1px solid var(--line-strong);
-    border-radius: 3px; font-family: inherit; font-size: 15px; background: white; color: var(--ink);
-  }
-  .field-textarea { min-height: 70px; resize: vertical; }
-  .field-input:focus, .field-select:focus, .field-textarea:focus {
-    outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent);
-  }
-  .field-row { display: flex; gap: 8px; }
-  .field-row > .field { flex: 1; }
+.field { margin-bottom: 14px; }
+.field-label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(–ink-soft); margin-bottom: 6px; }
+.field-input, .field-select, .field-textarea {
+width: 100%; padding: 10px 12px; border: 1px solid var(–line-strong);
+border-radius: 3px; font-family: inherit; font-size: 15px; background: white; color: var(–ink);
+}
+.field-textarea { min-height: 70px; resize: vertical; }
+.field-input:focus, .field-select:focus, .field-textarea:focus {
+outline: 2px solid var(–accent); outline-offset: -1px; border-color: var(–accent);
+}
+.field-row { display: flex; gap: 8px; }
+.field-row > .field { flex: 1; }
 
-  .chip-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .chip {
-    padding: 7px 12px; border: 1px solid var(--line-strong);
-    background: white; border-radius: 100px; font-size: 13px;
-    cursor: pointer; transition: all 0.15s; font-family: inherit;
-  }
-  .chip.selected { background: var(--accent); color: white; border-color: var(--accent); }
-  .chip.special-7 { border-style: dashed; }
-  .chip.special-7.selected { background: var(--danger); border-color: var(--danger); }
-  .chip-add { border-style: dashed; color: var(--ink-mute); }
+.chip-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+padding: 7px 12px; border: 1px solid var(–line-strong);
+background: white; border-radius: 100px; font-size: 13px;
+cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.chip.selected { background: var(–accent); color: white; border-color: var(–accent); }
+.chip.special-7 { border-style: dashed; }
+.chip.special-7.selected { background: var(–danger); border-color: var(–danger); }
+.chip-add { border-style: dashed; color: var(–ink-mute); }
 
-  .segment {
-    display: flex; border: 1px solid var(--line-strong);
-    border-radius: 3px; overflow: hidden;
-  }
-  .segment button {
-    flex: 1; padding: 9px 4px; background: white; border: none;
-    border-right: 1px solid var(--line-strong); font-family: inherit;
-    font-size: 13px; cursor: pointer; color: var(--ink-soft);
-  }
-  .segment button:last-child { border-right: none; }
-  .segment button.active { background: var(--ink); color: white; }
+.segment {
+display: flex; border: 1px solid var(–line-strong);
+border-radius: 3px; overflow: hidden;
+}
+.segment button {
+flex: 1; padding: 9px 4px; background: white; border: none;
+border-right: 1px solid var(–line-strong); font-family: inherit;
+font-size: 13px; cursor: pointer; color: var(–ink-soft);
+}
+.segment button:last-child { border-right: none; }
+.segment button.active { background: var(–ink); color: white; }
 
-  .empty { padding: 60px 20px; text-align: center; color: var(--ink-mute); }
-  .empty-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
-  .empty-text { font-size: 14px; line-height: 1.7; }
+.empty { padding: 60px 20px; text-align: center; color: var(–ink-mute); }
+.empty-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
+.empty-text { font-size: 14px; line-height: 1.7; }
 
-  .dialog-actions { display: flex; gap: 8px; margin-top: 16px; }
-  .dialog-actions .btn { flex: 1; }
+.dialog-actions { display: flex; gap: 8px; margin-top: 16px; }
+.dialog-actions .btn { flex: 1; }
 
-  .company-edit-row {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 0; border-bottom: 1px solid var(--line);
-  }
-  .company-edit-row:last-child { border-bottom: none; }
-  .company-color-swatch {
-    width: 28px; height: 28px; border-radius: 50%;
-    border: 2px solid white; box-shadow: 0 0 0 1px var(--line-strong);
-    cursor: pointer; flex-shrink: 0; padding: 0;
-  }
+.company-edit-row {
+display: flex; align-items: center; gap: 8px;
+padding: 8px 0; border-bottom: 1px solid var(–line);
+}
+.company-edit-row:last-child { border-bottom: none; }
+.company-color-swatch {
+width: 28px; height: 28px; border-radius: 50%;
+border: 2px solid white; box-shadow: 0 0 0 1px var(–line-strong);
+cursor: pointer; flex-shrink: 0; padding: 0;
+}
 
-  .color-palette { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-  .color-option {
-    width: 36px; height: 36px; border-radius: 50%;
-    border: 2px solid white; box-shadow: 0 0 0 1px var(--line-strong);
-    cursor: pointer; transition: transform 0.15s; padding: 0;
-  }
-  .color-option.selected {
-    transform: scale(1.15);
-    box-shadow: 0 0 0 2px var(--ink);
-  }
+.color-palette { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.color-option {
+width: 36px; height: 36px; border-radius: 50%;
+border: 2px solid white; box-shadow: 0 0 0 1px var(–line-strong);
+cursor: pointer; transition: transform 0.15s; padding: 0;
+}
+.color-option.selected {
+transform: scale(1.15);
+box-shadow: 0 0 0 2px var(–ink);
+}
 
-  .group-summary { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 4px; }
-  .group-summary-pill {
-    padding: 3px 10px; background: var(--bg-soft);
-    border: 1px solid var(--line-strong); border-radius: 100px;
-    font-size: 11px; color: var(--ink-soft);
-  }
-  .group-summary-pill.allergy { background: #fff5f0; border-color: #ffd6c2; color: var(--accent); }
+.group-summary { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 4px; }
+.group-summary-pill {
+padding: 3px 10px; background: var(–bg-soft);
+border: 1px solid var(–line-strong); border-radius: 100px;
+font-size: 11px; color: var(–ink-soft);
+}
+.group-summary-pill.allergy { background: #fff5f0; border-color: #ffd6c2; color: var(–accent); }
 
-  .time-picker { display: flex; gap: 6px; align-items: center; }
-  .time-picker select { flex: 1; }
-  .time-picker .time-sep { color: var(--ink-mute); font-weight: 600; }
+.time-picker { display: flex; gap: 6px; align-items: center; }
+.time-picker select { flex: 1; }
+.time-picker .time-sep { color: var(–ink-mute); font-weight: 600; }
 
-  .course-card {
-    background: var(--bg-card); border: 1px solid var(--line);
-    border-radius: 4px; padding: 14px 16px; margin-bottom: 10px;
-  }
-  .course-card-header {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-  }
-  .course-card-title-input {
-    flex: 1; font-size: 15px; font-weight: 600;
-    padding: 6px 10px; border: 1px solid var(--line-strong);
-    border-radius: 3px; font-family: inherit; background: white;
-  }
+.course-card {
+background: var(–bg-card); border: 1px solid var(–line);
+border-radius: 4px; padding: 14px 16px; margin-bottom: 10px;
+}
+.course-card-header {
+display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.course-card-title-input {
+flex: 1; font-size: 15px; font-weight: 600;
+padding: 6px 10px; border: 1px solid var(–line-strong);
+border-radius: 3px; font-family: inherit; background: white;
+}
 
-  /* 印刷スタイル */
-  .print-area { display: none; }
-  @media print {
-    body * { visibility: hidden; }
-    .print-area, .print-area * { visibility: visible; }
-    .print-area {
-      display: block !important;
-      position: absolute; top: 0; left: 0; right: 0;
-      width: 100%; background: white; color: black;
-      padding: 12mm;
-      font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-      font-size: 10.5pt;
-    }
-    .btn-fab, header { display: none !important; }
-    @page { size: A4; margin: 0; }
-    .print-page-break { page-break-before: always; }
-  }
-  .print-area.preview {
-    display: block; background: white; color: black;
-    padding: 14px; margin: 0 -16px;
-    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-    font-size: 11px; box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  }
-  .print-area .doc-header {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    border-bottom: 2px solid black; padding-bottom: 8px; margin-bottom: 14px;
-  }
-  .print-area .doc-title { font-size: 18px; font-weight: 700; letter-spacing: 0.1em; }
-  .print-area .doc-meta { font-size: 10px; text-align: right; line-height: 1.6; }
-  .print-area .info-row { display: flex; gap: 12px; margin-bottom: 8px; font-size: 11px; flex-wrap: wrap; }
-  .print-area .info-row > div { flex: 1; min-width: 140px; }
-  .print-area .info-row .label { font-weight: 600; margin-right: 6px; color: #333; }
-  .print-area table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 10.5px; }
-  .print-area th, .print-area td {
-    border: 1px solid #333; padding: 4px 6px;
-    text-align: left; vertical-align: top;
-  }
-  .print-area th { background: #f0e8d8; font-weight: 600; text-align: center; font-size: 10px; }
-  .print-area .table-title {
-    font-size: 12px; font-weight: 700; margin: 12px 0 5px;
-    padding-left: 4px; border-left: 4px solid black;
-  }
-  .print-area .cell-change { background: #fffacd; }
-  .print-area .cell-warn { background: #ffd6d6; font-weight: 600; }
-  .print-area .cell-normal { background: white; }
-  .print-area .change-note {
-    font-size: 9.5px; color: #333; margin-top: 2px;
-    font-weight: 400; line-height: 1.3;
-  }
-  .print-area .notes {
-    font-size: 10px; margin-top: 8px; padding: 6px 8px; border: 1px solid #999;
-  }
-  .print-area .notes ul { margin: 3px 0; padding-left: 16px; }
-  .print-area .doc-footer {
-    margin-top: 14px; padding-top: 6px; border-top: 1px solid #999;
-    display: flex; justify-content: space-between; font-size: 9px; color: #555;
-  }
-  .print-controls {
-    position: sticky; top: 0; background: var(--bg);
-    padding: 10px 0; margin: -16px -16px 12px;
-    padding-left: 16px; padding-right: 16px;
-    border-bottom: 1px solid var(--line);
-    display: flex; gap: 8px; z-index: 5;
-  }
+/* 印刷スタイル */
+.print-area { display: none; }
+@media print {
+body * { visibility: hidden; }
+.print-area, .print-area * { visibility: visible; }
+.print-area {
+display: block !important;
+position: absolute; top: 0; left: 0; right: 0;
+width: 100%; background: white; color: black;
+padding: 12mm;
+font-family: “Hiragino Mincho ProN”, “Yu Mincho”, serif;
+font-size: 10.5pt;
+}
+.btn-fab, header { display: none !important; }
+@page { size: A4; margin: 0; }
+.print-page-break { page-break-before: always; }
+}
+.print-area.preview {
+display: block; background: white; color: black;
+padding: 14px; margin: 0 -16px;
+font-family: “Hiragino Mincho ProN”, “Yu Mincho”, serif;
+font-size: 11px; box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+.print-area .doc-header {
+display: flex; justify-content: space-between; align-items: flex-end;
+border-bottom: 2px solid black; padding-bottom: 8px; margin-bottom: 14px;
+}
+.print-area .doc-title { font-size: 18px; font-weight: 700; letter-spacing: 0.1em; }
+.print-area .doc-meta { font-size: 10px; text-align: right; line-height: 1.6; }
+.print-area .info-row { display: flex; gap: 12px; margin-bottom: 8px; font-size: 11px; flex-wrap: wrap; }
+.print-area .info-row > div { flex: 1; min-width: 140px; }
+.print-area .info-row .label { font-weight: 600; margin-right: 6px; color: #333; }
+.print-area table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 10.5px; }
+.print-area th, .print-area td {
+border: 1px solid #333; padding: 4px 6px;
+text-align: left; vertical-align: top;
+}
+.print-area th { background: #f0e8d8; font-weight: 600; text-align: center; font-size: 10px; }
+.print-area .table-title {
+font-size: 12px; font-weight: 700; margin: 12px 0 5px;
+padding-left: 4px; border-left: 4px solid black;
+}
+.print-area .cell-change { background: #fffacd; }
+.print-area .cell-warn { background: #ffd6d6; font-weight: 600; }
+.print-area .cell-normal { background: white; }
+.print-area .change-note {
+font-size: 9.5px; color: #333; margin-top: 2px;
+font-weight: 400; line-height: 1.3;
+}
+.print-area .notes {
+font-size: 10px; margin-top: 8px; padding: 6px 8px; border: 1px solid #999;
+}
+.print-area .notes ul { margin: 3px 0; padding-left: 16px; }
+.print-area .doc-footer {
+margin-top: 14px; padding-top: 6px; border-top: 1px solid #999;
+display: flex; justify-content: space-between; font-size: 9px; color: #555;
+}
+.print-controls {
+position: sticky; top: 0; background: var(–bg);
+padding: 10px 0; margin: -16px -16px 12px;
+padding-left: 16px; padding-right: 16px;
+border-bottom: 1px solid var(–line);
+display: flex; gap: 8px; z-index: 5;
+}
 </style>
+
 </head>
 <body>
 
@@ -455,7 +457,7 @@ const COLOR_PALETTE = [
   '#9333ea', '#6366f1', '#475569', '#666666'
 ];
 
-const STORAGE_KEY = 'allergy_app_v7';
+const STORAGE_KEY = 'allergy_app_v8';
 
 // 料理データを正規化: 文字列 → {name, subItems: []}
 function normalizeItem(item) {
@@ -579,6 +581,46 @@ function getItemName(item) {
 function getItemSubs(item) {
   if (typeof item === 'string') return [];
   return (item && item.subItems) || [];
+}
+
+// 全コースから過去に使った料理名を収集（中身付き or 単独で）
+function getDishHistory() {
+  const seen = new Map(); // name -> [subItems配列のリスト]
+  state.courses.forEach(c => {
+    c.items.forEach(item => {
+      const name = getItemName(item);
+      const subs = getItemSubs(item);
+      if (!name) return;
+      if (!seen.has(name)) seen.set(name, []);
+      // 中身付きパターンを記録（重複は除く）
+      const subsKey = subs.join('|');
+      const list = seen.get(name);
+      if (!list.some(s => s.join('|') === subsKey)) {
+        list.push([...subs]);
+      }
+    });
+  });
+  // 配列化
+  const result = [];
+  seen.forEach((subsList, name) => {
+    subsList.forEach(subs => {
+      result.push({ name, subItems: subs });
+    });
+  });
+  return result;
+}
+
+// 全コースから過去に使った副品名を収集（重複なし）
+function getSubItemHistory() {
+  const seen = new Set();
+  state.courses.forEach(c => {
+    c.items.forEach(item => {
+      getItemSubs(item).forEach(s => {
+        if (s && s.trim()) seen.add(s.trim());
+      });
+    });
+  });
+  return Array.from(seen).sort();
 }
 
 function getTourCourseName(tour) {
@@ -903,6 +945,7 @@ function renderSettings(main) {
       <div class="course-card">
         <div class="course-card-header">
           <input class="course-card-title-input" data-course-name="${c.id}" value="${escHtml(c.name)}" placeholder="例：市場小路美食コース">
+          <button type="button" class="btn btn-outline btn-sm" data-duplicate-course="${c.id}" title="複製" style="padding:4px 8px;font-size:11px;flex-shrink:0;">複製</button>
           <button type="button" class="course-edit-remove" data-remove-course="${c.id}" title="削除">×</button>
         </div>
         <div id="courseItems-${c.id}">
@@ -927,14 +970,18 @@ function renderSettings(main) {
                     `).join('')}
                   </div>
                 ` : ''}
-                <div style="padding-left:38px;margin-top:4px;">
+                <div style="padding-left:38px;margin-top:4px;display:flex;gap:6px;flex-wrap:wrap;">
                   <button type="button" class="btn btn-outline btn-sm" data-add-sub data-course-id="${c.id}" data-item-idx="${i}" style="font-size:11px;padding:3px 8px;color:var(--ink-mute);">＋ 中身を追加</button>
+                  <button type="button" class="btn btn-outline btn-sm" data-pick-sub data-course-id="${c.id}" data-item-idx="${i}" style="font-size:11px;padding:3px 8px;color:var(--ink-mute);">📋 履歴から選ぶ</button>
                 </div>
               </div>
             `;
           }).join('')}
         </div>
-        <button type="button" class="btn btn-outline btn-sm" data-add-item="${c.id}" style="margin-top:8px;">＋ 料理を追加</button>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-outline btn-sm" data-add-item="${c.id}">＋ 料理を追加</button>
+          <button type="button" class="btn btn-outline btn-sm" data-pick-item="${c.id}">📋 履歴から選ぶ</button>
+        </div>
       </div>
     `).join('')}
     <button type="button" class="btn btn-outline btn-block" id="addCourseBtn" style="margin-top:8px;">＋ 新しいコースを追加</button>
@@ -980,7 +1027,7 @@ function renderSettings(main) {
       </div>
     </div>
 
-    <div style="font-size:11px;color:var(--ink-mute);text-align:center;margin-top:24px;">市場小路 アレルギー管理 v7.0</div>
+    <div style="font-size:11px;color:var(--ink-mute);text-align:center;margin-top:24px;">市場小路 アレルギー管理 v8.0</div>
   `;
 
   main.innerHTML = html;
@@ -1178,6 +1225,46 @@ function bindSettingsEvents() {
       });
     });
   });
+
+  // 料理を履歴から選ぶ
+  document.querySelectorAll('[data-pick-item]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cid = btn.dataset.pickItem;
+      openPickItemFromHistory(cid);
+    });
+  });
+
+  // 中身を履歴から選ぶ
+  document.querySelectorAll('[data-pick-sub]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cid = btn.dataset.courseId;
+      const idx = parseInt(btn.dataset.itemIdx);
+      openPickSubFromHistory(cid, idx);
+    });
+  });
+  // コースの複製
+  document.querySelectorAll('[data-duplicate-course]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cid = btn.dataset.duplicateCourse;
+      const c = getCourse(cid);
+      if (!c) return;
+      showPrompt('コースを複製', `「${c.name}」を複製します。新しいコース名を入力してください`, '', val => {
+        if (val && val.trim()) {
+          const newCourse = {
+            id: uid(),
+            name: val.trim(),
+            items: c.items.map(item => ({
+              name: getItemName(item),
+              subItems: [...getItemSubs(item)]
+            }))
+          };
+          state.courses.push(newCourse);
+          saveData(); render();
+        }
+      }, `${c.name}（コピー）`);
+    });
+  });
+
   document.querySelectorAll('[data-remove-course]').forEach(btn => {
     btn.addEventListener('click', () => {
       const cid = btn.dataset.removeCourse;
@@ -1263,6 +1350,133 @@ function openColorPicker(companyId) {
   showModal();
 }
 
+// 履歴から料理を選んで追加（中身付きも可）
+function openPickItemFromHistory(courseId) {
+  const c = getCourse(courseId);
+  if (!c) return;
+  const history = getDishHistory();
+
+  // 現在のコースに既に入ってる料理は除外しない（重複もOK）
+  if (history.length === 0) {
+    showAlert('まだ履歴がありません。\n「＋ 料理を追加」から最初の料理を登録してください。');
+    return;
+  }
+
+  document.getElementById('modalTitle').textContent = `料理を履歴から選ぶ`;
+  document.getElementById('modalBody').innerHTML = `
+    <div style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">
+      過去に登録した料理から選びます。中身付きパターンは「└」付きで表示されます。タップで「${escHtml(c.name)}」に追加されます。
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      ${history.map((h, i) => `
+        <button type="button" class="card card-clickable" data-pick-history-idx="${i}" style="margin:0;padding:10px 14px;text-align:left;border-left:3px solid var(--accent);cursor:pointer;font-family:inherit;width:100%;">
+          <div style="font-size:14px;font-weight:600;">${escHtml(h.name)}</div>
+          ${h.subItems.length > 0 ? `
+            <div style="padding-left:12px;margin-top:4px;">
+              ${h.subItems.map(s => `<div style="font-size:12px;color:var(--ink-soft);">└ ${escHtml(s)}</div>`).join('')}
+            </div>
+          ` : '<div style="font-size:11px;color:var(--ink-mute);margin-top:2px;">中身なし</div>'}
+        </button>
+      `).join('')}
+    </div>
+    <div class="dialog-actions" style="margin-top:14px;">
+      <button type="button" class="btn btn-outline" id="btn-cancel-pick">キャンセル</button>
+    </div>
+  `;
+
+  document.querySelectorAll('[data-pick-history-idx]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.pickHistoryIdx);
+      const picked = history[idx];
+      c.items.push({
+        name: picked.name,
+        subItems: [...picked.subItems]
+      });
+      // ツアー側の各種配列も追加
+      state.tours.forEach(t => {
+        if (t.courseId === courseId) {
+          (t.groups || []).forEach(g => {
+            if (!g.served) g.served = [];
+            if (!g.dishStatus) g.dishStatus = [];
+            if (!g.changeNotes) g.changeNotes = [];
+            g.served.push(false);
+            g.dishStatus.push('normal');
+            g.changeNotes.push('');
+          });
+        }
+      });
+      saveData(); closeModal(); render();
+    });
+  });
+  document.getElementById('btn-cancel-pick').addEventListener('click', closeModal);
+  showModal();
+}
+
+// 履歴から中身を選んで追加
+function openPickSubFromHistory(courseId, itemIdx) {
+  const c = getCourse(courseId);
+  if (!c || !c.items[itemIdx]) return;
+  const item = normalizeItem(c.items[itemIdx]);
+  c.items[itemIdx] = item;
+  const history = getSubItemHistory();
+  // 既に入ってる中身を除外
+  const available = history.filter(s => !item.subItems.includes(s));
+
+  if (available.length === 0) {
+    if (history.length === 0) {
+      showAlert('まだ中身の履歴がありません。\n「＋ 中身を追加」から最初の中身を登録してください。');
+    } else {
+      showAlert('追加できる中身がありません。\n（履歴の中身は全てこの料理に追加済みです）');
+    }
+    return;
+  }
+
+  // 選択状態を管理
+  const selected = new Set();
+
+  document.getElementById('modalTitle').textContent = `中身を履歴から選ぶ`;
+
+  function paint() {
+    document.getElementById('modalBody').innerHTML = `
+      <div style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">
+        「${escHtml(item.name)}」に追加する中身を選択（複数選択可）
+      </div>
+      <div class="chip-grid" style="margin-bottom:14px;">
+        ${available.map((s, i) => `
+          <button type="button" class="chip ${selected.has(i) ? 'selected' : ''}" data-pick-sub-idx="${i}">${escHtml(s)}</button>
+        `).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--ink-mute);margin-bottom:14px;">
+        ${selected.size}件選択中
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-outline" id="btn-cancel-pick-sub">キャンセル</button>
+        <button type="button" class="btn btn-accent" id="btn-confirm-pick-sub" ${selected.size === 0 ? 'disabled' : ''}>追加（${selected.size}件）</button>
+      </div>
+    `;
+
+    document.querySelectorAll('[data-pick-sub-idx]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.pickSubIdx);
+        if (selected.has(idx)) selected.delete(idx);
+        else selected.add(idx);
+        paint();
+      });
+    });
+
+    document.getElementById('btn-cancel-pick-sub').addEventListener('click', closeModal);
+    document.getElementById('btn-confirm-pick-sub').addEventListener('click', () => {
+      Array.from(selected).sort((a, b) => a - b).forEach(i => {
+        item.subItems.push(available[i]);
+      });
+      saveData(); closeModal(); render();
+    });
+  }
+
+  paint();
+  showModal();
+}
+
 function attachTourCardEvents() {
   document.querySelectorAll('[data-tour-id]').forEach(el => {
     el.addEventListener('click', () => {
@@ -1328,1178 +1542,1107 @@ function openTourEdit(tourId) {
     <div class="field">
       <label class="field-label">備考</label>
       <textarea class="field-textarea" id="f-note" placeholder="連絡事項など">${escHtml(tour.note)}</textarea>
-    </div>
-    <div class="dialog-actions">
-      ${!isNew ? `<button type="button" class="btn btn-outline" id="btn-delete-tour" style="color:var(--danger);border-color:var(--danger);">削除</button>` : ''}
-      <button type="button" class="btn btn-accent" id="btn-save-tour">${isNew ? '追加' : '保存'}</button>
-    </div>
-  `;
 
-  document.getElementById('btn-save-tour').addEventListener('click', () => {
-    const newCourseId = document.getElementById('f-course').value;
-    const courseChanged = !isNew && newCourseId !== tour.courseId;
+```
+</div>
+<div class="dialog-actions">
+  ${!isNew ? `<button type="button" class="btn btn-outline" id="btn-delete-tour" style="color:var(--danger);border-color:var(--danger);">削除</button>` : ''}
+  <button type="button" class="btn btn-accent" id="btn-save-tour">${isNew ? '追加' : '保存'}</button>
+</div>
+```
 
-    tour.companyId = document.getElementById('f-company').value;
-    tour.name = document.getElementById('f-name').value.trim();
-    tour.courseId = newCourseId;
-    if (tour.customCourseItems) delete tour.customCourseItems;
-    tour.date = document.getElementById('f-date').value;
-    tour.time = readTimeFromPicker('f-hour', 'f-min');
-    tour.totalGuests = parseInt(document.getElementById('f-total').value) || 0;
-    tour.note = document.getElementById('f-note').value.trim();
+`;
 
-    // コースが変わった場合、グループの提供状態をリセット（長さが合わなくなるため）
-    if (courseChanged) {
-      const newCourse = getCourse(newCourseId);
-      if (newCourse) {
-        tour.groups.forEach(g => {
-          g.served = newCourse.items.map(() => false);
-          g.dishStatus = newCourse.items.map(() => 'normal');
-          g.changeNotes = newCourse.items.map(() => '');
-        });
-      }
-    }
+document.getElementById(‘btn-save-tour’).addEventListener(‘click’, () => {
+const newCourseId = document.getElementById(‘f-course’).value;
+const courseChanged = !isNew && newCourseId !== tour.courseId;
 
-    if (isNew) state.tours.push(tour);
-    saveData();
-    closeModal();
-    render();
-    if (isNew) {
-      currentTourId = tour.id;
-      openTourDetail();
-    }
-  });
+```
+tour.companyId = document.getElementById('f-company').value;
+tour.name = document.getElementById('f-name').value.trim();
+tour.courseId = newCourseId;
+if (tour.customCourseItems) delete tour.customCourseItems;
+tour.date = document.getElementById('f-date').value;
+tour.time = readTimeFromPicker('f-hour', 'f-min');
+tour.totalGuests = parseInt(document.getElementById('f-total').value) || 0;
+tour.note = document.getElementById('f-note').value.trim();
 
-  if (!isNew) {
-    document.getElementById('btn-delete-tour').addEventListener('click', () => {
-      showConfirm('削除確認', `「${tour.name || '無題のツアー'}」を削除しますか？`, ok => {
-        if (ok) {
-          state.tours = state.tours.filter(t => t.id !== tour.id);
-          saveData(); closeModal(); render();
-        }
-      });
+// コースが変わった場合、グループの提供状態をリセット（長さが合わなくなるため）
+if (courseChanged) {
+  const newCourse = getCourse(newCourseId);
+  if (newCourse) {
+    tour.groups.forEach(g => {
+      g.served = newCourse.items.map(() => false);
+      g.dishStatus = newCourse.items.map(() => 'normal');
+      g.changeNotes = newCourse.items.map(() => '');
     });
   }
+}
 
-  showModal();
+if (isNew) state.tours.push(tour);
+saveData();
+closeModal();
+render();
+if (isNew) {
+  currentTourId = tour.id;
+  openTourDetail();
+}
+```
+
+});
+
+if (!isNew) {
+document.getElementById(‘btn-delete-tour’).addEventListener(‘click’, () => {
+showConfirm(‘削除確認’, `「${tour.name || '無題のツアー'}」を削除しますか？`, ok => {
+if (ok) {
+state.tours = state.tours.filter(t => t.id !== tour.id);
+saveData(); closeModal(); render();
+}
+});
+});
+}
+
+showModal();
 }
 
 function openTourDetail() {
-  const tour = state.tours.find(t => t.id === currentTourId);
-  if (!tour) return;
+const tour = state.tours.find(t => t.id === currentTourId);
+if (!tour) return;
 
-  const company = getCompany(tour.companyId);
-  const course = getTourCourseItems(tour);
-  const courseName = getTourCourseName(tour);
-  const allergyTotal = totalGroupCount(tour);
-  const generalTotal = generalGuestCount(tour);
+const company = getCompany(tour.companyId);
+const course = getTourCourseItems(tour);
+const courseName = getTourCourseName(tour);
+const allergyTotal = totalGroupCount(tour);
+const generalTotal = generalGuestCount(tour);
 
-  document.getElementById('modalTitle').textContent = tour.name || '（無題のツアー）';
+document.getElementById(‘modalTitle’).textContent = tour.name || ‘（無題のツアー）’;
 
-  document.getElementById('modalBody').innerHTML = `
-    <div class="card tour-card" style="margin-bottom:16px;border-left-color:${company.color};">
-      <div class="tour-company">${escHtml(company.name)}</div>
-      <div class="tour-meta" style="margin-top:6px;">
-        ${formatDate(tour.date)}（${dayOfWeek(tour.date)}） ${escHtml(tour.time) || ''}
-      </div>
-      <div style="font-size:13px;color:var(--ink-soft);margin-top:4px;">コース：${escHtml(courseName)}（${course.length}品）</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-        <span class="group-summary-pill">全体 ${tour.totalGuests || 0}名</span>
-        ${allergyTotal > 0 ? `<span class="group-summary-pill allergy">アレルギー対応 ${allergyTotal}名</span>` : ''}
-        ${generalTotal > 0 ? `<span class="group-summary-pill">一般 ${generalTotal}名</span>` : ''}
-      </div>
-      ${tour.note ? `<div style="font-size:13px;color:var(--ink-soft);margin-top:8px;padding:8px;background:var(--bg-soft);border-radius:3px;">${escHtml(tour.note)}</div>` : ''}
-      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
-        <button type="button" class="btn btn-outline btn-sm" id="btn-edit-tour">情報編集</button>
-        <button type="button" class="btn btn-outline btn-sm" id="btn-print-tour">印刷（指示書）</button>
-      </div>
+document.getElementById(‘modalBody’).innerHTML = `<div class="card tour-card" style="margin-bottom:16px;border-left-color:${company.color};"> <div class="tour-company">${escHtml(company.name)}</div> <div class="tour-meta" style="margin-top:6px;"> ${formatDate(tour.date)}（${dayOfWeek(tour.date)}） ${escHtml(tour.time) || ''} </div> <div style="font-size:13px;color:var(--ink-soft);margin-top:4px;">コース：${escHtml(courseName)}（${course.length}品）</div> <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"> <span class="group-summary-pill">全体 ${tour.totalGuests || 0}名</span> ${allergyTotal > 0 ?`<span class="group-summary-pill allergy">アレルギー対応 ${allergyTotal}名</span>`: ''} ${generalTotal > 0 ?`<span class="group-summary-pill">一般 ${generalTotal}名</span>`: ''} </div> ${tour.note ?`<div style="font-size:13px;color:var(--ink-soft);margin-top:8px;padding:8px;background:var(--bg-soft);border-radius:3px;">${escHtml(tour.note)}</div>` : ‘’}
+<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
+<button type="button" class="btn btn-outline btn-sm" id="btn-edit-tour">情報編集</button>
+<button type="button" class="btn btn-outline btn-sm" id="btn-print-tour">印刷（指示書）</button>
+</div>
+</div>
+
+```
+<div class="section-title" style="margin-top:0;">
+  アレルギー対応グループ
+  <span class="count">${(tour.groups || []).length}グループ / ${allergyTotal}名</span>
+</div>
+
+<div id="group-list">
+  ${(tour.groups || []).length === 0 ? `
+    <div class="empty" style="padding:30px 20px;">
+      <div class="empty-text">アレルギー対応のグループを追加してください</div>
     </div>
+  ` : (tour.groups || []).map((g, i) => renderGroupRow(g, i, course)).join('')}
+</div>
 
-    <div class="section-title" style="margin-top:0;">
-      アレルギー対応グループ
-      <span class="count">${(tour.groups || []).length}グループ / ${allergyTotal}名</span>
-    </div>
+<button type="button" class="btn btn-outline btn-block" id="btn-add-group" style="margin-top:12px;">＋ アレルギーグループを追加</button>
+```
 
-    <div id="group-list">
-      ${(tour.groups || []).length === 0 ? `
-        <div class="empty" style="padding:30px 20px;">
-          <div class="empty-text">アレルギー対応のグループを追加してください</div>
-        </div>
-      ` : (tour.groups || []).map((g, i) => renderGroupRow(g, i, course)).join('')}
-    </div>
+`;
 
-    <button type="button" class="btn btn-outline btn-block" id="btn-add-group" style="margin-top:12px;">＋ アレルギーグループを追加</button>
-  `;
+document.getElementById(‘btn-edit-tour’).addEventListener(‘click’, () => openTourEdit(tour.id));
+document.getElementById(‘btn-print-tour’).addEventListener(‘click’, openPrintPreview);
+document.getElementById(‘btn-add-group’).addEventListener(‘click’, () => openGroupEdit(null));
 
-  document.getElementById('btn-edit-tour').addEventListener('click', () => openTourEdit(tour.id));
-  document.getElementById('btn-print-tour').addEventListener('click', openPrintPreview);
-  document.getElementById('btn-add-group').addEventListener('click', () => openGroupEdit(null));
+document.querySelectorAll(’[data-group-idx]’).forEach(el => {
+el.addEventListener(‘click’, e => {
+if (e.target.closest(’[data-action]’)) return;
+const idx = parseInt(el.dataset.groupIdx);
+openGroupServe(idx);
+});
+});
+document.querySelectorAll(’[data-action=“edit-group”]’).forEach(btn => {
+btn.addEventListener(‘click’, e => {
+e.stopPropagation();
+const idx = parseInt(btn.dataset.groupIndex);
+openGroupEdit(idx);
+});
+});
 
-  document.querySelectorAll('[data-group-idx]').forEach(el => {
-    el.addEventListener('click', e => {
-      if (e.target.closest('[data-action]')) return;
-      const idx = parseInt(el.dataset.groupIdx);
-      openGroupServe(idx);
-    });
-  });
-  document.querySelectorAll('[data-action="edit-group"]').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const idx = parseInt(btn.dataset.groupIndex);
-      openGroupEdit(idx);
-    });
-  });
-
-  showModal();
+showModal();
 }
 
 function renderGroupRow(g, i, course) {
-  const allergyText = (g.allergies && g.allergies.length) ? g.allergies.join('・') : '記入なし';
-  const served = g.served ? g.served.filter(Boolean).length : 0;
-  const total = course.length;
-  const isComplete = served === total && total > 0;
-  const changeCount = (g.changeNotes || []).filter(n => n && n.trim()).length;
+const allergyText = (g.allergies && g.allergies.length) ? g.allergies.join(’・’) : ‘記入なし’;
+const served = g.served ? g.served.filter(Boolean).length : 0;
+const total = course.length;
+const isComplete = served === total && total > 0;
+const changeCount = (g.changeNotes || []).filter(n => n && n.trim()).length;
 
-  return `<div class="card card-clickable" data-group-idx="${i}" style="${isComplete ? 'background:var(--ok-bg);border-color:#86efac;' : ''}">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;background:${isComplete ? 'var(--ok)' : 'var(--bg-soft)'};color:${isComplete ? 'white' : 'var(--ink)'};border:1px solid ${isComplete ? 'var(--ok)' : 'var(--line-strong)'};">
-        ${isComplete ? '✓' : (g.count || 1) + '名'}
-      </div>
-      <div style="flex:1;min-width:0;">
-        ${g.label ? `<div style="font-size:12px;color:var(--ink-mute);margin-bottom:1px;">${escHtml(g.label)}</div>` : ''}
-        <div style="font-size:14px;font-weight:600;margin-bottom:2px;">
-          ${escHtml(allergyText)}
-        </div>
-        <div style="font-size:11px;color:var(--ink-mute);">
-          ${g.contamOk === true ? 'コンタミ可' : g.contamOk === false ? 'コンタミ不可' : 'コンタミ未確認'}
-          ・ 変更指示 ${changeCount}品 ・ 提供 ${served}/${total}
-        </div>
-      </div>
-      <button type="button" class="btn btn-outline btn-sm" data-action="edit-group" data-group-index="${i}">編集</button>
-    </div>
+return `<div class="card card-clickable" data-group-idx="${i}" style="${isComplete ? 'background:var(--ok-bg);border-color:#86efac;' : ''}"> <div style="display:flex;align-items:center;gap:10px;"> <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;background:${isComplete ? 'var(--ok)' : 'var(--bg-soft)'};color:${isComplete ? 'white' : 'var(--ink)'};border:1px solid ${isComplete ? 'var(--ok)' : 'var(--line-strong)'};"> ${isComplete ? '✓' : (g.count || 1) + '名'} </div> <div style="flex:1;min-width:0;"> ${g.label ? `<div style="font-size:12px;color:var(--ink-mute);margin-bottom:1px;">${escHtml(g.label)}</div>` : ‘’}
+<div style="font-size:14px;font-weight:600;margin-bottom:2px;">
+${escHtml(allergyText)}
+</div>
+<div style="font-size:11px;color:var(--ink-mute);">
+${g.contamOk === true ? ‘コンタミ可’ : g.contamOk === false ? ‘コンタミ不可’ : ‘コンタミ未確認’}
+・ 変更指示 ${changeCount}品 ・ 提供 ${served}/${total}
+</div>
+</div>
+<button type="button" class="btn btn-outline btn-sm" data-action="edit-group" data-group-index="${i}">編集</button>
+</div>
+
   </div>`;
 }
 
 function openGroupEdit(groupIdx) {
-  const tour = state.tours.find(t => t.id === currentTourId);
-  if (!tour) return;
-  const course = getTourCourseItems(tour);
+const tour = state.tours.find(t => t.id === currentTourId);
+if (!tour) return;
+const course = getTourCourseItems(tour);
 
-  const isNew = groupIdx === null;
-  const group = isNew ? {
-    id: uid(),
-    label: '',
-    count: 1,
-    allergies: [],
-    contamOk: undefined,
-    note: '',
-    served: course.map(() => false),
-    dishStatus: course.map(() => 'normal'),
-    changeNotes: course.map(() => ''),
-    subDishStatus: {},
-    subChangeNotes: {}
-  } : { ...tour.groups[groupIdx], allergies: [...(tour.groups[groupIdx].allergies || [])] };
+const isNew = groupIdx === null;
+const group = isNew ? {
+id: uid(),
+label: ‘’,
+count: 1,
+allergies: [],
+contamOk: undefined,
+note: ‘’,
+served: course.map(() => false),
+dishStatus: course.map(() => ‘normal’),
+changeNotes: course.map(() => ‘’),
+subDishStatus: {},
+subChangeNotes: {}
+} : { …tour.groups[groupIdx], allergies: […(tour.groups[groupIdx].allergies || [])] };
 
-  if (!group.changeNotes) group.changeNotes = course.map(() => '');
-  while (group.changeNotes.length < course.length) group.changeNotes.push('');
-  if (!group.subDishStatus) group.subDishStatus = {};
-  if (!group.subChangeNotes) group.subChangeNotes = {};
+if (!group.changeNotes) group.changeNotes = course.map(() => ‘’);
+while (group.changeNotes.length < course.length) group.changeNotes.push(’’);
+if (!group.subDishStatus) group.subDishStatus = {};
+if (!group.subChangeNotes) group.subChangeNotes = {};
 
-  let tempAllergens = group.allergies.filter(a =>
-    !DEFAULT_ALLERGENS.required.includes(a) &&
-    !DEFAULT_ALLERGENS.recommended.includes(a) &&
-    !state.customAllergens.includes(a)
-  );
+let tempAllergens = group.allergies.filter(a =>
+!DEFAULT_ALLERGENS.required.includes(a) &&
+!DEFAULT_ALLERGENS.recommended.includes(a) &&
+!state.customAllergens.includes(a)
+);
 
-  document.getElementById('modalTitle').textContent = isNew ? 'アレルギーグループを追加' : 'グループを編集';
+document.getElementById(‘modalTitle’).textContent = isNew ? ‘アレルギーグループを追加’ : ‘グループを編集’;
 
-  function paint() {
-    document.getElementById('modalBody').innerHTML = `
-      <div class="field-row">
-        <div class="field" style="flex:0 0 100px;">
-          <label class="field-label">人数</label>
-          <input class="field-input" type="number" min="1" id="g-count" value="${group.count || 1}">
-        </div>
-        <div class="field">
-          <label class="field-label">識別名（任意）</label>
-          <input class="field-input" id="g-label" value="${escHtml(group.label)}" placeholder="例：田中様">
-        </div>
-      </div>
+function paint() {
+document.getElementById(‘modalBody’).innerHTML = `
+<div class="field-row">
+<div class="field" style="flex:0 0 100px;">
+<label class="field-label">人数</label>
+<input class="field-input" type="number" min="1" id="g-count" value="${group.count || 1}">
+</div>
+<div class="field">
+<label class="field-label">識別名（任意）</label>
+<input class="field-input" id="g-label" value="${escHtml(group.label)}" placeholder="例：田中様">
+</div>
+</div>
 
-      <div class="field">
-        <label class="field-label">アレルギー項目（複数選択可）</label>
-        <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">特定原材料 8品目</div>
-        <div class="chip-grid" style="margin-bottom:10px;">
-          ${DEFAULT_ALLERGENS.required.map(a => `
-            <button type="button" class="chip special-7 ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}">${a}</button>
-          `).join('')}
-        </div>
-        <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">特定原材料に準ずるもの 20品目</div>
-        <div class="chip-grid" style="margin-bottom:10px;">
-          ${DEFAULT_ALLERGENS.recommended.map(a => `
-            <button type="button" class="chip ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}">${a}</button>
-          `).join('')}
-        </div>
-        ${state.customAllergens.length > 0 ? `
-          <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">登録済み追加項目</div>
-          <div class="chip-grid" style="margin-bottom:10px;">
-            ${state.customAllergens.map(a => `
-              <button type="button" class="chip ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}">${escHtml(a)}</button>
-            `).join('')}
-          </div>` : ''}
-        ${tempAllergens.length > 0 ? `
-          <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">このグループ用（一時）</div>
-          <div class="chip-grid" style="margin-bottom:10px;">
-            ${tempAllergens.map(a => `
-              <button type="button" class="chip ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}" style="border-color:var(--accent);">${escHtml(a)}</button>
-            `).join('')}
-          </div>` : ''}
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button type="button" class="chip chip-add" id="g-add-temp">＋ このグループだけ</button>
-          <button type="button" class="chip chip-add" id="g-add-permanent">＋ 設定にも保存</button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="field-label">コンタミネーション</label>
-        <div class="segment">
-          <button type="button" data-contam="true" class="${group.contamOk === true ? 'active' : ''}">可</button>
-          <button type="button" data-contam="false" class="${group.contamOk === false ? 'active' : ''}">不可</button>
-          <button type="button" data-contam="undef" class="${group.contamOk === undefined ? 'active' : ''}">未確認</button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="field-label">各料理の変更指示</label>
-        <div style="font-size:11px;color:var(--ink-mute);margin-bottom:8px;">
-          状態を選択し、具体的な変更内容があれば記入。中身がある料理は、料理レベル・中身レベルどちらでも指示可能。
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          ${course.map((item, i) => {
-            const dishName = getItemName(item);
-            const subs = getItemSubs(item);
-            const status = group.dishStatus[i] || 'normal';
-            const bgColor = status === 'change' ? '#fffbeb' :
-                          status === 'warn' ? 'var(--danger-bg)' : 'white';
-            const borderColor = status === 'change' ? '#fde68a' :
-                              status === 'warn' ? '#fecaca' : 'var(--line)';
-            return `
-              <div style="padding:10px;background:${bgColor};border:1px solid ${borderColor};border-radius:4px;">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                  <div style="font-size:11px;font-weight:600;color:var(--ink-mute);min-width:30px;">${String(i+1).padStart(2,'0')}</div>
-                  <div style="flex:1;font-size:14px;font-weight:500;">${escHtml(dishName)}</div>
-                  <select data-dish-status="${i}" style="padding:4px 8px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:12px;">
-                    <option value="normal" ${status==='normal'?'selected':''}>変更なし</option>
-                    <option value="change" ${status==='change'?'selected':''}>変更あり</option>
-                    <option value="warn" ${status==='warn'?'selected':''}>要注意/なし</option>
-                  </select>
-                </div>
-                ${status !== 'normal' ? `
-                  <textarea data-dish-note="${i}"
-                            placeholder="${status === 'change' ? '料理全体への変更指示（例：卵を抜いて調理）' : '提供しない理由など（例：豚肉メインのため提供なし）'}"
-                            style="width:100%;padding:6px 8px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:13px;min-height:42px;resize:vertical;">${escHtml(group.changeNotes[i] || '')}</textarea>
-                ` : ''}
-                ${subs.length > 0 ? `
-                  <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--line-strong);">
-                    <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">中身ごとの指示</div>
-                    ${subs.map((sub, si) => {
-                      const subKey = `${i}_${si}`;
-                      const subStatus = (group.subDishStatus && group.subDishStatus[subKey]) || 'normal';
-                      const subNote = (group.subChangeNotes && group.subChangeNotes[subKey]) || '';
-                      const subBg = subStatus === 'change' ? '#fffbeb' :
-                                  subStatus === 'warn' ? 'var(--danger-bg)' : 'white';
-                      const subBorder = subStatus === 'change' ? '#fde68a' :
-                                      subStatus === 'warn' ? '#fecaca' : 'var(--line)';
-                      return `
-                        <div style="padding:6px 8px;background:${subBg};border:1px solid ${subBorder};border-radius:3px;margin-bottom:4px;">
-                          <div style="display:flex;align-items:center;gap:6px;">
-                            <span style="font-size:11px;color:var(--ink-mute);">└</span>
-                            <div style="flex:1;font-size:13px;">${escHtml(sub)}</div>
-                            <select data-sub-status="${subKey}" style="padding:3px 6px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:11px;">
-                              <option value="normal" ${subStatus==='normal'?'selected':''}>変更なし</option>
-                              <option value="change" ${subStatus==='change'?'selected':''}>変更あり</option>
-                              <option value="warn" ${subStatus==='warn'?'selected':''}>要注意/なし</option>
-                            </select>
-                          </div>
-                          ${subStatus !== 'normal' ? `
-                            <textarea data-sub-note="${subKey}"
-                                      placeholder="この中身への指示"
-                                      style="width:100%;padding:4px 6px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:12px;min-height:36px;resize:vertical;margin-top:4px;">${escHtml(subNote)}</textarea>
-                          ` : ''}
-                        </div>
-                      `;
-                    }).join('')}
-                  </div>
-                ` : ''}
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="field-label">備考</label>
-        <textarea class="field-textarea" id="g-note" placeholder="特記事項">${escHtml(group.note)}</textarea>
-      </div>
-
-      <div class="dialog-actions">
-        ${!isNew ? `<button type="button" class="btn btn-outline" id="btn-delete-group" style="color:var(--danger);border-color:var(--danger);">削除</button>` : ''}
-        <button type="button" class="btn btn-accent" id="btn-save-group">${isNew ? '追加' : '保存'}</button>
-      </div>
-    `;
-    bind();
-  }
-
-  function captureForm() {
-    const c = document.getElementById('g-count');
-    const l = document.getElementById('g-label');
-    const n = document.getElementById('g-note');
-    if (c) group.count = parseInt(c.value) || 1;
-    if (l) group.label = l.value;
-    if (n) group.note = n.value;
-    // 各料理のメモ
-    course.forEach((_, i) => {
-      const t = document.querySelector(`[data-dish-note="${i}"]`);
-      if (t) group.changeNotes[i] = t.value;
-    });
-    // 副品のメモ
-    if (!group.subChangeNotes) group.subChangeNotes = {};
-    document.querySelectorAll('[data-sub-note]').forEach(t => {
-      group.subChangeNotes[t.dataset.subNote] = t.value;
-    });
-  }
-
-  function bind() {
-    document.querySelectorAll('[data-allergen]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const a = btn.dataset.allergen;
-        const idx = group.allergies.indexOf(a);
-        if (idx >= 0) group.allergies.splice(idx, 1);
-        else group.allergies.push(a);
-        btn.classList.toggle('selected');
-      });
-    });
-
-    document.getElementById('g-add-temp').addEventListener('click', () => {
-      captureForm();
-      showPrompt('このグループだけに追加', '設定には保存されません', '例：マンゴー', val => {
-        if (val && val.trim()) {
-          const trimmed = val.trim();
-          if (!tempAllergens.includes(trimmed)) tempAllergens.push(trimmed);
-          if (!group.allergies.includes(trimmed)) group.allergies.push(trimmed);
-          paint();
-        }
-      });
-    });
-
-    document.getElementById('g-add-permanent').addEventListener('click', () => {
-      captureForm();
-      showPrompt('設定に保存して追加', '次回以降も使えるようになります', '例：マンゴー', val => {
-        if (val && val.trim()) {
-          const trimmed = val.trim();
-          if (!state.customAllergens.includes(trimmed)) state.customAllergens.push(trimmed);
-          if (!group.allergies.includes(trimmed)) group.allergies.push(trimmed);
-          saveData(); paint();
-        }
-      });
-    });
-
-    document.querySelectorAll('[data-contam]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const v = btn.dataset.contam;
-        group.contamOk = v === 'true' ? true : v === 'false' ? false : undefined;
-        document.querySelectorAll('[data-contam]').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
-    document.querySelectorAll('[data-dish-status]').forEach(sel => {
-      sel.addEventListener('change', e => {
-        const idx = parseInt(e.target.dataset.dishStatus);
-        captureForm();
-        group.dishStatus[idx] = e.target.value;
-        if (e.target.value === 'normal') group.changeNotes[idx] = '';
-        paint();
-      });
-    });
-
-    document.querySelectorAll('[data-dish-note]').forEach(t => {
-      t.addEventListener('input', e => {
-        const idx = parseInt(e.target.dataset.dishNote);
-        group.changeNotes[idx] = e.target.value;
-      });
-    });
-
-    // 副品のステータス変更
-    document.querySelectorAll('[data-sub-status]').forEach(sel => {
-      sel.addEventListener('change', e => {
-        const key = e.target.dataset.subStatus;
-        captureForm();
-        if (!group.subDishStatus) group.subDishStatus = {};
-        group.subDishStatus[key] = e.target.value;
-        if (e.target.value === 'normal' && group.subChangeNotes) {
-          delete group.subChangeNotes[key];
-        }
-        paint();
-      });
-    });
-
-    document.querySelectorAll('[data-sub-note]').forEach(t => {
-      t.addEventListener('input', e => {
-        const key = e.target.dataset.subNote;
-        if (!group.subChangeNotes) group.subChangeNotes = {};
-        group.subChangeNotes[key] = e.target.value;
-      });
-    });
-
-    document.getElementById('btn-save-group').addEventListener('click', () => {
-      captureForm();
-      if (group.count < 1) { showAlert('人数は1名以上必要です'); return; }
-      while (group.served.length < course.length) group.served.push(false);
-      while (group.dishStatus.length < course.length) group.dishStatus.push('normal');
-      while (group.changeNotes.length < course.length) group.changeNotes.push('');
-
-      if (!tour.groups) tour.groups = [];
-      if (isNew) tour.groups.push(group);
-      else tour.groups[groupIdx] = group;
-
-      const newAllergyTotal = totalGroupCount(tour);
-      if (newAllergyTotal > tour.totalGuests) {
-        showConfirm('人数の確認',
-          `アレルギー対応の合計（${newAllergyTotal}名）が全体人数（${tour.totalGuests}名）を超えています。\n全体人数を ${newAllergyTotal} 名に更新しますか？`,
-          ok => {
-            if (ok) tour.totalGuests = newAllergyTotal;
-            saveData(); closeModal(); openTourDetail();
-          });
-      } else {
-        saveData(); closeModal(); openTourDetail();
-      }
-    });
-
-    if (!isNew) {
-      document.getElementById('btn-delete-group').addEventListener('click', () => {
-        showConfirm('削除確認', 'このグループを削除しますか？', ok => {
-          if (ok) {
-            tour.groups.splice(groupIdx, 1);
-            saveData(); closeModal(); openTourDetail();
-          }
-        });
-      });
-    }
-  }
-
-  paint();
-  showModal();
-}
-
-function openGroupServe(groupIdx) {
-  const tour = state.tours.find(t => t.id === currentTourId);
-  if (!tour) return;
-  const group = tour.groups[groupIdx];
-  if (!group) return;
-  const course = getTourCourseItems(tour);
-
-  while (group.served.length < course.length) group.served.push(false);
-  if (!group.dishStatus) group.dishStatus = course.map(() => 'normal');
-  while (group.dishStatus.length < course.length) group.dishStatus.push('normal');
-  if (!group.changeNotes) group.changeNotes = course.map(() => '');
-  while (group.changeNotes.length < course.length) group.changeNotes.push('');
-
-  document.getElementById('modalTitle').textContent = group.label || `${(group.allergies||[]).join('・') || 'グループ'} ${group.count}名`;
-
-  const allergyText = group.allergies && group.allergies.length ? group.allergies.join('・') : 'なし';
-
-  document.getElementById('modalBody').innerHTML = `
-    <div class="card" style="margin-bottom:14px;background:var(--bg-soft);">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
-        <div style="font-size:11px;color:var(--ink-mute);letter-spacing:0.1em;">アレルギー</div>
-        <div style="font-size:11px;color:var(--accent);font-weight:600;">${group.count}名</div>
-      </div>
-      <div style="font-size:14px;font-weight:600;margin-bottom:8px;">${escHtml(allergyText)}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        ${group.contamOk === true ? '<span class="badge badge-info">コンタミ可</span>' : ''}
-        ${group.contamOk === false ? '<span class="badge badge-danger">コンタミ不可</span>' : ''}
-        ${group.contamOk === undefined ? '<span class="badge badge-warn">コンタミ未確認</span>' : ''}
-      </div>
-      ${group.note ? `<div style="font-size:13px;margin-top:8px;padding:8px;background:white;border-radius:3px;">${escHtml(group.note)}</div>` : ''}
+```
+  <div class="field">
+    <label class="field-label">アレルギー項目（複数選択可）</label>
+    <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">特定原材料 8品目</div>
+    <div class="chip-grid" style="margin-bottom:10px;">
+      ${DEFAULT_ALLERGENS.required.map(a => `
+        <button type="button" class="chip special-7 ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}">${a}</button>
+      `).join('')}
     </div>
+    <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">特定原材料に準ずるもの 20品目</div>
+    <div class="chip-grid" style="margin-bottom:10px;">
+      ${DEFAULT_ALLERGENS.recommended.map(a => `
+        <button type="button" class="chip ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}">${a}</button>
+      `).join('')}
+    </div>
+    ${state.customAllergens.length > 0 ? `
+      <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">登録済み追加項目</div>
+      <div class="chip-grid" style="margin-bottom:10px;">
+        ${state.customAllergens.map(a => `
+          <button type="button" class="chip ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}">${escHtml(a)}</button>
+        `).join('')}
+      </div>` : ''}
+    ${tempAllergens.length > 0 ? `
+      <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">このグループ用（一時）</div>
+      <div class="chip-grid" style="margin-bottom:10px;">
+        ${tempAllergens.map(a => `
+          <button type="button" class="chip ${group.allergies?.includes(a) ? 'selected' : ''}" data-allergen="${escHtml(a)}" style="border-color:var(--accent);">${escHtml(a)}</button>
+        `).join('')}
+      </div>` : ''}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <button type="button" class="chip chip-add" id="g-add-temp">＋ このグループだけ</button>
+      <button type="button" class="chip chip-add" id="g-add-permanent">＋ 設定にも保存</button>
+    </div>
+  </div>
 
-    <div style="font-size:12px;color:var(--ink-mute);margin-bottom:8px;">タップで提供完了。変更指示は読み取り専用で表示されます</div>
+  <div class="field">
+    <label class="field-label">コンタミネーション</label>
+    <div class="segment">
+      <button type="button" data-contam="true" class="${group.contamOk === true ? 'active' : ''}">可</button>
+      <button type="button" data-contam="false" class="${group.contamOk === false ? 'active' : ''}">不可</button>
+      <button type="button" data-contam="undef" class="${group.contamOk === undefined ? 'active' : ''}">未確認</button>
+    </div>
+  </div>
 
-    <div class="dish-grid">
+  <div class="field">
+    <label class="field-label">各料理の変更指示</label>
+    <div style="font-size:11px;color:var(--ink-mute);margin-bottom:8px;">
+      状態を選択し、具体的な変更内容があれば記入。中身がある料理は、料理レベル・中身レベルどちらでも指示可能。
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
       ${course.map((item, i) => {
         const dishName = getItemName(item);
         const subs = getItemSubs(item);
-        const served = group.served[i];
         const status = group.dishStatus[i] || 'normal';
-        const changeNote = group.changeNotes[i];
-        const statusClass = served ? 'status-served' :
-                          status === 'change' ? 'status-change' :
-                          status === 'warn' ? 'status-warn' : '';
-        const statusLabel = status === 'change' ? '変更あり' :
-                          status === 'warn' ? '要注意/なし' : '変更なし';
-
-        const subHtml = subs.map((sub, si) => {
-          const subKey = `${i}_${si}`;
-          const subStatus = (group.subDishStatus && group.subDishStatus[subKey]) || 'normal';
-          const subNote = (group.subChangeNotes && group.subChangeNotes[subKey]) || '';
-          if (subStatus === 'normal' && !subNote) return '';
-          const subLabel = subStatus === 'change' ? '変更あり' :
-                         subStatus === 'warn' ? '要注意/なし' : '';
-          const subBg = subStatus === 'change' ? '#fffbeb' :
-                       subStatus === 'warn' ? 'var(--danger-bg)' : 'white';
-          return `
-            <div style="padding:6px 8px;background:${subBg};border-radius:3px;margin-top:4px;font-size:12px;">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <span style="color:var(--ink-mute);font-size:11px;">└</span>
-                <span style="flex:1;font-weight:500;">${escHtml(sub)}</span>
-                ${subLabel ? `<span style="font-size:11px;color:${subStatus === 'warn' ? 'var(--danger)' : 'var(--warn)'};font-weight:600;">${subLabel}</span>` : ''}
-              </div>
-              ${subNote ? `<div style="margin-top:3px;padding:3px 6px;background:white;border-left:2px solid var(--accent);color:var(--accent);font-size:11px;">${escHtml(subNote)}</div>` : ''}
-            </div>
-          `;
-        }).join('');
-
+        const bgColor = status === 'change' ? '#fffbeb' :
+                      status === 'warn' ? 'var(--danger-bg)' : 'white';
+        const borderColor = status === 'change' ? '#fde68a' :
+                          status === 'warn' ? '#fecaca' : 'var(--line)';
         return `
-          <div class="dish-row ${statusClass}" data-dish-idx="${i}" style="flex-direction:column;align-items:stretch;">
-            <div style="display:flex;align-items:center;gap:12px;width:100%;">
-              <div class="dish-num">${String(i+1).padStart(2,'0')}</div>
-              <div class="dish-info">
-                <div class="dish-name">${escHtml(dishName)}</div>
-                <div class="dish-note">${statusLabel}</div>
-                ${changeNote ? `<div class="dish-change-note">${escHtml(changeNote)}</div>` : ''}
-              </div>
-              <div class="dish-check">${served ? '✓' : ''}</div>
+          <div style="padding:10px;background:${bgColor};border:1px solid ${borderColor};border-radius:4px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <div style="font-size:11px;font-weight:600;color:var(--ink-mute);min-width:30px;">${String(i+1).padStart(2,'0')}</div>
+              <div style="flex:1;font-size:14px;font-weight:500;">${escHtml(dishName)}</div>
+              <select data-dish-status="${i}" style="padding:4px 8px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:12px;">
+                <option value="normal" ${status==='normal'?'selected':''}>変更なし</option>
+                <option value="change" ${status==='change'?'selected':''}>変更あり</option>
+                <option value="warn" ${status==='warn'?'selected':''}>要注意/なし</option>
+              </select>
             </div>
-            ${subHtml ? `<div style="padding-left:44px;padding-top:6px;">${subHtml}</div>` : ''}
+            ${status !== 'normal' ? `
+              <textarea data-dish-note="${i}"
+                        placeholder="${status === 'change' ? '料理全体への変更指示（例：卵を抜いて調理）' : '提供しない理由など（例：豚肉メインのため提供なし）'}"
+                        style="width:100%;padding:6px 8px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:13px;min-height:42px;resize:vertical;">${escHtml(group.changeNotes[i] || '')}</textarea>
+            ` : ''}
+            ${subs.length > 0 ? `
+              <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--line-strong);">
+                <div style="font-size:11px;color:var(--ink-mute);margin-bottom:6px;">中身ごとの指示</div>
+                ${subs.map((sub, si) => {
+                  const subKey = `${i}_${si}`;
+                  const subStatus = (group.subDishStatus && group.subDishStatus[subKey]) || 'normal';
+                  const subNote = (group.subChangeNotes && group.subChangeNotes[subKey]) || '';
+                  const subBg = subStatus === 'change' ? '#fffbeb' :
+                              subStatus === 'warn' ? 'var(--danger-bg)' : 'white';
+                  const subBorder = subStatus === 'change' ? '#fde68a' :
+                                  subStatus === 'warn' ? '#fecaca' : 'var(--line)';
+                  return `
+                    <div style="padding:6px 8px;background:${subBg};border:1px solid ${subBorder};border-radius:3px;margin-bottom:4px;">
+                      <div style="display:flex;align-items:center;gap:6px;">
+                        <span style="font-size:11px;color:var(--ink-mute);">└</span>
+                        <div style="flex:1;font-size:13px;">${escHtml(sub)}</div>
+                        <select data-sub-status="${subKey}" style="padding:3px 6px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:11px;">
+                          <option value="normal" ${subStatus==='normal'?'selected':''}>変更なし</option>
+                          <option value="change" ${subStatus==='change'?'selected':''}>変更あり</option>
+                          <option value="warn" ${subStatus==='warn'?'selected':''}>要注意/なし</option>
+                        </select>
+                      </div>
+                      ${subStatus !== 'normal' ? `
+                        <textarea data-sub-note="${subKey}"
+                                  placeholder="この中身への指示"
+                                  style="width:100%;padding:4px 6px;border:1px solid var(--line-strong);border-radius:3px;font-family:inherit;font-size:12px;min-height:36px;resize:vertical;margin-top:4px;">${escHtml(subNote)}</textarea>
+                      ` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            ` : ''}
           </div>
         `;
       }).join('')}
     </div>
+  </div>
 
-    <div style="margin-top:14px;display:flex;gap:6px;">
-      <button type="button" class="btn btn-outline btn-block btn-sm" id="btn-mark-all">全て提供済みにする</button>
-      <button type="button" class="btn btn-outline btn-block btn-sm" id="btn-reset-served">提供チェックをリセット</button>
-    </div>
-  `;
+  <div class="field">
+    <label class="field-label">備考</label>
+    <textarea class="field-textarea" id="g-note" placeholder="特記事項">${escHtml(group.note)}</textarea>
+  </div>
 
-  document.querySelectorAll('[data-dish-idx]').forEach(el => {
-    el.addEventListener('click', () => {
-      const idx = parseInt(el.dataset.dishIdx);
-      group.served[idx] = !group.served[idx];
-      saveData(); openGroupServe(groupIdx);
-    });
+  <div class="dialog-actions">
+    ${!isNew ? `<button type="button" class="btn btn-outline" id="btn-delete-group" style="color:var(--danger);border-color:var(--danger);">削除</button>` : ''}
+    <button type="button" class="btn btn-accent" id="btn-save-group">${isNew ? '追加' : '保存'}</button>
+  </div>
+`;
+bind();
+```
+
+}
+
+function captureForm() {
+const c = document.getElementById(‘g-count’);
+const l = document.getElementById(‘g-label’);
+const n = document.getElementById(‘g-note’);
+if (c) group.count = parseInt(c.value) || 1;
+if (l) group.label = l.value;
+if (n) group.note = n.value;
+// 各料理のメモ
+course.forEach((_, i) => {
+const t = document.querySelector(`[data-dish-note="${i}"]`);
+if (t) group.changeNotes[i] = t.value;
+});
+// 副品のメモ
+if (!group.subChangeNotes) group.subChangeNotes = {};
+document.querySelectorAll(’[data-sub-note]’).forEach(t => {
+group.subChangeNotes[t.dataset.subNote] = t.value;
+});
+}
+
+function bind() {
+document.querySelectorAll(’[data-allergen]’).forEach(btn => {
+btn.addEventListener(‘click’, () => {
+const a = btn.dataset.allergen;
+const idx = group.allergies.indexOf(a);
+if (idx >= 0) group.allergies.splice(idx, 1);
+else group.allergies.push(a);
+btn.classList.toggle(‘selected’);
+});
+});
+
+```
+document.getElementById('g-add-temp').addEventListener('click', () => {
+  captureForm();
+  showPrompt('このグループだけに追加', '設定には保存されません', '例：マンゴー', val => {
+    if (val && val.trim()) {
+      const trimmed = val.trim();
+      if (!tempAllergens.includes(trimmed)) tempAllergens.push(trimmed);
+      if (!group.allergies.includes(trimmed)) group.allergies.push(trimmed);
+      paint();
+    }
   });
+});
 
-  document.getElementById('btn-mark-all').addEventListener('click', () => {
-    group.served = course.map(() => true);
-    saveData(); openGroupServe(groupIdx);
+document.getElementById('g-add-permanent').addEventListener('click', () => {
+  captureForm();
+  showPrompt('設定に保存して追加', '次回以降も使えるようになります', '例：マンゴー', val => {
+    if (val && val.trim()) {
+      const trimmed = val.trim();
+      if (!state.customAllergens.includes(trimmed)) state.customAllergens.push(trimmed);
+      if (!group.allergies.includes(trimmed)) group.allergies.push(trimmed);
+      saveData(); paint();
+    }
   });
+});
 
-  document.getElementById('btn-reset-served').addEventListener('click', () => {
-    showConfirm('リセット確認', '提供チェックをすべてリセットしますか？', ok => {
+document.querySelectorAll('[data-contam]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = btn.dataset.contam;
+    group.contamOk = v === 'true' ? true : v === 'false' ? false : undefined;
+    document.querySelectorAll('[data-contam]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+document.querySelectorAll('[data-dish-status]').forEach(sel => {
+  sel.addEventListener('change', e => {
+    const idx = parseInt(e.target.dataset.dishStatus);
+    captureForm();
+    group.dishStatus[idx] = e.target.value;
+    if (e.target.value === 'normal') group.changeNotes[idx] = '';
+    paint();
+  });
+});
+
+document.querySelectorAll('[data-dish-note]').forEach(t => {
+  t.addEventListener('input', e => {
+    const idx = parseInt(e.target.dataset.dishNote);
+    group.changeNotes[idx] = e.target.value;
+  });
+});
+
+// 副品のステータス変更
+document.querySelectorAll('[data-sub-status]').forEach(sel => {
+  sel.addEventListener('change', e => {
+    const key = e.target.dataset.subStatus;
+    captureForm();
+    if (!group.subDishStatus) group.subDishStatus = {};
+    group.subDishStatus[key] = e.target.value;
+    if (e.target.value === 'normal' && group.subChangeNotes) {
+      delete group.subChangeNotes[key];
+    }
+    paint();
+  });
+});
+
+document.querySelectorAll('[data-sub-note]').forEach(t => {
+  t.addEventListener('input', e => {
+    const key = e.target.dataset.subNote;
+    if (!group.subChangeNotes) group.subChangeNotes = {};
+    group.subChangeNotes[key] = e.target.value;
+  });
+});
+
+document.getElementById('btn-save-group').addEventListener('click', () => {
+  captureForm();
+  if (group.count < 1) { showAlert('人数は1名以上必要です'); return; }
+  while (group.served.length < course.length) group.served.push(false);
+  while (group.dishStatus.length < course.length) group.dishStatus.push('normal');
+  while (group.changeNotes.length < course.length) group.changeNotes.push('');
+
+  if (!tour.groups) tour.groups = [];
+  if (isNew) tour.groups.push(group);
+  else tour.groups[groupIdx] = group;
+
+  const newAllergyTotal = totalGroupCount(tour);
+  if (newAllergyTotal > tour.totalGuests) {
+    showConfirm('人数の確認',
+      `アレルギー対応の合計（${newAllergyTotal}名）が全体人数（${tour.totalGuests}名）を超えています。\n全体人数を ${newAllergyTotal} 名に更新しますか？`,
+      ok => {
+        if (ok) tour.totalGuests = newAllergyTotal;
+        saveData(); closeModal(); openTourDetail();
+      });
+  } else {
+    saveData(); closeModal(); openTourDetail();
+  }
+});
+
+if (!isNew) {
+  document.getElementById('btn-delete-group').addEventListener('click', () => {
+    showConfirm('削除確認', 'このグループを削除しますか？', ok => {
       if (ok) {
-        group.served = course.map(() => false);
-        saveData(); openGroupServe(groupIdx);
+        tour.groups.splice(groupIdx, 1);
+        saveData(); closeModal(); openTourDetail();
       }
     });
   });
+}
+```
 
-  showModal();
+}
+
+paint();
+showModal();
+}
+
+function openGroupServe(groupIdx) {
+const tour = state.tours.find(t => t.id === currentTourId);
+if (!tour) return;
+const group = tour.groups[groupIdx];
+if (!group) return;
+const course = getTourCourseItems(tour);
+
+while (group.served.length < course.length) group.served.push(false);
+if (!group.dishStatus) group.dishStatus = course.map(() => ‘normal’);
+while (group.dishStatus.length < course.length) group.dishStatus.push(‘normal’);
+if (!group.changeNotes) group.changeNotes = course.map(() => ‘’);
+while (group.changeNotes.length < course.length) group.changeNotes.push(’’);
+
+document.getElementById(‘modalTitle’).textContent = group.label || `${(group.allergies||[]).join('・') || 'グループ'} ${group.count}名`;
+
+const allergyText = group.allergies && group.allergies.length ? group.allergies.join(’・’) : ‘なし’;
+
+document.getElementById(‘modalBody’).innerHTML = `<div class="card" style="margin-bottom:14px;background:var(--bg-soft);"> <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;"> <div style="font-size:11px;color:var(--ink-mute);letter-spacing:0.1em;">アレルギー</div> <div style="font-size:11px;color:var(--accent);font-weight:600;">${group.count}名</div> </div> <div style="font-size:14px;font-weight:600;margin-bottom:8px;">${escHtml(allergyText)}</div> <div style="display:flex;gap:6px;flex-wrap:wrap;"> ${group.contamOk === true ? '<span class="badge badge-info">コンタミ可</span>' : ''} ${group.contamOk === false ? '<span class="badge badge-danger">コンタミ不可</span>' : ''} ${group.contamOk === undefined ? '<span class="badge badge-warn">コンタミ未確認</span>' : ''} </div> ${group.note ?`<div style="font-size:13px;margin-top:8px;padding:8px;background:white;border-radius:3px;">${escHtml(group.note)}</div>` : ‘’}
+</div>
+
+```
+<div style="font-size:12px;color:var(--ink-mute);margin-bottom:8px;">タップで提供完了。変更指示は読み取り専用で表示されます</div>
+
+<div class="dish-grid">
+  ${course.map((item, i) => {
+    const dishName = getItemName(item);
+    const subs = getItemSubs(item);
+    const served = group.served[i];
+    const status = group.dishStatus[i] || 'normal';
+    const changeNote = group.changeNotes[i];
+    const statusClass = served ? 'status-served' :
+                      status === 'change' ? 'status-change' :
+                      status === 'warn' ? 'status-warn' : '';
+    const statusLabel = status === 'change' ? '変更あり' :
+                      status === 'warn' ? '要注意/なし' : '変更なし';
+
+    const subHtml = subs.map((sub, si) => {
+      const subKey = `${i}_${si}`;
+      const subStatus = (group.subDishStatus && group.subDishStatus[subKey]) || 'normal';
+      const subNote = (group.subChangeNotes && group.subChangeNotes[subKey]) || '';
+      if (subStatus === 'normal' && !subNote) return '';
+      const subLabel = subStatus === 'change' ? '変更あり' :
+                     subStatus === 'warn' ? '要注意/なし' : '';
+      const subBg = subStatus === 'change' ? '#fffbeb' :
+                   subStatus === 'warn' ? 'var(--danger-bg)' : 'white';
+      return `
+        <div style="padding:6px 8px;background:${subBg};border-radius:3px;margin-top:4px;font-size:12px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="color:var(--ink-mute);font-size:11px;">└</span>
+            <span style="flex:1;font-weight:500;">${escHtml(sub)}</span>
+            ${subLabel ? `<span style="font-size:11px;color:${subStatus === 'warn' ? 'var(--danger)' : 'var(--warn)'};font-weight:600;">${subLabel}</span>` : ''}
+          </div>
+          ${subNote ? `<div style="margin-top:3px;padding:3px 6px;background:white;border-left:2px solid var(--accent);color:var(--accent);font-size:11px;">${escHtml(subNote)}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="dish-row ${statusClass}" data-dish-idx="${i}" style="flex-direction:column;align-items:stretch;">
+        <div style="display:flex;align-items:center;gap:12px;width:100%;">
+          <div class="dish-num">${String(i+1).padStart(2,'0')}</div>
+          <div class="dish-info">
+            <div class="dish-name">${escHtml(dishName)}</div>
+            <div class="dish-note">${statusLabel}</div>
+            ${changeNote ? `<div class="dish-change-note">${escHtml(changeNote)}</div>` : ''}
+          </div>
+          <div class="dish-check">${served ? '✓' : ''}</div>
+        </div>
+        ${subHtml ? `<div style="padding-left:44px;padding-top:6px;">${subHtml}</div>` : ''}
+      </div>
+    `;
+  }).join('')}
+</div>
+
+<div style="margin-top:14px;display:flex;gap:6px;">
+  <button type="button" class="btn btn-outline btn-block btn-sm" id="btn-mark-all">全て提供済みにする</button>
+  <button type="button" class="btn btn-outline btn-block btn-sm" id="btn-reset-served">提供チェックをリセット</button>
+</div>
+```
+
+`;
+
+document.querySelectorAll(’[data-dish-idx]’).forEach(el => {
+el.addEventListener(‘click’, () => {
+const idx = parseInt(el.dataset.dishIdx);
+group.served[idx] = !group.served[idx];
+saveData(); openGroupServe(groupIdx);
+});
+});
+
+document.getElementById(‘btn-mark-all’).addEventListener(‘click’, () => {
+group.served = course.map(() => true);
+saveData(); openGroupServe(groupIdx);
+});
+
+document.getElementById(‘btn-reset-served’).addEventListener(‘click’, () => {
+showConfirm(‘リセット確認’, ‘提供チェックをすべてリセットしますか？’, ok => {
+if (ok) {
+group.served = course.map(() => false);
+saveData(); openGroupServe(groupIdx);
+}
+});
+});
+
+showModal();
 }
 
 // ==================== 印刷：単一ツアー指示書 ====================
 function openPrintPreview() {
-  const tour = state.tours.find(t => t.id === currentTourId);
-  if (!tour) return;
+const tour = state.tours.find(t => t.id === currentTourId);
+if (!tour) return;
 
-  const company = getCompany(tour.companyId);
-  const course = getTourCourseItems(tour);
+const company = getCompany(tour.companyId);
+const course = getTourCourseItems(tour);
 
-  document.getElementById('modalTitle').textContent = '指示書プレビュー';
-  const printHtml = generatePrintHtml(tour, company, course);
+document.getElementById(‘modalTitle’).textContent = ‘指示書プレビュー’;
+const printHtml = generatePrintHtml(tour, company, course);
 
-  document.getElementById('modalBody').innerHTML = `
-    <div class="print-controls">
-      <button type="button" class="btn btn-accent" id="btn-do-print" style="flex:1;">印刷する</button>
-      <button type="button" class="btn btn-outline" id="btn-close-print">閉じる</button>
-    </div>
-    <div style="font-size:11px;color:var(--ink-mute);margin-bottom:8px;line-height:1.5;">
-      A4縦推奨。PDFとして保存もできます。
-    </div>
-    ${printHtml}
-  `;
-  document.getElementById('printArea').innerHTML = printHtml;
-  document.getElementById('btn-do-print').addEventListener('click', () => window.print());
-  document.getElementById('btn-close-print').addEventListener('click', closeModal);
-  showModal();
+document.getElementById(‘modalBody’).innerHTML = `<div class="print-controls"> <button type="button" class="btn btn-accent" id="btn-do-print" style="flex:1;">印刷する</button> <button type="button" class="btn btn-outline" id="btn-close-print">閉じる</button> </div> <div style="font-size:11px;color:var(--ink-mute);margin-bottom:8px;line-height:1.5;"> A4縦推奨。PDFとして保存もできます。 </div> ${printHtml}`;
+document.getElementById(‘printArea’).innerHTML = printHtml;
+document.getElementById(‘btn-do-print’).addEventListener(‘click’, () => window.print());
+document.getElementById(‘btn-close-print’).addEventListener(‘click’, closeModal);
+showModal();
 }
 
 function generatePrintHtml(tour, company, course) {
-  const groups = tour.groups || [];
-  const today = new Date();
-  const printedAt = `${today.getFullYear()}/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`;
-  const allergyTotal = totalGroupCount(tour);
-  const generalTotal = generalGuestCount(tour);
+const groups = tour.groups || [];
+const today = new Date();
+const printedAt = `${today.getFullYear()}/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`;
+const allergyTotal = totalGroupCount(tour);
+const generalTotal = generalGuestCount(tour);
 
-  const customerTable = `
-    <div class="table-title">① お客様情報</div>
-    <table>
-      <thead>
-        <tr>
-          <th style="width:60px;">区分</th>
-          <th style="width:50px;">人数</th>
-          <th>制限内容（アレルギー）</th>
-          <th style="width:80px;">コンタミ</th>
-          <th style="width:30%;">備考</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${groups.length === 0 ? `
-          <tr><td colspan="5" style="text-align:center;color:#999;">アレルギー対応必要なお客様なし</td></tr>
-        ` : groups.map((g, i) => `
-          <tr>
-            <td style="text-align:center;">${escHtml(g.label) || `G${i+1}`}</td>
-            <td style="text-align:center;">${g.count}名</td>
-            <td>${escHtml((g.allergies || []).join('・')) || '—'}</td>
-            <td style="text-align:center;">
-              ${g.contamOk === true ? '可' : g.contamOk === false ? '不可' : '未確認'}
-            </td>
-            <td>${escHtml(g.note) || ''}</td>
-          </tr>
-        `).join('')}
-        ${generalTotal > 0 ? `
-          <tr>
-            <td style="text-align:center;">一般</td>
-            <td style="text-align:center;">${generalTotal}名</td>
-            <td colspan="3" style="color:#666;">アレルギー対応なし</td>
-          </tr>
-        ` : ''}
-        <tr style="background:#f8f8f8;">
-          <td colspan="2" style="text-align:right;font-weight:600;">全体合計</td>
-          <td colspan="3">${tour.totalGuests || 0}名（うちアレルギー対応 ${allergyTotal}名）</td>
-        </tr>
-      </tbody>
-    </table>
-  `;
+const customerTable = `<div class="table-title">① お客様情報</div> <table> <thead> <tr> <th style="width:60px;">区分</th> <th style="width:50px;">人数</th> <th>制限内容（アレルギー）</th> <th style="width:80px;">コンタミ</th> <th style="width:30%;">備考</th> </tr> </thead> <tbody> ${groups.length === 0 ?`
+<tr><td colspan="5" style="text-align:center;color:#999;">アレルギー対応必要なお客様なし</td></tr>
+`: groups.map((g, i) =>`
+<tr>
+<td style="text-align:center;">${escHtml(g.label) || `G${i+1}`}</td>
+<td style="text-align:center;">${g.count}名</td>
+<td>${escHtml((g.allergies || []).join(’・’)) || ‘—’}</td>
+<td style="text-align:center;">
+${g.contamOk === true ? ‘可’ : g.contamOk === false ? ‘不可’ : ‘未確認’}
+</td>
+<td>${escHtml(g.note) || ‘’}</td>
+</tr>
+`).join('')} ${generalTotal > 0 ? `
+<tr>
+<td style="text-align:center;">一般</td>
+<td style="text-align:center;">${generalTotal}名</td>
+<td colspan="3" style="color:#666;">アレルギー対応なし</td>
+</tr>
+`: ''} <tr style="background:#f8f8f8;"> <td colspan="2" style="text-align:right;font-weight:600;">全体合計</td> <td colspan="3">${tour.totalGuests || 0}名（うちアレルギー対応 ${allergyTotal}名）</td> </tr> </tbody> </table>`;
 
-  let changeTable = '';
-  if (groups.length > 0 && course.length > 0) {
-    changeTable = `
-      <div class="table-title">② 変更対応表（調理指示書）</div>
-      <table>
-        <thead>
-          <tr>
-            <th style="width:30px;">No.</th>
-            <th style="width:90px;">品目</th>
-            ${groups.map((g, i) => `<th>${escHtml(g.label) || `G${i+1}`}<br><span style="font-weight:400;font-size:9px;">${g.count}名・${escHtml((g.allergies||[]).join('/'))}</span></th>`).join('')}
-          </tr>
-        </thead>
-        <tbody>
-          ${course.map((item, di) => {
-            const dishName = getItemName(item);
-            const subs = getItemSubs(item);
-            const mainRow = `
-              <tr>
-                <td style="text-align:center;font-size:9px;color:#666;">${String(di+1).padStart(2,'0')}</td>
-                <td style="font-weight:500;">${escHtml(dishName)}</td>
-                ${groups.map(g => {
-                  const status = (g.dishStatus && g.dishStatus[di]) || 'normal';
-                  const cellClass = status === 'change' ? 'cell-change' :
-                                  status === 'warn' ? 'cell-warn' : 'cell-normal';
-                  const label = status === 'change' ? '変更' :
-                              status === 'warn' ? '×' : '○';
-                  const note = (g.changeNotes && g.changeNotes[di]) || '';
-                  return `<td class="${cellClass}" style="text-align:${note ? 'left' : 'center'};">
-                    <div style="font-weight:600;${note ? '' : 'text-align:center;'}">${label}</div>
-                    ${note ? `<div class="change-note">${escHtml(note)}</div>` : ''}
-                  </td>`;
-                }).join('')}
-              </tr>
-            `;
-            const subRows = subs.map((sub, si) => {
-              const subKey = `${di}_${si}`;
-              // 全グループでこの副品に指示があるかチェック
-              const hasAnyInstruction = groups.some(g =>
-                (g.subDishStatus && g.subDishStatus[subKey] && g.subDishStatus[subKey] !== 'normal') ||
-                (g.subChangeNotes && g.subChangeNotes[subKey])
-              );
-              // 指示なくても中身は一覧として表示
-              return `
-                <tr>
-                  <td></td>
-                  <td style="padding-left:14px;font-size:10px;color:#555;">└ ${escHtml(sub)}</td>
-                  ${groups.map(g => {
-                    const subStatus = (g.subDishStatus && g.subDishStatus[subKey]) || 'normal';
-                    const subNote = (g.subChangeNotes && g.subChangeNotes[subKey]) || '';
-                    const cellClass = subStatus === 'change' ? 'cell-change' :
-                                    subStatus === 'warn' ? 'cell-warn' : 'cell-normal';
-                    const label = subStatus === 'change' ? '変更' :
-                                subStatus === 'warn' ? '×' :
-                                subNote ? '○' : '';
-                    return `<td class="${cellClass}" style="text-align:${subNote ? 'left' : 'center'};font-size:10px;">
-                      ${label ? `<div style="font-weight:500;${subNote ? '' : 'text-align:center;'}">${label}</div>` : ''}
-                      ${subNote ? `<div class="change-note">${escHtml(subNote)}</div>` : ''}
-                    </td>`;
-                  }).join('')}
-                </tr>
-              `;
-            }).join('');
-            return mainRow + subRows;
-          }).join('')}
-        </tbody>
-      </table>
-      <div style="font-size:9.5px;color:#555;margin-top:3px;">
-        凡例：○ = 変更なし、<span style="background:#fffacd;padding:0 6px;">変更</span> = 変更あり、<span style="background:#ffd6d6;padding:0 6px;">×</span> = 要注意 / 提供なし
-      </div>
-    `;
-  }
+let changeTable = ‘’;
+if (groups.length > 0 && course.length > 0) {
+changeTable = `<div class="table-title">② 変更対応表（調理指示書）</div> <table> <thead> <tr> <th style="width:30px;">No.</th> <th style="width:90px;">品目</th> ${groups.map((g, i) =>`<th>${escHtml(g.label) || `G${i+1}`}<br><span style="font-weight:400;font-size:9px;">${g.count}名・${escHtml((g.allergies||[]).join(’/’))}</span></th>`).join('')} </tr> </thead> <tbody> ${course.map((item, di) => { const dishName = getItemName(item); const subs = getItemSubs(item); const mainRow = `
+<tr>
+<td style="text-align:center;font-size:9px;color:#666;">${String(di+1).padStart(2,‘0’)}</td>
+<td style="font-weight:500;">${escHtml(dishName)}</td>
+${groups.map(g => {
+const status = (g.dishStatus && g.dishStatus[di]) || ‘normal’;
+const cellClass = status === ‘change’ ? ‘cell-change’ :
+status === ‘warn’ ? ‘cell-warn’ : ‘cell-normal’;
+const label = status === ‘change’ ? ‘変更’ :
+status === ‘warn’ ? ‘×’ : ‘○’;
+const note = (g.changeNotes && g.changeNotes[di]) || ‘’;
+return `<td class="${cellClass}" style="text-align:${note ? 'left' : 'center'};"> <div style="font-weight:600;${note ? '' : 'text-align:center;'}">${label}</div> ${note ? `<div class="change-note">${escHtml(note)}</div>` : ''} </td>`;
+}).join(’’)}
+</tr>
+`; const subRows = subs.map((sub, si) => { const subKey = `${di}_${si}`; // 全グループでこの副品に指示があるかチェック const hasAnyInstruction = groups.some(g => (g.subDishStatus && g.subDishStatus[subKey] && g.subDishStatus[subKey] !== 'normal') || (g.subChangeNotes && g.subChangeNotes[subKey]) ); // 指示なくても中身は一覧として表示 return `
+<tr>
+<td></td>
+<td style="padding-left:14px;font-size:10px;color:#555;">└ ${escHtml(sub)}</td>
+${groups.map(g => {
+const subStatus = (g.subDishStatus && g.subDishStatus[subKey]) || ‘normal’;
+const subNote = (g.subChangeNotes && g.subChangeNotes[subKey]) || ‘’;
+const cellClass = subStatus === ‘change’ ? ‘cell-change’ :
+subStatus === ‘warn’ ? ‘cell-warn’ : ‘cell-normal’;
+const label = subStatus === ‘change’ ? ‘変更’ :
+subStatus === ‘warn’ ? ‘×’ :
+subNote ? ‘○’ : ‘’;
+return `<td class="${cellClass}" style="text-align:${subNote ? 'left' : 'center'};font-size:10px;"> ${label ? `<div style="font-weight:500;${subNote ? '' : 'text-align:center;'}">${label}</div>`: ''} ${subNote ?`<div class="change-note">${escHtml(subNote)}</div>` : ''} </td>`;
+}).join(’’)}
+</tr>
+`; }).join(''); return mainRow + subRows; }).join('')} </tbody> </table> <div style="font-size:9.5px;color:#555;margin-top:3px;"> 凡例：○ = 変更なし、<span style="background:#fffacd;padding:0 6px;">変更</span> = 変更あり、<span style="background:#ffd6d6;padding:0 6px;">×</span> = 要注意 / 提供なし </div> `;
+}
 
-  const notesItems = [];
-  if (tour.note) notesItems.push(escHtml(tour.note));
-  groups.forEach((g, i) => {
-    if (g.note && g.note.trim()) {
-      notesItems.push(`<strong>${escHtml(g.label) || `G${i+1}`}</strong>：${escHtml(g.note)}`);
-    }
-  });
+const notesItems = [];
+if (tour.note) notesItems.push(escHtml(tour.note));
+groups.forEach((g, i) => {
+if (g.note && g.note.trim()) {
+notesItems.push(`<strong>${escHtml(g.label) || `G${i+1}`}</strong>：${escHtml(g.note)}`);
+}
+});
 
-  const notesSection = notesItems.length > 0 ? `
-    <div class="notes">
-      <div style="font-weight:600;margin-bottom:3px;">特記事項</div>
-      <ul>${notesItems.map(n => `<li>${n}</li>`).join('')}</ul>
-    </div>
-  ` : '';
+const notesSection = notesItems.length > 0 ? `<div class="notes"> <div style="font-weight:600;margin-bottom:3px;">特記事項</div> <ul>${notesItems.map(n =>`<li>${n}</li>`).join('')}</ul> </div> ` : ‘’;
 
-  return `
-    <div class="print-area preview">
-      <div class="doc-header">
-        <div class="doc-title">アレルギー対応 調理指示書</div>
-        <div class="doc-meta">
-          市場小路ジェイアール京都伊勢丹店<br>
-          作成日：${printedAt}
-        </div>
-      </div>
+return `
+<div class="print-area preview">
+<div class="doc-header">
+<div class="doc-title">アレルギー対応 調理指示書</div>
+<div class="doc-meta">
+市場小路ジェイアール京都伊勢丹店<br>
+作成日：${printedAt}
+</div>
+</div>
 
-      <div class="info-row">
-        <div><span class="label">旅行会社：</span>${escHtml(company.name)}</div>
-        <div><span class="label">来店日：</span>${formatDate(tour.date)}（${dayOfWeek(tour.date)}）</div>
-        <div><span class="label">時間：</span>${escHtml(tour.time) || '—'}</div>
-      </div>
-      <div class="info-row">
-        <div style="flex:2;"><span class="label">ツアー名：</span>${escHtml(tour.name) || '—'}</div>
-        <div><span class="label">人数：</span>全${tour.totalGuests || 0}名</div>
-        <div><span class="label">コース：</span>${escHtml(getTourCourseName(tour))}</div>
-      </div>
+```
+  <div class="info-row">
+    <div><span class="label">旅行会社：</span>${escHtml(company.name)}</div>
+    <div><span class="label">来店日：</span>${formatDate(tour.date)}（${dayOfWeek(tour.date)}）</div>
+    <div><span class="label">時間：</span>${escHtml(tour.time) || '—'}</div>
+  </div>
+  <div class="info-row">
+    <div style="flex:2;"><span class="label">ツアー名：</span>${escHtml(tour.name) || '—'}</div>
+    <div><span class="label">人数：</span>全${tour.totalGuests || 0}名</div>
+    <div><span class="label">コース：</span>${escHtml(getTourCourseName(tour))}</div>
+  </div>
 
-      ${customerTable}
-      ${changeTable}
-      ${notesSection}
+  ${customerTable}
+  ${changeTable}
+  ${notesSection}
 
-      <div class="doc-footer">
-        <div>市場小路 アレルギー管理システム</div>
-        <div>Page 1</div>
-      </div>
-    </div>
-  `;
+  <div class="doc-footer">
+    <div>市場小路 アレルギー管理システム</div>
+    <div>Page 1</div>
+  </div>
+</div>
+```
+
+`;
 }
 
 // ==================== 印刷：ツアーリスト ====================
 function openTourListPrint(initialRange) {
-  document.getElementById('modalTitle').textContent = 'ツアーリスト印刷';
+document.getElementById(‘modalTitle’).textContent = ‘ツアーリスト印刷’;
 
-  let rangeType = initialRange || 'today';
-  let customStart = todayStr();
-  let customEnd = todayStr();
+let rangeType = initialRange || ‘today’;
+let customStart = todayStr();
+let customEnd = todayStr();
 
-  function paint() {
-    const tours = getToursByRange(rangeType, customStart, customEnd);
-    const previewHtml = generateTourListHtml(tours, rangeType, customStart, customEnd);
+function paint() {
+const tours = getToursByRange(rangeType, customStart, customEnd);
+const previewHtml = generateTourListHtml(tours, rangeType, customStart, customEnd);
 
-    document.getElementById('modalBody').innerHTML = `
-      <div style="margin-bottom:14px;">
-        <label class="field-label">期間</label>
-        <div class="segment" style="margin-bottom:8px;">
-          <button type="button" data-range="today" class="${rangeType==='today'?'active':''}">本日</button>
-          <button type="button" data-range="week" class="${rangeType==='week'?'active':''}">今週</button>
-          <button type="button" data-range="month" class="${rangeType==='month'?'active':''}">今月</button>
-          <button type="button" data-range="custom" class="${rangeType==='custom'?'active':''}">指定</button>
+```
+document.getElementById('modalBody').innerHTML = `
+  <div style="margin-bottom:14px;">
+    <label class="field-label">期間</label>
+    <div class="segment" style="margin-bottom:8px;">
+      <button type="button" data-range="today" class="${rangeType==='today'?'active':''}">本日</button>
+      <button type="button" data-range="week" class="${rangeType==='week'?'active':''}">今週</button>
+      <button type="button" data-range="month" class="${rangeType==='month'?'active':''}">今月</button>
+      <button type="button" data-range="custom" class="${rangeType==='custom'?'active':''}">指定</button>
+    </div>
+    ${rangeType === 'custom' ? `
+      <div class="field-row" style="margin-top:8px;">
+        <div class="field">
+          <label class="field-label">開始日</label>
+          <input class="field-input" type="date" id="range-start" value="${customStart}">
         </div>
-        ${rangeType === 'custom' ? `
-          <div class="field-row" style="margin-top:8px;">
-            <div class="field">
-              <label class="field-label">開始日</label>
-              <input class="field-input" type="date" id="range-start" value="${customStart}">
-            </div>
-            <div class="field">
-              <label class="field-label">終了日</label>
-              <input class="field-input" type="date" id="range-end" value="${customEnd}">
-            </div>
-          </div>
-        ` : ''}
+        <div class="field">
+          <label class="field-label">終了日</label>
+          <input class="field-input" type="date" id="range-end" value="${customEnd}">
+        </div>
       </div>
+    ` : ''}
+  </div>
 
-      <div class="print-controls" style="position:static;margin:0 0 12px;padding:0;border:none;">
-        <button type="button" class="btn btn-accent" id="btn-do-print" style="flex:1;" ${tours.length === 0 ? 'disabled' : ''}>印刷する（${tours.length}件）</button>
-        <button type="button" class="btn btn-outline" id="btn-close-print">閉じる</button>
-      </div>
+  <div class="print-controls" style="position:static;margin:0 0 12px;padding:0;border:none;">
+    <button type="button" class="btn btn-accent" id="btn-do-print" style="flex:1;" ${tours.length === 0 ? 'disabled' : ''}>印刷する（${tours.length}件）</button>
+    <button type="button" class="btn btn-outline" id="btn-close-print">閉じる</button>
+  </div>
 
-      ${tours.length === 0 ?
-        '<div class="empty" style="padding:30px 20px;"><div class="empty-text">該当するツアーがありません</div></div>' :
-        previewHtml}
-    `;
+  ${tours.length === 0 ?
+    '<div class="empty" style="padding:30px 20px;"><div class="empty-text">該当するツアーがありません</div></div>' :
+    previewHtml}
+`;
 
-    document.querySelectorAll('[data-range]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        rangeType = btn.dataset.range;
-        paint();
-      });
-    });
+document.querySelectorAll('[data-range]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    rangeType = btn.dataset.range;
+    paint();
+  });
+});
 
-    const startInput = document.getElementById('range-start');
-    const endInput = document.getElementById('range-end');
-    if (startInput) startInput.addEventListener('change', e => { customStart = e.target.value; paint(); });
-    if (endInput) endInput.addEventListener('change', e => { customEnd = e.target.value; paint(); });
+const startInput = document.getElementById('range-start');
+const endInput = document.getElementById('range-end');
+if (startInput) startInput.addEventListener('change', e => { customStart = e.target.value; paint(); });
+if (endInput) endInput.addEventListener('change', e => { customEnd = e.target.value; paint(); });
 
-    document.getElementById('btn-do-print').addEventListener('click', () => {
-      document.getElementById('printArea').innerHTML = previewHtml;
-      window.print();
-    });
-    document.getElementById('btn-close-print').addEventListener('click', closeModal);
-  }
+document.getElementById('btn-do-print').addEventListener('click', () => {
+  document.getElementById('printArea').innerHTML = previewHtml;
+  window.print();
+});
+document.getElementById('btn-close-print').addEventListener('click', closeModal);
+```
 
-  paint();
-  showModal();
+}
+
+paint();
+showModal();
 }
 
 function getToursByRange(rangeType, customStart, customEnd) {
-  const today = new Date();
-  let start, end;
+const today = new Date();
+let start, end;
 
-  if (rangeType === 'today') {
-    const t = todayStr();
-    start = t; end = t;
-  } else if (rangeType === 'week') {
-    const day = today.getDay();
-    const monday = new Date(today);
-    monday.setDate(today.getDate() - ((day + 6) % 7));
-    const sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-    start = formatDateForInput(monday);
-    end = formatDateForInput(sunday);
-  } else if (rangeType === 'month') {
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    start = formatDateForInput(firstDay);
-    end = formatDateForInput(lastDay);
-  } else {
-    start = customStart;
-    end = customEnd;
-  }
+if (rangeType === ‘today’) {
+const t = todayStr();
+start = t; end = t;
+} else if (rangeType === ‘week’) {
+const day = today.getDay();
+const monday = new Date(today);
+monday.setDate(today.getDate() - ((day + 6) % 7));
+const sunday = new Date(monday);
+sunday.setDate(monday.getDate() + 6);
+start = formatDateForInput(monday);
+end = formatDateForInput(sunday);
+} else if (rangeType === ‘month’) {
+const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+start = formatDateForInput(firstDay);
+end = formatDateForInput(lastDay);
+} else {
+start = customStart;
+end = customEnd;
+}
 
-  let tours = state.tours
-    .filter(t => t.date >= start && t.date <= end)
-    .sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''));
+let tours = state.tours
+.filter(t => t.date >= start && t.date <= end)
+.sort((a, b) => a.date.localeCompare(b.date) || (a.time || ‘’).localeCompare(b.time || ‘’));
 
-  if (currentCompanyFilter !== 'all') {
-    tours = tours.filter(t => t.companyId === currentCompanyFilter);
-  }
+if (currentCompanyFilter !== ‘all’) {
+tours = tours.filter(t => t.companyId === currentCompanyFilter);
+}
 
-  return tours;
+return tours;
 }
 
 function formatDateForInput(d) {
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+return d.getFullYear() + ‘-’ + String(d.getMonth()+1).padStart(2,‘0’) + ‘-’ + String(d.getDate()).padStart(2,‘0’);
 }
 
 function generateTourListHtml(tours, rangeType, customStart, customEnd) {
-  const today = new Date();
-  const printedAt = `${today.getFullYear()}/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`;
+const today = new Date();
+const printedAt = `${today.getFullYear()}/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`;
 
-  let rangeLabel = '';
-  if (rangeType === 'today') rangeLabel = formatDate(todayStr());
-  else if (rangeType === 'week') {
-    const day = today.getDay();
-    const monday = new Date(today);
-    monday.setDate(today.getDate() - ((day + 6) % 7));
-    const sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-    rangeLabel = `${formatDate(formatDateForInput(monday))} 〜 ${formatDate(formatDateForInput(sunday))}（今週）`;
-  } else if (rangeType === 'month') {
-    rangeLabel = `${today.getFullYear()}年${today.getMonth()+1}月`;
-  } else {
-    rangeLabel = `${formatDate(customStart)} 〜 ${formatDate(customEnd)}`;
-  }
+let rangeLabel = ‘’;
+if (rangeType === ‘today’) rangeLabel = formatDate(todayStr());
+else if (rangeType === ‘week’) {
+const day = today.getDay();
+const monday = new Date(today);
+monday.setDate(today.getDate() - ((day + 6) % 7));
+const sunday = new Date(monday);
+sunday.setDate(monday.getDate() + 6);
+rangeLabel = `${formatDate(formatDateForInput(monday))} 〜 ${formatDate(formatDateForInput(sunday))}（今週）`;
+} else if (rangeType === ‘month’) {
+rangeLabel = `${today.getFullYear()}年${today.getMonth()+1}月`;
+} else {
+rangeLabel = `${formatDate(customStart)} 〜 ${formatDate(customEnd)}`;
+}
 
-  // 集計
-  const totalTours = tours.length;
-  const totalGuests = tours.reduce((s, t) => s + (t.totalGuests || 0), 0);
-  const totalAllergy = tours.reduce((s, t) => s + totalGroupCount(t), 0);
+// 集計
+const totalTours = tours.length;
+const totalGuests = tours.reduce((s, t) => s + (t.totalGuests || 0), 0);
+const totalAllergy = tours.reduce((s, t) => s + totalGroupCount(t), 0);
 
-  // 日付ごとにグループ化
-  const byDate = {};
-  tours.forEach(t => {
-    if (!byDate[t.date]) byDate[t.date] = [];
-    byDate[t.date].push(t);
-  });
+// 日付ごとにグループ化
+const byDate = {};
+tours.forEach(t => {
+if (!byDate[t.date]) byDate[t.date] = [];
+byDate[t.date].push(t);
+});
 
-  const tableRows = Object.keys(byDate).sort().map(date => {
-    const dateRows = byDate[date].map((t, idx) => {
-      const company = getCompany(t.companyId);
-      const allergyTotal = totalGroupCount(t);
-      const groupSummary = (t.groups || []).map(g =>
-        `${escHtml(g.label) || ''}${g.count}名(${escHtml((g.allergies || []).join('・')) || '—'})`
-      ).join('<br>');
+const tableRows = Object.keys(byDate).sort().map(date => {
+const dateRows = byDate[date].map((t, idx) => {
+const company = getCompany(t.companyId);
+const allergyTotal = totalGroupCount(t);
+const groupSummary = (t.groups || []).map(g =>
+`${escHtml(g.label) || ''}${g.count}名(${escHtml((g.allergies || []).join('・')) || '—'})`
+).join(’<br>’);
 
-      return `<tr>
-        ${idx === 0 ? `<td rowspan="${byDate[date].length}" style="text-align:center;vertical-align:middle;background:#fafafa;">
-          ${formatDate(date)}<br>（${dayOfWeek(date)}）
-        </td>` : ''}
-        <td style="text-align:center;">${escHtml(t.time) || '—'}</td>
-        <td style="text-align:center;">${escHtml(company.name)}</td>
-        <td>${escHtml(t.name) || '—'}</td>
-        <td style="text-align:center;">${t.totalGuests || 0}名</td>
-        <td style="text-align:center;${allergyTotal > 0 ? 'color:#8b2820;font-weight:600;' : ''}">${allergyTotal > 0 ? `${allergyTotal}名` : '—'}</td>
-        <td style="font-size:10px;">${groupSummary || '—'}</td>
-      </tr>`;
-    }).join('');
-    return dateRows;
-  }).join('');
+```
+  return `<tr>
+    ${idx === 0 ? `<td rowspan="${byDate[date].length}" style="text-align:center;vertical-align:middle;background:#fafafa;">
+      ${formatDate(date)}<br>（${dayOfWeek(date)}）
+    </td>` : ''}
+    <td style="text-align:center;">${escHtml(t.time) || '—'}</td>
+    <td style="text-align:center;">${escHtml(company.name)}</td>
+    <td>${escHtml(t.name) || '—'}</td>
+    <td style="text-align:center;">${t.totalGuests || 0}名</td>
+    <td style="text-align:center;${allergyTotal > 0 ? 'color:#8b2820;font-weight:600;' : ''}">${allergyTotal > 0 ? `${allergyTotal}名` : '—'}</td>
+    <td style="font-size:10px;">${groupSummary || '—'}</td>
+  </tr>`;
+}).join('');
+return dateRows;
+```
 
-  return `
-    <div class="print-area preview">
-      <div class="doc-header">
-        <div>
-          <div class="doc-title">ツアー予定一覧</div>
-          <div style="font-size:12px;color:#555;margin-top:4px;">${rangeLabel}</div>
-        </div>
-        <div class="doc-meta">
-          市場小路ジェイアール京都伊勢丹店<br>
-          作成日：${printedAt}
-        </div>
-      </div>
+}).join(’’);
 
-      <div class="info-row" style="margin-bottom:12px;">
-        <div><span class="label">合計ツアー数：</span>${totalTours}件</div>
-        <div><span class="label">合計人数：</span>${totalGuests}名</div>
-        <div><span class="label">アレルギー対応：</span>${totalAllergy}名</div>
-      </div>
+return `
+<div class="print-area preview">
+<div class="doc-header">
+<div>
+<div class="doc-title">ツアー予定一覧</div>
+<div style="font-size:12px;color:#555;margin-top:4px;">${rangeLabel}</div>
+</div>
+<div class="doc-meta">
+市場小路ジェイアール京都伊勢丹店<br>
+作成日：${printedAt}
+</div>
+</div>
 
-      <table>
-        <thead>
-          <tr>
-            <th style="width:90px;">日付</th>
-            <th style="width:50px;">時間</th>
-            <th style="width:90px;">旅行会社</th>
-            <th>ツアー名</th>
-            <th style="width:55px;">人数</th>
-            <th style="width:65px;">アレルギー</th>
-            <th style="width:25%;">グループ内訳</th>
-          </tr>
-        </thead>
-        <tbody>${tableRows}</tbody>
-      </table>
+```
+  <div class="info-row" style="margin-bottom:12px;">
+    <div><span class="label">合計ツアー数：</span>${totalTours}件</div>
+    <div><span class="label">合計人数：</span>${totalGuests}名</div>
+    <div><span class="label">アレルギー対応：</span>${totalAllergy}名</div>
+  </div>
 
-      <div class="doc-footer">
-        <div>市場小路 アレルギー管理システム</div>
-        <div>合計${totalTours}件</div>
-      </div>
-    </div>
-  `;
+  <table>
+    <thead>
+      <tr>
+        <th style="width:90px;">日付</th>
+        <th style="width:50px;">時間</th>
+        <th style="width:90px;">旅行会社</th>
+        <th>ツアー名</th>
+        <th style="width:55px;">人数</th>
+        <th style="width:65px;">アレルギー</th>
+        <th style="width:25%;">グループ内訳</th>
+      </tr>
+    </thead>
+    <tbody>${tableRows}</tbody>
+  </table>
+
+  <div class="doc-footer">
+    <div>市場小路 アレルギー管理システム</div>
+    <div>合計${totalTours}件</div>
+  </div>
+</div>
+```
+
+`;
 }
 
 // ==================== バックアップ関連 ====================
 function exportData() {
-  const data = JSON.stringify(state, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `allergy_data_${todayStr()}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  state.lastBackupAt = new Date().toISOString();
-  saveData();
-  if (currentTab === 'settings') render();
+const data = JSON.stringify(state, null, 2);
+const blob = new Blob([data], { type: ‘application/json’ });
+const url = URL.createObjectURL(blob);
+const a = document.createElement(‘a’);
+a.href = url;
+a.download = `allergy_data_${todayStr()}.json`;
+a.click();
+URL.revokeObjectURL(url);
+state.lastBackupAt = new Date().toISOString();
+saveData();
+if (currentTab === ‘settings’) render();
 }
 
 function getDaysSinceBackup() {
-  if (!state.lastBackupAt) return null;
-  const last = new Date(state.lastBackupAt);
-  const now = new Date();
-  return Math.floor((now - last) / (1000 * 60 * 60 * 24));
+if (!state.lastBackupAt) return null;
+const last = new Date(state.lastBackupAt);
+const now = new Date();
+return Math.floor((now - last) / (1000 * 60 * 60 * 24));
 }
 
 function formatBackupStatus() {
-  if (!state.lastBackupAt) return 'まだバックアップしていません';
-  const last = new Date(state.lastBackupAt);
-  const days = getDaysSinceBackup();
-  const dateStr = `${last.getFullYear()}年${last.getMonth()+1}月${last.getDate()}日`;
-  const timeStr = `${String(last.getHours()).padStart(2,'0')}:${String(last.getMinutes()).padStart(2,'0')}`;
-  let suffix = '';
-  if (days === 0) suffix = '（今日）';
-  else if (days === 1) suffix = '（昨日）';
-  else if (days < 7) suffix = `（${days}日前）`;
-  else if (days < 30) suffix = `（${days}日前）`;
-  else suffix = `（${days}日前 ※要バックアップ）`;
-  return `${dateStr} ${timeStr} ${suffix}`;
+if (!state.lastBackupAt) return ‘まだバックアップしていません’;
+const last = new Date(state.lastBackupAt);
+const days = getDaysSinceBackup();
+const dateStr = `${last.getFullYear()}年${last.getMonth()+1}月${last.getDate()}日`;
+const timeStr = `${String(last.getHours()).padStart(2,'0')}:${String(last.getMinutes()).padStart(2,'0')}`;
+let suffix = ‘’;
+if (days === 0) suffix = ‘（今日）’;
+else if (days === 1) suffix = ‘（昨日）’;
+else if (days < 7) suffix = `（${days}日前）`;
+else if (days < 30) suffix = `（${days}日前）`;
+else suffix = `（${days}日前 ※要バックアップ）`;
+return `${dateStr} ${timeStr} ${suffix}`;
 }
 
 function getBackupStatusBg() {
-  const days = getDaysSinceBackup();
-  if (days === null) return 'var(--warn-bg)';
-  if (days >= 30) return 'var(--danger-bg)';
-  if (days >= 14) return 'var(--warn-bg)';
-  return 'var(--ok-bg)';
+const days = getDaysSinceBackup();
+if (days === null) return ‘var(–warn-bg)’;
+if (days >= 30) return ‘var(–danger-bg)’;
+if (days >= 14) return ‘var(–warn-bg)’;
+return ‘var(–ok-bg)’;
 }
 
 function getBackupStatusBorder() {
-  const days = getDaysSinceBackup();
-  if (days === null) return '#fde68a';
-  if (days >= 30) return '#fecaca';
-  if (days >= 14) return '#fde68a';
-  return '#86efac';
+const days = getDaysSinceBackup();
+if (days === null) return ‘#fde68a’;
+if (days >= 30) return ‘#fecaca’;
+if (days >= 14) return ‘#fde68a’;
+return ‘#86efac’;
 }
 
 function getBackupStatusColor() {
-  const days = getDaysSinceBackup();
-  if (days === null) return 'var(--warn)';
-  if (days >= 30) return 'var(--danger)';
-  if (days >= 14) return 'var(--warn)';
-  return 'var(--ok)';
+const days = getDaysSinceBackup();
+if (days === null) return ‘var(–warn)’;
+if (days >= 30) return ‘var(–danger)’;
+if (days >= 14) return ‘var(–warn)’;
+return ‘var(–ok)’;
 }
 
 function importData() {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'application/json';
-  input.onchange = e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const imported = JSON.parse(reader.result);
-        showConfirm('取り込み確認', '現在のデータを上書きします。よろしいですか？', ok => {
-          if (ok) {
-            state = imported;
-            // 旧形式の補完
-            if (!state.companies) state.companies = [...DEFAULT_COMPANIES];
-            if (!state.customAllergens) state.customAllergens = [];
-            if (!state.tours) state.tours = [];
-            if (!state.courses) {
-              const oldDefault = state.defaultCourse || DEFAULT_COURSE_ITEMS;
-              state.courses = [{ id: uid(), name: '市場小路美食コース', items: [...oldDefault] }];
-              delete state.defaultCourse;
-            }
-            state.tours.forEach(t => {
-              if (t.courseItems && !t.courseId) {
-                const matching = state.courses.find(c =>
-                  JSON.stringify(c.items) === JSON.stringify(t.courseItems));
-                if (matching) t.courseId = matching.id;
-                else t.customCourseItems = t.courseItems;
-                delete t.courseItems;
-              }
-              if (!t.courseId && !t.customCourseItems) t.courseId = state.courses[0]?.id;
-              if (!t.groups) t.groups = [];
-              if (typeof t.totalGuests !== 'number') t.totalGuests = 0;
-              t.groups.forEach(g => { if (!g.changeNotes) g.changeNotes = []; });
-            });
-            saveData(); render();
-            showAlert('読み込みました');
-          }
-        });
-      } catch (err) { showAlert('ファイルの読み込みに失敗しました'); }
-    };
-    reader.readAsText(file);
-  };
-  input.click();
+const input = document.createElement(‘input’);
+input.type = ‘file’;
+input.accept = ‘application/json’;
+input.onchange = e => {
+const file = e.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = () => {
+try {
+const imported = JSON.parse(reader.result);
+showConfirm(‘取り込み確認’, ‘現在のデータを上書きします。よろしいですか？’, ok => {
+if (ok) {
+state = imported;
+// 旧形式の補完
+if (!state.companies) state.companies = […DEFAULT_COMPANIES];
+if (!state.customAllergens) state.customAllergens = [];
+if (!state.tours) state.tours = [];
+if (!state.courses) {
+const oldDefault = state.defaultCourse || DEFAULT_COURSE_ITEMS;
+state.courses = [{ id: uid(), name: ‘市場小路美食コース’, items: […oldDefault] }];
+delete state.defaultCourse;
+}
+state.tours.forEach(t => {
+if (t.courseItems && !t.courseId) {
+const matching = state.courses.find(c =>
+JSON.stringify(c.items) === JSON.stringify(t.courseItems));
+if (matching) t.courseId = matching.id;
+else t.customCourseItems = t.courseItems;
+delete t.courseItems;
+}
+if (!t.courseId && !t.customCourseItems) t.courseId = state.courses[0]?.id;
+if (!t.groups) t.groups = [];
+if (typeof t.totalGuests !== ‘number’) t.totalGuests = 0;
+t.groups.forEach(g => { if (!g.changeNotes) g.changeNotes = []; });
+});
+saveData(); render();
+showAlert(‘読み込みました’);
+}
+});
+} catch (err) { showAlert(‘ファイルの読み込みに失敗しました’); }
+};
+reader.readAsText(file);
+};
+input.click();
 }
 
 function clearOld() {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - 30);
-  const cutoffStr = formatDateForInput(cutoff);
-  const before = state.tours.length;
-  state.tours = state.tours.filter(t => t.date >= cutoffStr);
-  const removed = before - state.tours.length;
-  saveData(); render();
-  showAlert(`${removed}件のツアーを削除しました`);
+const cutoff = new Date();
+cutoff.setDate(cutoff.getDate() - 30);
+const cutoffStr = formatDateForInput(cutoff);
+const before = state.tours.length;
+state.tours = state.tours.filter(t => t.date >= cutoffStr);
+const removed = before - state.tours.length;
+saveData(); render();
+showAlert(`${removed}件のツアーを削除しました`);
 }
 
-function showModal() { document.getElementById('modalBackdrop').classList.add('show'); }
+function showModal() { document.getElementById(‘modalBackdrop’).classList.add(‘show’); }
 function closeModal() {
-  document.getElementById('modalBackdrop').classList.remove('show');
-  document.getElementById('printArea').innerHTML = '';
+document.getElementById(‘modalBackdrop’).classList.remove(‘show’);
+document.getElementById(‘printArea’).innerHTML = ‘’;
 }
 
-document.querySelectorAll('.tab').forEach(t => {
-  t.addEventListener('click', () => { currentTab = t.dataset.tab; render(); });
+document.querySelectorAll(’.tab’).forEach(t => {
+t.addEventListener(‘click’, () => { currentTab = t.dataset.tab; render(); });
 });
 
-document.getElementById('fabBtn').addEventListener('click', () => openTourEdit(null));
-document.getElementById('modalClose').addEventListener('click', closeModal);
-document.getElementById('modalBackdrop').addEventListener('click', e => {
-  if (e.target === document.getElementById('modalBackdrop')) closeModal();
+document.getElementById(‘fabBtn’).addEventListener(‘click’, () => openTourEdit(null));
+document.getElementById(‘modalClose’).addEventListener(‘click’, closeModal);
+document.getElementById(‘modalBackdrop’).addEventListener(‘click’, e => {
+if (e.target === document.getElementById(‘modalBackdrop’)) closeModal();
 });
 
 renderDateLine();
 render();
 
 // サンプル
-if (state.tours.length === 0 && !localStorage.getItem(STORAGE_KEY + '_demo')) {
-  // デモ用に煮物に中身を追加
-  const course = state.courses[0];
-  const nimonoItem = course.items.find(i => getItemName(i) === '煮物');
-  if (nimonoItem && nimonoItem.subItems.length === 0) {
-    nimonoItem.subItems = ['切り干し大根', 'ひじき煮', '高野豆腐', '出し巻き卵'];
-  }
-  saveData();
+if (state.tours.length === 0 && !localStorage.getItem(STORAGE_KEY + ‘_demo’)) {
+// デモ用に煮物に中身を追加
+const course = state.courses[0];
+const nimonoItem = course.items.find(i => getItemName(i) === ‘煮物’);
+if (nimonoItem && nimonoItem.subItems.length === 0) {
+nimonoItem.subItems = [‘切り干し大根’, ‘ひじき煮’, ‘高野豆腐’, ‘出し巻き卵’];
+}
+saveData();
 
-  const courseId = state.courses[0].id;
-  const items = state.courses[0].items;
-  const sampleTour = {
-    id: uid(),
-    companyId: 'hankyu',
-    name: '京都春の名所めぐり',
-    date: todayStr(),
-    time: '12:00',
-    note: '阪急交通社様 / 添乗員 山田様',
-    totalGuests: 29,
-    courseId: courseId,
-    groups: [
-      {
-        id: uid(),
-        label: '田中様',
-        count: 1,
-        allergies: ['卵', '乳'],
-        contamOk: false,
-        note: '重度。コンタミ厳禁。',
-        served: items.map(() => false),
-        dishStatus: ['change','warn','change','normal','change','normal','normal','change'],
-        changeNotes: ['卵を抜いた胡麻豆腐', '提供せず季節野菜', '卵不使用の白身魚椀', '', '塩焼き（タレなし）', '', '', '乳製品なしの和菓子'],
-        // 煮物（idx=5）の中で出し巻き卵（si=3）は提供なし
-        subDishStatus: { '5_3': 'warn' },
-        subChangeNotes: { '5_3': '卵アレルギーのため提供せず、代わりに筍煮を追加' }
-      },
-      {
-        id: uid(),
-        label: '佐藤・鈴木様',
-        count: 2,
-        allergies: ['卵', '豚肉'],
-        contamOk: true,
-        note: '',
-        served: items.map(() => false),
-        dishStatus: ['change','change','normal','normal','change','change','warn','change'],
-        changeNotes: ['卵不使用', '卵を抜いた前菜', '', '', '鶏肉に変更', '', '豚肉メインのため提供なし', '卵不使用'],
-        subDishStatus: { '5_3': 'warn' },
-        subChangeNotes: { '5_3': '卵不使用のため代替品で対応' }
-      }
-    ]
-  };
-  state.tours.push(sampleTour);
-  saveData();
-  localStorage.setItem(STORAGE_KEY + '_demo', '1');
-  render();
+const courseId = state.courses[0].id;
+const items = state.courses[0].items;
+const sampleTour = {
+id: uid(),
+companyId: ‘hankyu’,
+name: ‘京都春の名所めぐり’,
+date: todayStr(),
+time: ‘12:00’,
+note: ‘阪急交通社様 / 添乗員 山田様’,
+totalGuests: 29,
+courseId: courseId,
+groups: [
+{
+id: uid(),
+label: ‘田中様’,
+count: 1,
+allergies: [‘卵’, ‘乳’],
+contamOk: false,
+note: ‘重度。コンタミ厳禁。’,
+served: items.map(() => false),
+dishStatus: [‘change’,‘warn’,‘change’,‘normal’,‘change’,‘normal’,‘normal’,‘change’],
+changeNotes: [‘卵を抜いた胡麻豆腐’, ‘提供せず季節野菜’, ‘卵不使用の白身魚椀’, ‘’, ‘塩焼き（タレなし）’, ‘’, ‘’, ‘乳製品なしの和菓子’],
+// 煮物（idx=5）の中で出し巻き卵（si=3）は提供なし
+subDishStatus: { ‘5_3’: ‘warn’ },
+subChangeNotes: { ‘5_3’: ‘卵アレルギーのため提供せず、代わりに筍煮を追加’ }
+},
+{
+id: uid(),
+label: ‘佐藤・鈴木様’,
+count: 2,
+allergies: [‘卵’, ‘豚肉’],
+contamOk: true,
+note: ‘’,
+served: items.map(() => false),
+dishStatus: [‘change’,‘change’,‘normal’,‘normal’,‘change’,‘change’,‘warn’,‘change’],
+changeNotes: [‘卵不使用’, ‘卵を抜いた前菜’, ‘’, ‘’, ‘鶏肉に変更’, ‘’, ‘豚肉メインのため提供なし’, ‘卵不使用’],
+subDishStatus: { ‘5_3’: ‘warn’ },
+subChangeNotes: { ‘5_3’: ‘卵不使用のため代替品で対応’ }
+}
+]
+};
+state.tours.push(sampleTour);
+saveData();
+localStorage.setItem(STORAGE_KEY + ‘_demo’, ‘1’);
+render();
 }
 </script>
 
