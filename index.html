@@ -314,46 +314,54 @@ font-family: “Hiragino Mincho ProN”, “Yu Mincho”, serif;
 font-size: 11px; box-shadow: 0 4px 16px rgba(0,0,0,0.08);
 }
 
-/* 共通スタイル（画面プレビューと印刷の両方で使う） */
+/* プレビュー・印刷共通スタイル */
 .print-area .doc-header {
 display: flex; justify-content: space-between; align-items: flex-end;
-border-bottom: 2px solid black; padding-bottom: 8px; margin-bottom: 14px;
+border-bottom: 2px solid black; padding-bottom: 6px; margin-bottom: 10px;
 }
-.print-area .doc-title { font-size: 18px; font-weight: 700; letter-spacing: 0.1em; }
-.print-area .doc-meta { font-size: 10px; text-align: right; line-height: 1.6; }
-.print-area .info-row { display: flex; gap: 12px; margin-bottom: 8px; font-size: 11px; flex-wrap: wrap; }
-.print-area .info-row > div { flex: 1; min-width: 140px; }
-.print-area .info-row .label { font-weight: 600; margin-right: 6px; color: #333; }
-.print-area table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 10.5px; table-layout: fixed; }
+.print-area .doc-title { font-size: 16pt; font-weight: 700; letter-spacing: 0.08em; }
+.print-area .doc-meta { font-size: 9pt; text-align: right; line-height: 1.5; }
+.print-area .info-row { display: flex; gap: 10px; margin-bottom: 6px; font-size: 10pt; flex-wrap: wrap; }
+.print-area .info-row > div { flex: 1; min-width: 130px; }
+.print-area .info-row .label { font-weight: 600; margin-right: 4px; color: #333; }
+.print-area table {
+width: 100%; border-collapse: collapse; margin-bottom: 10px;
+font-size: 9pt; table-layout: fixed;
+}
 .print-area th, .print-area td {
-border: 1px solid #333; padding: 4px 6px;
+border: 1px solid #333; padding: 3px 5px;
 text-align: left; vertical-align: top;
 word-wrap: break-word; overflow-wrap: break-word;
+word-break: break-all;
 }
-.print-area th { background: #f0e8d8; font-weight: 600; text-align: center; font-size: 10px; }
+.print-area th { background: #f0e8d8; font-weight: 600; text-align: center; font-size: 9pt; }
 .print-area .table-title {
-font-size: 12px; font-weight: 700; margin: 12px 0 5px;
-padding-left: 4px; border-left: 4px solid black;
+font-size: 11pt; font-weight: 700; margin: 10px 0 4px;
+padding-left: 4px; border-left: 3px solid black;
 }
 .print-area .cell-change { background: #fffacd; }
 .print-area .cell-warn { background: #ffd6d6; font-weight: 600; }
 .print-area .cell-normal { background: white; }
 .print-area .change-note {
-font-size: 9.5px; color: #333; margin-top: 2px;
+font-size: 8.5pt; color: #333; margin-top: 2px;
 font-weight: 400; line-height: 1.3;
 }
 .print-area .notes {
-font-size: 10px; margin-top: 8px; padding: 6px 8px; border: 1px solid #999;
+font-size: 9pt; margin-top: 6px; padding: 5px 7px; border: 1px solid #999;
 }
-.print-area .notes ul { margin: 3px 0; padding-left: 16px; }
+.print-area .notes ul { margin: 2px 0; padding-left: 14px; }
 .print-area .doc-footer {
-margin-top: 14px; padding-top: 6px; border-top: 1px solid #999;
-display: flex; justify-content: space-between; font-size: 9px; color: #555;
+margin-top: 10px; padding-top: 5px; border-top: 1px solid #999;
+display: flex; justify-content: space-between; font-size: 8pt; color: #555;
 }
+
+/* 印刷モード時のbody装飾 */
+body.printing > * { display: none !important; }
+body.printing > #printArea { display: block !important; }
+body.printing { background: white !important; }
 
 /* 印刷時のスタイル */
 @media print {
-/* 全要素をリセットして印刷エリアだけ表示 */
 html, body {
 margin: 0 !important;
 padding: 0 !important;
@@ -361,49 +369,48 @@ background: white !important;
 width: auto !important;
 height: auto !important;
 overflow: visible !important;
+-webkit-print-color-adjust: exact !important;
+print-color-adjust: exact !important;
 }
-/* 画面上の要素は完全に消す */
-.app, .modal-backdrop, .modal-backdrop-2, .btn-fab, header,
-.modal, .modal-2 {
+/* 印刷時は全要素を強制的に消す */
+body > *:not(#printArea) {
 display: none !important;
-}
-/* 印刷エリアだけ表示 */
-#printArea, #printArea * {
-visibility: visible !important;
+visibility: hidden !important;
 }
 #printArea {
 display: block !important;
+visibility: visible !important;
 position: static !important;
 width: 100% !important;
 max-width: none !important;
 margin: 0 !important;
-padding: 12mm !important;
+padding: 8mm 8mm 8mm 8mm !important;
 background: white !important;
 color: black !important;
 box-shadow: none !important;
 font-family: “Hiragino Mincho ProN”, “Yu Mincho”, serif !important;
-font-size: 10.5pt;
+font-size: 10pt;
 }
-/* プレビュー時の装飾を印刷時は無効化 */
-#printArea .print-area.preview {
+#printArea, #printArea * { visibility: visible !important; }
+/* プレビュー装飾を打ち消す */
+#printArea .print-area.preview,
+#printArea .print-area {
 padding: 0 !important;
 margin: 0 !important;
 box-shadow: none !important;
-font-size: 10.5pt !important;
 }
 /* テーブルの改ページ */
-table { page-break-inside: auto; }
-tr { page-break-inside: avoid; page-break-after: auto; }
-thead { display: table-header-group; }
+table { page-break-inside: auto !important; }
+tr { page-break-inside: avoid !important; page-break-after: auto !important; }
+thead { display: table-header-group !important; }
 /* 背景色を確実に出す */
 .print-area .cell-change,
 .print-area .cell-warn,
 .print-area th {
 -webkit-print-color-adjust: exact !important;
 print-color-adjust: exact !important;
-color-adjust: exact !important;
 }
-.print-page-break { page-break-before: always; }
+.print-page-break { page-break-before: always !important; }
 @page {
 size: A4;
 margin: 0;
@@ -1077,7 +1084,7 @@ function renderSettings(main) {
       </div>
     </div>
 
-    <div style="font-size:11px;color:var(--ink-mute);text-align:center;margin-top:24px;">市場小路 アレルギー管理 v9.0</div>
+    <div style="font-size:11px;color:var(--ink-mute);text-align:center;margin-top:24px;">市場小路 アレルギー管理 v11.0</div>
   `;
 
   main.innerHTML = html;
@@ -2182,9 +2189,22 @@ showModal();
 }
 
 function doPrint() {
-// 印刷直前にスクロール位置をリセット（一部ブラウザで印刷位置がズレる対策）
+// 印刷モードに切り替え（他要素を強制非表示）
+document.body.classList.add(‘printing’);
 window.scrollTo(0, 0);
-setTimeout(() => window.print(), 50);
+
+// 印刷後に元に戻す
+const cleanup = () => {
+document.body.classList.remove(‘printing’);
+window.removeEventListener(‘afterprint’, cleanup);
+};
+window.addEventListener(‘afterprint’, cleanup);
+
+setTimeout(() => {
+window.print();
+// afterprintが効かないブラウザ用の保険
+setTimeout(cleanup, 1000);
+}, 100);
 }
 
 function generatePrintHtml(tour, company, course) {
@@ -2194,7 +2214,7 @@ const printedAt = `${today.getFullYear()}/${String(today.getMonth()+1).padStart(
 const allergyTotal = totalGroupCount(tour);
 const generalTotal = generalGuestCount(tour);
 
-const customerTable = `<div class="table-title">① お客様情報</div> <table> <thead> <tr> <th style="width:60px;">区分</th> <th style="width:50px;">人数</th> <th>制限内容（アレルギー）</th> <th style="width:80px;">コンタミ</th> <th style="width:30%;">備考</th> </tr> </thead> <tbody> ${groups.length === 0 ?`
+const customerTable = `<div class="table-title">① お客様情報</div> <table> <thead> <tr> <th style="width:14%;">区分</th> <th style="width:10%;">人数</th> <th style="width:32%;">制限内容（アレルギー）</th> <th style="width:14%;">コンタミ</th> <th style="width:30%;">備考</th> </tr> </thead> <tbody> ${groups.length === 0 ?`
 <tr><td colspan="5" style="text-align:center;color:#999;">アレルギー対応必要なお客様なし</td></tr>
 `: groups.map((g, i) =>`
 <tr>
@@ -2216,9 +2236,11 @@ ${g.contamOk === true ? ‘可’ : g.contamOk === false ? ‘不可’ : ‘未
 
 let changeTable = ‘’;
 if (groups.length > 0 && course.length > 0) {
-changeTable = `<div class="table-title">② 変更対応表（調理指示書）</div> <table> <thead> <tr> <th style="width:30px;">No.</th> <th style="width:90px;">品目</th> ${groups.map((g, i) =>`<th>${escHtml(g.label) || `G${i+1}`}<br><span style="font-weight:400;font-size:9px;">${g.count}名・${escHtml((g.allergies||[]).join(’/’))}</span></th>`).join('')} </tr> </thead> <tbody> ${course.map((item, di) => { const dishName = getItemName(item); const subs = getItemSubs(item); const mainRow = `
+// 列幅の計算: No列5%, 品目列22%, 残り73%をグループ数で割る
+const groupColWidth = Math.floor(73 / groups.length);
+changeTable = `<div class="table-title">② 変更対応表（調理指示書）</div> <table> <thead> <tr> <th style="width:5%;">No.</th> <th style="width:22%;">品目</th> ${groups.map((g, i) =>`<th style="width:${groupColWidth}%;">${escHtml(g.label) || `G${i+1}`}<br><span style="font-weight:400;font-size:8pt;">${g.count}名・${escHtml((g.allergies||[]).join(’/’))}</span></th>`).join('')} </tr> </thead> <tbody> ${course.map((item, di) => { const dishName = getItemName(item); const subs = getItemSubs(item); const mainRow = `
 <tr>
-<td style="text-align:center;font-size:9px;color:#666;">${String(di+1).padStart(2,‘0’)}</td>
+<td style="text-align:center;font-size:8pt;color:#666;">${String(di+1).padStart(2,‘0’)}</td>
 <td style="font-weight:500;">${escHtml(dishName)}</td>
 ${groups.map(g => {
 const status = (g.dishStatus && g.dishStatus[di]) || ‘normal’;
@@ -2440,6 +2462,7 @@ const tableRows = Object.keys(byDate).sort().map(date => {
 const dateRows = byDate[date].map((t, idx) => {
 const company = getCompany(t.companyId);
 const allergyTotal = totalGroupCount(t);
+const courseName = getTourCourseName(t);
 const groupSummary = (t.groups || []).map(g =>
 `${escHtml(g.label) || ''}${g.count}名(${escHtml((g.allergies || []).join('・')) || '—'})`
 ).join(’<br>’);
@@ -2451,10 +2474,13 @@ const groupSummary = (t.groups || []).map(g =>
     </td>` : ''}
     <td style="text-align:center;">${escHtml(t.time) || '—'}</td>
     <td style="text-align:center;">${escHtml(company.name)}</td>
-    <td>${escHtml(t.name) || '—'}</td>
+    <td>
+      <div>${escHtml(t.name) || '—'}</div>
+      <div style="font-size:8.5pt;color:#666;margin-top:2px;">コース：${escHtml(courseName)}</div>
+    </td>
     <td style="text-align:center;">${t.totalGuests || 0}名</td>
     <td style="text-align:center;${allergyTotal > 0 ? 'color:#8b2820;font-weight:600;' : ''}">${allergyTotal > 0 ? `${allergyTotal}名` : '—'}</td>
-    <td style="font-size:10px;">${groupSummary || '—'}</td>
+    <td style="font-size:8.5pt;">${groupSummary || '—'}</td>
   </tr>`;
 }).join('');
 return dateRows;
@@ -2485,13 +2511,13 @@ return `
   <table>
     <thead>
       <tr>
-        <th style="width:90px;">日付</th>
-        <th style="width:50px;">時間</th>
-        <th style="width:90px;">旅行会社</th>
-        <th>ツアー名</th>
-        <th style="width:55px;">人数</th>
-        <th style="width:65px;">アレルギー</th>
-        <th style="width:25%;">グループ内訳</th>
+        <th style="width:13%;">日付</th>
+        <th style="width:8%;">時間</th>
+        <th style="width:13%;">旅行会社</th>
+        <th style="width:25%;">ツアー名</th>
+        <th style="width:8%;">人数</th>
+        <th style="width:10%;">アレルギー</th>
+        <th style="width:23%;">グループ内訳</th>
       </tr>
     </thead>
     <tbody>${tableRows}</tbody>
