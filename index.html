@@ -443,6 +443,7 @@ const DEFAULT_ALLERGENS = {
 };
 
 const DEFAULT_COURSE_ITEMS = ['先付', '前菜', 'お椀', 'お造り', '焼物', '煮物', '食事', '水菓子'];
+const DEFAULT_COURSE_NAME = '市場小路美食コース';
 
 const DEFAULT_COMPANIES = [
   { id: 'hankyu', name: '阪急交通社', color: '#1e40af' },
@@ -500,7 +501,7 @@ function ensureBaseData(data) {
     : [];
   data.courses = normalizedCourses.length > 0
     ? normalizedCourses
-    : [{ id: uid(), name: '市場小路美食コース', items: oldDefault.map(normalizeItem) }];
+    : [{ id: uid(), name: DEFAULT_COURSE_NAME, items: oldDefault.map(normalizeItem) }];
   delete data.defaultCourse;
   return data;
 }
@@ -545,7 +546,7 @@ function loadData() {
     tours: [],
     customAllergens: [],
     courses: [
-      { id: uid(), name: '市場小路美食コース', items: DEFAULT_COURSE_ITEMS.map(normalizeItem) }
+      { id: uid(), name: DEFAULT_COURSE_NAME, items: DEFAULT_COURSE_ITEMS.map(normalizeItem) }
     ],
     companies: [...DEFAULT_COMPANIES]
   };
