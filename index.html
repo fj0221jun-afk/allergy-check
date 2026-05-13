@@ -475,7 +475,7 @@ function ensureBaseData(data) {
       .filter(c => c && typeof c === 'object')
       .map(c => ({
         id: c.id || uid(),
-        name: c.name || '未設定',
+        name: c.name || '名称未設定',
         color: c.color || '#666666'
       }))
     : [];
@@ -506,39 +506,42 @@ function ensureBaseData(data) {
   return data;
 }
 
+function normalizeToursData(data) {
+  data.tours.forEach(t => {
+    if (t.courseItems && !t.courseId) {
+      const normalizedItems = t.courseItems.map(normalizeItem);
+      const matching = data.courses.find(c =>
+        JSON.stringify(c.items.map(i => i.name)) === JSON.stringify(normalizedItems.map(i => i.name)));
+      if (matching) {
+        t.courseId = matching.id;
+      } else {
+        t.customCourseItems = normalizedItems;
+      }
+      delete t.courseItems;
+    }
+    if (t.customCourseItems) {
+      t.customCourseItems = t.customCourseItems.map(normalizeItem);
+    }
+    if (!t.courseId && !t.customCourseItems) {
+      t.courseId = data.courses[0]?.id;
+    }
+    if (typeof t.totalGuests !== 'number') t.totalGuests = 0;
+    if (!Array.isArray(t.groups)) t.groups = [];
+    t.groups = t.groups.filter(g => g && typeof g === 'object');
+    t.groups.forEach(g => {
+      if (!g.changeNotes) g.changeNotes = [];
+      if (!g.subChangeNotes) g.subChangeNotes = {};
+      if (!g.subDishStatus) g.subDishStatus = {};
+    });
+  });
+}
+
 function loadData() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const data = ensureBaseData(JSON.parse(raw));
-
-      data.tours.forEach(t => {
-        if (t.courseItems && !t.courseId) {
-          const normalizedItems = t.courseItems.map(normalizeItem);
-          const matching = data.courses.find(c =>
-            JSON.stringify(c.items.map(i => i.name)) === JSON.stringify(normalizedItems.map(i => i.name)));
-          if (matching) {
-            t.courseId = matching.id;
-          } else {
-            t.customCourseItems = normalizedItems;
-          }
-          delete t.courseItems;
-        }
-        if (t.customCourseItems) {
-          t.customCourseItems = t.customCourseItems.map(normalizeItem);
-        }
-        if (!t.courseId && !t.customCourseItems) {
-          t.courseId = data.courses[0]?.id;
-        }
-        if (typeof t.totalGuests !== 'number') t.totalGuests = 0;
-        if (!Array.isArray(t.groups)) t.groups = [];
-        t.groups = t.groups.filter(g => g && typeof g === 'object');
-        t.groups.forEach(g => {
-          if (!g.changeNotes) g.changeNotes = [];
-          if (!g.subChangeNotes) g.subChangeNotes = {};
-          if (!g.subDishStatus) g.subDishStatus = {};
-        });
-      });
+      normalizeToursData(data);
       return data;
     }
   } catch (e) { console.error(e); }
@@ -2530,24 +2533,7 @@ const imported = JSON.parse(reader.result);
 showConfirm('取り込み確認', '現在のデータを上書きします。よろしいですか？', ok => {
 if (ok) {
 state = ensureBaseData(imported);
-state.tours.forEach(t => {
-if (t.courseItems && !t.courseId) {
-const matching = state.courses.find(c =>
-JSON.stringify(c.items) === JSON.stringify(t.courseItems));
-if (matching) t.courseId = matching.id;
-else t.customCourseItems = t.courseItems;
-delete t.courseItems;
-}
-if (!t.courseId && !t.customCourseItems) t.courseId = state.courses[0]?.id;
-if (!Array.isArray(t.groups)) t.groups = [];
-t.groups = t.groups.filter(g => g && typeof g === 'object');
-if (typeof t.totalGuests !== 'number') t.totalGuests = 0;
-t.groups.forEach(g => {
-if (!g.changeNotes) g.changeNotes = [];
-if (!g.subChangeNotes) g.subChangeNotes = {};
-if (!g.subDishStatus) g.subDishStatus = {};
-});
-});
+normalizeToursData(state);
 saveData(); render();
 showAlert('読み込みました');
 }
