@@ -519,57 +519,7 @@ function normalizeItem(item) {
 }
 
 function loadData() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const data = JSON.parse(raw);
-      if (!data.companies) data.companies = [...DEFAULT_COMPANIES];
-      if (!data.customAllergens) data.customAllergens = [];
-      if (!data.tours) data.tours = [];
-      if (!data.courses) {
-        const oldDefault = data.defaultCourse || DEFAULT_COURSE_ITEMS;
-        data.courses = [{
-          id: uid(),
-          name: '市場小路美食コース',
-          items: oldDefault.map(normalizeItem)
-        }];
-        delete data.defaultCourse;
-      }
-      // 全コースのitemsを正規化
-      data.courses.forEach(c => {
-        c.items = (c.items || []).map(normalizeItem);
-      });
-
-      data.tours.forEach(t => {
-        if (t.courseItems && !t.courseId) {
-          const normalizedItems = t.courseItems.map(normalizeItem);
-          const matching = data.courses.find(c =>
-            JSON.stringify(c.items.map(i => i.name)) === JSON.stringify(normalizedItems.map(i => i.name)));
-          if (matching) {
-            t.courseId = matching.id;
-          } else {
-            t.customCourseItems = normalizedItems;
-          }
-          delete t.courseItems;
-        }
-        if (t.customCourseItems) {
-          t.customCourseItems = t.customCourseItems.map(normalizeItem);
-        }
-        if (!t.courseId && !t.customCourseItems) {
-          t.courseId = data.courses[0]?.id;
-        }
-        if (typeof t.totalGuests !== 'number') t.totalGuests = 0;
-        if (!t.groups) t.groups = [];
-        t.groups.forEach(g => {
-          if (!g.changeNotes) g.changeNotes = [];
-          if (!g.subChangeNotes) g.subChangeNotes = {};
-          if (!g.subDishStatus) g.subDishStatus = {};
-        });
-      });
-      return data;
-    }
-  } catch (e) { console.error(e); }
-  return {
+  const defaultState = {
     tours: [],
     customAllergens: [],
     courses: [
@@ -577,6 +527,66 @@ function loadData() {
     ],
     companies: [...DEFAULT_COMPANIES]
   };
+
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState;
+    let data;
+    try { data = JSON.parse(raw); }
+    catch (e) {
+      console.error('parse error:', e);
+      return defaultState;
+    }
+    if (!data || typeof data !== 'object') return defaultState;
+
+    if (!Array.isArray(data.companies) || data.companies.length === 0) data.companies = [...DEFAULT_COMPANIES];
+    if (!Array.isArray(data.customAllergens)) data.customAllergens = [];
+    if (!Array.isArray(data.tours)) data.tours = [];
+    if (!Array.isArray(data.courses) || data.courses.length === 0) {
+      const oldDefault = data.defaultCourse || DEFAULT_COURSE_ITEMS;
+      data.courses = [{
+        id: uid(),
+        name: '市場小路美食コース',
+        items: (Array.isArray(oldDefault) ? oldDefault : DEFAULT_COURSE_ITEMS).map(normalizeItem)
+      }];
+      delete data.defaultCourse;
+    }
+    data.courses.forEach(c => {
+      if (!c.id) c.id = uid();
+      if (!c.name) c.name = '無題のコース';
+      c.items = Array.isArray(c.items) ? c.items.map(normalizeItem) : [normalizeItem('先付')];
+    });
+
+    data.tours.forEach(t => {
+      if (!t.id) t.id = uid();
+      if (t.courseItems && !t.courseId) {
+        const normalizedItems = (Array.isArray(t.courseItems) ? t.courseItems : []).map(normalizeItem);
+        const matching = data.courses.find(c =>
+          JSON.stringify(c.items.map(i => i.name)) === JSON.stringify(normalizedItems.map(i => i.name)));
+        if (matching) t.courseId = matching.id;
+        else t.customCourseItems = normalizedItems;
+        delete t.courseItems;
+      }
+      if (t.customCourseItems) t.customCourseItems = t.customCourseItems.map(normalizeItem);
+      if (!t.courseId && !t.customCourseItems) t.courseId = data.courses[0]?.id;
+      if (typeof t.totalGuests !== 'number') t.totalGuests = 0;
+      if (!Array.isArray(t.groups)) t.groups = [];
+      t.groups.forEach(g => {
+        if (!g.id) g.id = uid();
+        if (!Array.isArray(g.allergies)) g.allergies = [];
+        if (!Array.isArray(g.served)) g.served = [];
+        if (!Array.isArray(g.dishStatus)) g.dishStatus = [];
+        if (!Array.isArray(g.changeNotes)) g.changeNotes = [];
+        if (!g.subChangeNotes || typeof g.subChangeNotes !== 'object') g.subChangeNotes = {};
+        if (!g.subDishStatus || typeof g.subDishStatus !== 'object') g.subDishStatus = {};
+        if (typeof g.count !== 'number') g.count = 1;
+      });
+    });
+    return data;
+  } catch (e) {
+    console.error('loadData unexpected:', e);
+    return defaultState;
+  }
 }
 
 function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -1079,7 +1089,7 @@ function renderSettings(main) {
       </div>
     </div>
 
-    <div style="font-size:11px;color:var(--ink-mute);text-align:center;margin-top:24px;">市場小路 アレルギー管理 v12.0</div>
+    <div style="font-size:11px;color:var(--ink-mute);text-align:center;margin-top:24px;">市場小路 アレルギー管理 v13.0</div>
   `;
 
   main.innerHTML = html;
@@ -2649,8 +2659,23 @@ document.getElementById(‘modalBackdrop’).addEventListener(‘click’, e => 
 if (e.target === document.getElementById(‘modalBackdrop’)) closeModal();
 });
 
+// グローバルエラーハンドラ：何かエラーが出ても真っ白にしない
+window.addEventListener(‘error’, function(e) {
+console.error(‘アプリエラー:’, e.error || e.message);
+const main = document.getElementById(‘main’);
+if (main && !main.dataset.errored) {
+main.dataset.errored = ‘1’;
+main.innerHTML = `<div style="padding:24px;text-align:center;"> <div style="font-size:32px;margin-bottom:12px;opacity:0.4;">⚠</div> <div style="font-size:14px;color:var(--ink-soft);line-height:1.7;margin-bottom:16px;"> アプリの起動でエラーが発生しました。<br> データを初期化すると解消する場合があります。 </div> <div style="font-size:11px;color:var(--ink-mute);margin-bottom:16px;padding:8px;background:var(--bg-soft);border-radius:3px;text-align:left;"> ${escHtml(String(e.message || e.error || 'unknown error')).substring(0, 200)} </div> <button type="button" class="btn btn-outline btn-block" style="margin-bottom:8px;" onclick=" if (confirm('現在のデータを書き出します（バックアップ）')) { try { const raw = localStorage.getItem('${STORAGE_KEY}') || '{}'; const blob = new Blob([raw], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'allergy_backup_' + new Date().toISOString().slice(0,10) + '.json'; a.click(); URL.revokeObjectURL(url); } catch(e) { alert('バックアップに失敗: ' + e.message); } } ">データをバックアップ（JSON）</button> <button type="button" class="btn btn-accent btn-block" onclick=" if (confirm('アプリのデータをリセットします。よろしいですか？\\n（先にバックアップしておくことをおすすめします）')) { try { localStorage.removeItem('${STORAGE_KEY}'); localStorage.removeItem('${STORAGE_KEY}_demo'); location.reload(); } catch(e) { alert('リセット失敗: ' + e.message); } } ">データをリセットして再起動</button> </div>`;
+}
+});
+
+try {
 renderDateLine();
 render();
+} catch (err) {
+console.error(‘初期化エラー:’, err);
+window.dispatchEvent(new ErrorEvent(‘error’, { error: err, message: err.message }));
+}
 
 // サンプル
 if (state.tours.length === 0 && !localStorage.getItem(STORAGE_KEY + ‘_demo’)) {
