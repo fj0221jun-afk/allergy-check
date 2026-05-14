@@ -2184,7 +2184,9 @@ showModal();
 function doPrint(htmlContent) {
 // 別ページを開いて印刷する方式（iPad Safari対策）
 // htmlContentが渡されていなければ、現在のprintAreaの内容を使う
-const content = htmlContent || document.getElementById('printArea').innerHTML;
+const content = typeof htmlContent === 'string'
+? htmlContent
+: document.getElementById('printArea').innerHTML;
 
 // 印刷用の完全なHTMLを組み立てる
 const printDoc = `<!DOCTYPE html>
