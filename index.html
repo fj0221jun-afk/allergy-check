@@ -32,7 +32,7 @@
   .app { max-width: 720px; margin: 0 auto; padding: 0 16px 100px; }
 
 header {
-position: sticky; top: 0; z-index: 50;
+position: -webkit-sticky; position: sticky; top: 0; z-index: 50;
 background: var(--bg); padding: 16px 16px 0;
 border-bottom: 1px solid var(--line); margin: 0 -16px 16px;
 }
@@ -176,10 +176,10 @@ cursor: pointer; font-family: inherit; flex-shrink: 0;
 }
 
 .modal-backdrop {
-position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-z-index: 100; display: none; align-items: flex-end; justify-content: center;
+position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,0.5);
+z-index: 100; display: none;
 }
-.modal-backdrop.show { display: flex; }
+.modal-backdrop.show { display: -webkit-flex; display: flex; -webkit-align-items: flex-end; align-items: flex-end; -webkit-justify-content: center; justify-content: center; }
 .modal {
 background: var(--bg); width: 100%; max-width: 720px;
 max-height: 92vh; border-radius: 12px 12px 0 0;
@@ -188,7 +188,7 @@ padding-bottom: env(safe-area-inset-bottom);
 }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .modal-header {
-position: sticky; top: 0; background: var(--bg);
+position: -webkit-sticky; position: sticky; top: 0; background: var(--bg);
 padding: 16px 16px 12px; border-bottom: 1px solid var(--line);
 display: flex; justify-content: space-between; align-items: center; z-index: 10;
 }
@@ -200,11 +200,11 @@ color: var(--ink-soft); cursor: pointer; padding: 4px 8px; font-family: inherit;
 .modal-body { padding: 16px; }
 
 .modal-backdrop-2 {
-position: fixed; inset: 0; background: rgba(0,0,0,0.55);
-z-index: 200; display: none; align-items: center; justify-content: center;
+position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,0.55);
+z-index: 200; display: none;
 padding: 20px;
 }
-.modal-backdrop-2.show { display: flex; }
+.modal-backdrop-2.show { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; }
 .modal-2 {
 background: var(--bg); width: 100%; max-width: 420px;
 border-radius: 8px; overflow: hidden;
@@ -413,7 +413,7 @@ margin: 0;
 }
 
 .print-controls {
-position: sticky; top: 0; background: var(--bg);
+position: -webkit-sticky; position: sticky; top: 0; background: var(--bg);
 padding: 10px 0; margin: -16px -16px 12px;
 padding-left: 16px; padding-right: 16px;
 border-bottom: 1px solid var(--line);
