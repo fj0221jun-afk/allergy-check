@@ -2277,6 +2277,14 @@ const printDoc = `<!DOCTYPE html>
 ${content}
 <script>
   // 自動で印刷ダイアログを開く
+  window.onbeforeprint = function() {
+    var btn = document.querySelector('.back-btn');
+    if (btn) btn.style.display = 'none';
+  };
+  window.onafterprint = function() {
+    var btn = document.querySelector('.back-btn');
+    if (btn) btn.style.display = '';
+  };
   window.onload = function() {
     setTimeout(function() {
       window.print();
