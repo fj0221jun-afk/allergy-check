@@ -1807,6 +1807,25 @@ saveData(); closeModal(); render();
 showModal();
 }
 
+function duplicateTour(tourId) {
+const sourceTour = state.tours.find(t => t.id === tourId);
+if (!sourceTour) return;
+
+const clonedTour = typeof structuredClone === 'function'
+  ? structuredClone(sourceTour)
+  : JSON.parse(JSON.stringify(sourceTour));
+
+clonedTour.id = uid();
+clonedTour.name = `${sourceTour.name || '無題のツアー'}（コピー）`;
+
+state.tours.push(clonedTour);
+saveData();
+render();
+currentTourId = clonedTour.id;
+openTourDetail();
+showAlert('ツアーを複製しました');
+}
+
 function openTourDetail() {
 const tour = state.tours.find(t => t.id === currentTourId);
 if (!tour) return;
@@ -1822,6 +1841,7 @@ document.getElementById('modalTitle').textContent = tour.name || '（無題の�
 document.getElementById('modalBody').innerHTML = `<div class="card tour-card" style="margin-bottom:16px;border-left-color:${company.color};"> <div class="tour-company">${escHtml(company.name)}</div> <div class="tour-meta" style="margin-top:6px;"> ${formatDate(tour.date)}（${dayOfWeek(tour.date)}） ${escHtml(tour.time) || ''} </div> <div style="font-size:13px;color:var(--ink-soft);margin-top:4px;">コース：${escHtml(courseName)}（${course.length}品）</div> <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"> <span class="group-summary-pill">全体 ${tour.totalGuests || 0}名</span> ${allergyTotal > 0 ?`<span class="group-summary-pill allergy">アレルギー対応 ${allergyTotal}名</span>`: ''} ${generalTotal > 0 ?`<span class="group-summary-pill">一般 ${generalTotal}名</span>`: ''} </div> ${tour.note ?`<div style="font-size:13px;color:var(--ink-soft);margin-top:8px;padding:8px;background:var(--bg-soft);border-radius:3px;">${escHtml(tour.note)}</div>` : ''}
 <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
 <button type="button" class="btn btn-outline btn-sm" id="btn-edit-tour">情報編集</button>
+<button type="button" class="btn btn-outline btn-sm" id="btn-duplicate-tour">複製</button>
 <button type="button" class="btn btn-outline btn-sm" id="btn-print-tour">印刷（指示書）</button>
 </div>
 </div>
@@ -1844,6 +1864,7 @@ document.getElementById('modalBody').innerHTML = `<div class="card tour-card" st
 `;
 
 document.getElementById('btn-edit-tour').addEventListener('click', () => openTourEdit(tour.id));
+document.getElementById('btn-duplicate-tour').addEventListener('click', () => duplicateTour(tour.id));
 document.getElementById('btn-print-tour').addEventListener('click', openPrintPreview);
 document.getElementById('btn-add-group').addEventListener('click', () => openGroupEdit(null));
 
