@@ -419,6 +419,26 @@ padding-left: 16px; padding-right: 16px;
 border-bottom: 1px solid var(--line);
 display: flex; gap: 8px; z-index: 5;
 }
+
+.series-entry-row {
+display: flex; align-items: center; gap: 6px;
+padding: 6px 0; border-bottom: 1px solid var(--line);
+}
+.series-entry-row:last-child { border-bottom: none; }
+.series-entry-num {
+font-size: 11px; color: var(--ink-mute); font-weight: 600;
+min-width: 18px; text-align: right; flex-shrink: 0;
+}
+.series-entry-row .field-input {
+padding: 7px 8px; font-size: 13px;
+}
+.series-remove {
+width: 28px; height: 28px; flex-shrink: 0;
+border: 1px solid var(--line-strong); background: white;
+color: var(--ink-mute); border-radius: 3px;
+cursor: pointer; font-size: 13px; font-family: inherit;
+}
+.series-remove:disabled { opacity: 0.3; cursor: default; }
 </style>
 
 </head>
@@ -1546,6 +1566,130 @@ function attachTourCardEvents() {
       openTourDetail();
     });
   });
+}
+
+function openAddMethodChoice() {
+  document.getElementById('modalTitle').textContent = 'ツアーを追加';
+  document.getElementById('modalBody').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px;padding:4px 0 8px;">
+      <button type="button" class="btn btn-outline btn-block" id="btn-single-add" style="padding:14px 16px;font-size:15px;text-align:left;">
+        ＋ &nbsp;１件追加
+        <div style="font-size:11px;color:var(--ink-mute);font-weight:400;margin-top:3px;">日程を１件ずつ入力する</div>
+      </button>
+      <button type="button" class="btn btn-accent btn-block" id="btn-series-add" style="padding:14px 16px;font-size:15px;text-align:left;">
+        ＋＋ シリーズ一括登録
+        <div style="font-size:11px;opacity:0.85;font-weight:400;margin-top:3px;">同じツアー名・コースで複数の日程をまとめて登録する</div>
+      </button>
+    </div>
+  `;
+  document.getElementById('btn-single-add').addEventListener('click', () => { closeModal(); openTourEdit(null); });
+  document.getElementById('btn-series-add').addEventListener('click', () => { closeModal(); openSeriesBulkAdd(); });
+  showModal();
+}
+
+function openSeriesBulkAdd() {
+  document.getElementById('modalTitle').textContent = 'シリーズ一括登録';
+
+  let entries = [{ date: todayStr(), time: '', guests: '' }];
+
+  function renderEntriesHtml() {
+    return entries.map((e, i) => `
+      <div class="series-entry-row">
+        <span class="series-entry-num">${i + 1}</span>
+        <input class="field-input series-date" type="date" value="${escHtml(e.date)}" data-i="${i}" style="flex:2;min-width:0;">
+        <input class="field-input series-time" type="time" value="${escHtml(e.time)}" data-i="${i}" style="flex:1.5;min-width:0;">
+        <input class="field-input series-guests" type="number" min="0" value="${e.guests}" placeholder="人数" data-i="${i}" style="flex:1;min-width:0;">
+        <button type="button" class="series-remove" data-i="${i}" ${entries.length <= 1 ? 'disabled' : ''}>✕</button>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="field">
+      <label class="field-label">旅行会社</label>
+      <select class="field-select" id="sb-company">
+        ${state.companies.map(c => `<option value="${c.id}">${escHtml(c.name)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label">ツアー名</label>
+      <input class="field-input" id="sb-name" placeholder="例：京都春の名所めぐり">
+    </div>
+    <div class="field">
+      <label class="field-label">コース</label>
+      <select class="field-select" id="sb-course">
+        ${state.courses.map(c => `<option value="${c.id}">${escHtml(c.name)}（${c.items.length}品）</option>`).join('')}
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label">備考（全日程共通・任意）</label>
+      <textarea class="field-textarea" id="sb-note" placeholder="連絡事項など"></textarea>
+    </div>
+    <div class="section-title" style="margin-top:20px;">
+      日程リスト
+      <span class="count">来店日 ・ 時間 ・ 人数</span>
+    </div>
+    <div id="sb-entries">${renderEntriesHtml()}</div>
+    <button type="button" class="btn btn-outline btn-block" id="sb-add-row" style="margin-top:8px;font-size:13px;">＋ 日程を追加</button>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-outline" id="sb-cancel">キャンセル</button>
+      <button type="button" class="btn btn-accent" id="sb-save">一括登録</button>
+    </div>
+  `;
+
+  // Event delegation on the entries container
+  const entriesContainer = document.getElementById('sb-entries');
+  entriesContainer.addEventListener('input', ev => {
+    const i = ev.target.dataset.i;
+    if (i === undefined) return;
+    if (ev.target.classList.contains('series-date')) entries[+i].date = ev.target.value;
+    else if (ev.target.classList.contains('series-time')) entries[+i].time = ev.target.value;
+    else if (ev.target.classList.contains('series-guests')) entries[+i].guests = ev.target.value;
+  });
+  entriesContainer.addEventListener('click', ev => {
+    const btn = ev.target.closest('.series-remove');
+    if (!btn || btn.disabled) return;
+    const i = +btn.dataset.i;
+    entries.splice(i, 1);
+    entriesContainer.innerHTML = renderEntriesHtml();
+  });
+
+  document.getElementById('sb-add-row').addEventListener('click', () => {
+    const last = entries[entries.length - 1];
+    entries.push({ date: last.date, time: last.time, guests: last.guests });
+    entriesContainer.innerHTML = renderEntriesHtml();
+  });
+
+  document.getElementById('sb-cancel').addEventListener('click', closeModal);
+
+  document.getElementById('sb-save').addEventListener('click', () => {
+    const name = document.getElementById('sb-name').value.trim();
+    if (!name) { showAlert('ツアー名を入力してください'); return; }
+    const validEntries = entries.filter(e => e.date);
+    if (validEntries.length === 0) { showAlert('来店日を1件以上入力してください'); return; }
+    const companyId = document.getElementById('sb-company').value;
+    const courseId = document.getElementById('sb-course').value;
+    const note = document.getElementById('sb-note').value.trim();
+    validEntries.forEach(e => {
+      state.tours.push({
+        id: uid(),
+        companyId,
+        name,
+        date: e.date,
+        time: e.time,
+        totalGuests: parseInt(e.guests) || 0,
+        courseId,
+        note,
+        groups: []
+      });
+    });
+    saveData();
+    closeModal();
+    render();
+    showAlert(`${validEntries.length}件のツアーを登録しました`);
+  });
+
+  showModal();
 }
 
 function openTourEdit(tourId) {
@@ -2757,7 +2901,7 @@ document.querySelectorAll('.tab').forEach(t => {
 t.addEventListener('click', () => { currentTab = t.dataset.tab; render(); });
 });
 
-document.getElementById('fabBtn').addEventListener('click', () => openTourEdit(null));
+document.getElementById('fabBtn').addEventListener('click', () => openAddMethodChoice());
 document.getElementById('modalClose').addEventListener('click', closeModal);
 document.getElementById('modalBackdrop').addEventListener('click', e => {
 if (e.target === document.getElementById('modalBackdrop')) closeModal();
