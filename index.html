@@ -1604,26 +1604,6 @@ function openSeriesBulkAdd() {
     `).join('');
   }
 
-  function syncEntryFields() {
-    document.querySelectorAll('.series-date').forEach(el => {
-      el.addEventListener('change', ev => { entries[+ev.target.dataset.i].date = ev.target.value; });
-    });
-    document.querySelectorAll('.series-time').forEach(el => {
-      el.addEventListener('change', ev => { entries[+ev.target.dataset.i].time = ev.target.value; });
-    });
-    document.querySelectorAll('.series-guests').forEach(el => {
-      el.addEventListener('input', ev => { entries[+ev.target.dataset.i].guests = ev.target.value; });
-    });
-    document.querySelectorAll('.series-remove').forEach(el => {
-      el.addEventListener('click', ev => {
-        const i = +ev.currentTarget.dataset.i;
-        entries.splice(i, 1);
-        document.getElementById('sb-entries').innerHTML = renderEntriesHtml();
-        syncEntryFields();
-      });
-    });
-  }
-
   document.getElementById('modalBody').innerHTML = `
     <div class="field">
       <label class="field-label">旅行会社</label>
@@ -1657,13 +1637,27 @@ function openSeriesBulkAdd() {
     </div>
   `;
 
-  syncEntryFields();
+  // Event delegation on the entries container
+  const entriesContainer = document.getElementById('sb-entries');
+  entriesContainer.addEventListener('input', ev => {
+    const i = ev.target.dataset.i;
+    if (i === undefined) return;
+    if (ev.target.classList.contains('series-date')) entries[+i].date = ev.target.value;
+    else if (ev.target.classList.contains('series-time')) entries[+i].time = ev.target.value;
+    else if (ev.target.classList.contains('series-guests')) entries[+i].guests = ev.target.value;
+  });
+  entriesContainer.addEventListener('click', ev => {
+    const btn = ev.target.closest('.series-remove');
+    if (!btn || btn.disabled) return;
+    const i = +btn.dataset.i;
+    entries.splice(i, 1);
+    entriesContainer.innerHTML = renderEntriesHtml();
+  });
 
   document.getElementById('sb-add-row').addEventListener('click', () => {
     const last = entries[entries.length - 1];
-    entries.push({ date: last.date, time: '', guests: '' });
-    document.getElementById('sb-entries').innerHTML = renderEntriesHtml();
-    syncEntryFields();
+    entries.push({ date: last.date, time: last.time, guests: last.guests });
+    entriesContainer.innerHTML = renderEntriesHtml();
   });
 
   document.getElementById('sb-cancel').addEventListener('click', closeModal);
